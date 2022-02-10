@@ -2,7 +2,7 @@ A. Yolanda
 
 Yolanda is a graduate student having received their undergraduate degree in genetics around 5 years prior.  She is a wet lab scientist that works with mice.  She has little experience in bioinformatics but has used R to do basic analysis for her research.  Her research may include basic statistical analysis comparing two or more groups of mice based on outcomes of behaviour or the presence or absent of disease.  She has performed basic QTL mapping when she had 300 DO mice genotyped using the gigamuga array and has found some interesting sites.  Her lab has just received expression data and is looking to performed association analysis with these data too.  
 
-This course will teach Person A how to perform QTL mapping to detect association across the genome for expression data. It will also introduce her to more complex coding and analysis that can be done in R.  It will also teach her how to plot the results and how to interpret them. 
+This course will teach Yolanda how to perform QTL mapping to detect association across the genome for expression data. It will also introduce her to more complex coding and analysis that can be done in R.  It will also teach her how to plot the results and how to interpret them. 
 
 B. Muhammad
 
