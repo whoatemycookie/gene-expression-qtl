@@ -1,0 +1,25 @@
+Skills List
+
+background knowledge and skills include
+•	Knowledge of genetics
+•	QTL mapping basics in qtl2 (at least knowing how to map QTLs in DO mice)
+•	R skills (at least basic knowledge)
+•	Background in statistics (?) to understand the different analysis types in r/qtl2
+•	Information about rna-seq and expression data (or has data available but want to see what type of information can be drawn from it)
+
+goals include:
+•	Ability to qtl map expression data. 
+•	How to interpret the data
+•	Different conclusions that can been drawn from the analysis and how to take it forward
+
+an (incomplete) list of target skills include:
+•	How to create files and write code to upload into r/qtl2
+o	Control file with all necessary information about files and codes
+o	All files in the correct format and coded correctly
+o	Know what information is necessary
+•	Write code to qc data (including tables and plots)
+•	Writing code to qc data
+o	Phenotypes
+o	Kinship
+o	genoprobs
+•	????
