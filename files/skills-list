@@ -11,7 +11,7 @@ After the training, participants will:
 •	explain how genetic variants that are associated with disease traits do not lead directly to disease, but instead act on intermediate, molecular phenotypes (eg gene expression) that in turn induce changes in higher-order disease traits.
 •	indicate which molecular phenotypes (gene expression/transcript abundance) vary in response to changes in DNA and which also affect changes in disease phenotypes.
 •	interpret the relationship between sequence, expression and phenotype variation from qtl2 mapping results
-* question the results (splice variant does not affect total RNA)
+* question the results (splice variant does not affect total RNA) to recognize pitfalls (different RNA from splice variant vs same level of expression of gene Abcc8)
 •	Different conclusions that can been drawn from the analysis and how to take it forward
 •	To prepare appropriate data to run eqtl mapping, including identifying any qc issues (at least know what issues to look out for)
 •	To modify code to examine study hypothesis
