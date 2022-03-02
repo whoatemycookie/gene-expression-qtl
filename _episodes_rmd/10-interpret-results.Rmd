@@ -16,62 +16,24 @@ source("../bin/chunk-options.R")
 knitr_fig_path("10-")
 ```
 
-For the challenges and their solutions, you need to pay attention to where the
-`>` go and where to leave blank lines. You can include code chunks in both the
-instructions and solutions. For instance this:
+![Attie et al, 2018 Supplementary Figure S7](../files/Attieetal2018-supplementary/SFig7_Keller_2018_chr11.tif)
 
 ````
-> ## Challenge: Can you do it?
+> ## Challenge: Interpreting qtl2 results
 >
-> What is the output of this command?
+> Refer to the figure above.
 >
-> ```{r, eval=FALSE}`r ''`
-> paste("This", "new", "template", "looks", "good")
-> ```
->
+> 1). What does panel A show? What conclusions could you draw from panel A?   
+> 2). What does panel B show? What conclusions could you draw from panel B?   
+> 3). What does panel C show? What conclusions could you draw from panel C?  
+> 4). How are panels A through C related to one another? What story do they tell together?
 > > ## Solution
 > >
-> > ```{r, echo=FALSE}`r ''`
-> > paste("This", "new", "template", "looks", "good")
-> > ```
+> > 
+> > 
+> > 
 > {: .solution}
 {: .challenge}
 ````
-
-will generate this:
-
-> ## Challenge: Can you do it?
->
-> What is the output of this command?
->
-> ```{r, eval=FALSE}
-> paste("This", "new", "template", "looks", "good")
-> ```
->
-> > ## Solution
-> >
-> > ```{r, echo=FALSE, renv.ignore=TRUE}
-> > paste("This", "new", "template", "looks", "good")
-> > ```
-> {: .solution}
-{: .challenge}
-
-
-> ## On Branch Names and Automation
->
-> For lessons that do not use R, the code included in the lessons is not
-> evaluated. Each time a new commit is pushed to the repository, GitHub can take
-> these files and directly render their content using Jekyll to create the lesson
-> website. Because it is a one-step process, we can use the same branch
-> (`gh-pages`) to develop the lesson and render its content as a website. However,
-> for R-based lessons, we first need to convert the RMarkdown to Markdown, and
-> then, we need to instruct GitHub to generate the lesson website from the rendered
-> Markdown files. Because of this two-step process, we use two branches: one is
-> used to develop the content of the lesson (typically `main`) and the other is only
-> used to host the files that will generate the lesson website (`gh-pages`). To
-> automatically convert the files from RMarkdown to Markdown, and push these
-> Markdown files to GitHub, we rely on a GitHub Actions workflow (typically in the
-> `.github/workflows/website.yml` file in the lesson repository).
-{: .callout}
 
 {% include links.md %}
