@@ -15,7 +15,7 @@ keypoints:
 
 
 
-![Attie et al, 2018 Supplementary Figure S7](../files/Attieetal2018-supplementary/SFig7_Keller_2018_chr11.tif)
+![Attie et al, 2018 Supplementary Figure S7](../files/Attieetal2018-supplementary/SFig7_Keller_2018_chr11.pdf)
 
 ````
 > ## Challenge: Interpreting qtl2 results
