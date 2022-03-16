@@ -3,8 +3,7 @@ title: "Load and explore the data"
 teaching: 15
 exercises: 30
 questions:
-- "How are the data files formatted for qtl2?"
-- "Which data files are required for qtl2?"
+- "What data are required for eqtl mapping?"
 - "Where can I find sample data for mapping with the qtl2 package?"
 objectives:
 - To specify which input files are required for qtl2 and how they should be formatted.
