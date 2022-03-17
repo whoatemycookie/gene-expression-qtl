@@ -1,5 +1,5 @@
 ---
-title: "Performing a genome scan with a linear mixed model"
+title: "Mediation Analysis"
 teaching: 20
 exercises: 10
 questions:

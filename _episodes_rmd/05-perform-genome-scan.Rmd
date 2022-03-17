@@ -1,5 +1,5 @@
 ---
-title: "Performing a genome scan"
+title: "Mapping Many Genes"
 teaching: 30
 exercises: 30
 questions:

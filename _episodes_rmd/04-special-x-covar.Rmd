@@ -1,5 +1,5 @@
 ---
-title: "Special covariates for the X chromosome"
+title: "Mapping Genes"
 teaching: 15
 exercises: 15
 questions:

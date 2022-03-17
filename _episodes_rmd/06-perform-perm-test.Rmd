@@ -1,5 +1,5 @@
 ---
-title: "Performing a permutation test"
+title: "Summarizing Data"
 teaching: 10
 exercises: 20
 questions:

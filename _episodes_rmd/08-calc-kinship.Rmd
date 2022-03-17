@@ -1,5 +1,5 @@
 ---
-title: "Calculating A Kinship Matrix"
+title: "Creating A Transcriptome Map"
 teaching: 30
 exercises: 30
 questions:

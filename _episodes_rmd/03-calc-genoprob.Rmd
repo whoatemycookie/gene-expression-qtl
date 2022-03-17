@@ -1,5 +1,5 @@
 ---
-title: "Calculating Genotype Probabilities"
+title: "Data Distribution and Transformation"
 teaching: 30
 exercises: 30
 questions:
