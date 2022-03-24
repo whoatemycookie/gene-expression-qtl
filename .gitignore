@@ -16,3 +16,5 @@ vendor/
 .docker-vendor/
 Gemfile.lock
 .*history
+data/c100371f-1362-4df4-a005-10e6cae9f96d_Attie-232_Attie_DO_Islets/Attie-232_Attie_DO_Islets-dictionary.csv data/c100371f-1362-4df4-a005-10e6cae9f96d_Attie-232_Attie_DO_Islets/Attie-232_Attie_DO_Islets-phenotypes.csv data/c100371f-1362-4df4-a005-10e6cae9f96d_Attie-232_Attie_DO_Islets/README_Attie_232_Attie_DO_Islets
+data/Attie-232_Attie_DO_Islets-GigaMUGA.json data/Attie-232_Attie_DO_Islets-GigaMUGA_covar.csv data/Attie-232_Attie_DO_Islets-GigaMUGA_foundergeno.csv data/Attie-232_Attie_DO_Islets-GigaMUGA_gmap.csv data/Attie-232_Attie_DO_Islets-GigaMUGA_pheno.csv data/Attie-232_Attie_DO_Islets-GigaMUGA_pmap.csv
