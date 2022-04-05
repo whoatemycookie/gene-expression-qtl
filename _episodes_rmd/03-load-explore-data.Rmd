@@ -21,6 +21,8 @@ Load the libraries.
 library(tidyverse)
 library(knitr)
 library(GGally)
+library(corrplot)
+library(broom)
 ```
 
 ## Clinical Phenotypes
@@ -40,10 +42,10 @@ Subset the phenotypes to include only those analyzed in the paper.
 ```{r subset_phenos}
 # subset the phenotypes to only those addressed in the paper
 pheno2keep <- pheno_clin %>% 
-  select(weight_14wk, weight_10wk, weight_6wk,
-         Ins_14wk, Ins_10wk, Ins_6wk, Ins_per_islet, Ins_iAUC,
+  select(weight_10wk, weight_6wk, weight_2wk,
+         Ins_14wk, Ins_10wk, Ins_6wk, Ins_per_islet, Ins_tAUC,
          HOMA_IR_0min, HOMA_B_0min,
-         Glu_14wk, Glu_10wk, Glu_6wk, Glu_iAUC,
+         Glu_14wk, Glu_10wk, Glu_6wk, Glu_tAUC,
          TG_14wk, TG_10wk, TG_6wk,
          food_ave, WPIC, num_islets)
 pheno_clin <- pheno_clin[,c(1:11, 166, 
@@ -134,7 +136,7 @@ The HOMA phenotypes have odd distributions.
 
 ```{r homair_vs_homab, warning=FALSE}
 saveRDS(pheno_clin_log, 
-        file = paste0(data.dir, "pheno_clin_log_outliers_removed.rds"))
+        file = "../data/pheno_clin_log_outliers_removed.rds")
 ggplot(pheno_clin_log, aes(HOMA_IR_0min, HOMA_B_0min, color = DOwave, shape = sex)) +
   geom_point()
 ```
@@ -276,10 +278,8 @@ tmp = pheno_clin_log %>%
         filter(sex == "F") %>%
         select(num_islets:weight_10wk)
 tmp = cor(tmp, use = "pairwise")
-pdf(paste0(fig.dir, "phenotype_corr_female.pdf"), width = 12, height = 12)
 corrplot.mixed(tmp, upper = "ellipse", lower = "number", 
                main = "Female Clinical Phenotype Correlation")
-dev.off()
 corrplot.mixed(tmp, upper = "ellipse", lower = "number", 
                main = "Female Clinical Phenotype Correlation")
 ```
@@ -291,11 +291,8 @@ tmp = pheno_clin_log %>%
         filter(sex == "M") %>%
         select(num_islets:weight_10wk)
 tmp = cor(tmp, use = "pairwise")
-pdf(paste0(fig.dir, "phenotype_corr_male.pdf"), width = 12, height = 12)
 corrplot.mixed(tmp, upper = "ellipse", lower = "number", 
                main = "Male Clinical Phenotype Correlation")
-dev.off()
 corrplot.mixed(tmp, upper = "ellipse", lower = "number", 
                main = "Male Clinical Phenotype Correlation")
 ```
-
