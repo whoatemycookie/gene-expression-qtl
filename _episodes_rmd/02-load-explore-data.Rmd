@@ -5,37 +5,42 @@ exercises: 30
 questions:
 - "What data are required for eqtl mapping?"
 objectives:
-- To specify which input files are required for qtl2 and how they should be formatted.
+- To provide an example and exploration of data used for eqtl mapping.
 keypoints:
-- "QTL mapping data consists of a set of tables of data: marker genotypes, phenotypes, marker maps, etc."
+- ""
 source: Rmd
 ---
 
 ```{r, include=FALSE}
 source("../bin/chunk-options.R")
-knitr_fig_path("03-")
+knitr_fig_path("02-")
 ```
 
 Load the libraries.
-```{r, load_tidyverse}
+```{r, load_tidyverse, message=FALSE}
 library(tidyverse)
 library(knitr)
 library(GGally)
 library(corrplot)
 library(broom)
+# the following analysis is from File S1 Attie_eQTL_paper_physiology.Rmd 
+# compliments of Daniel Gatti. See Data Dryad entry for more information.
 ```
 
 ## Clinical Phenotypes
 
 The data used in these analyses are available from 
-[Data Dryad](https://doi.org/10.5061/dryad.pj105).
-From File S1 Attie_eQTL_paper_physiology.Rmd compliments of Daniel Gatti.
+[Data Dryad](https://doi.org/10.5061/dryad.pj105). 
+
 Load in the clinical phenotypes.
 
 ```{r load_phenos}
 # load the data
 load("../data/pheno_clin_v6.RData")
 ```
+
+See the [data dictionary]("../data/Attie-232_Attie_DO_Islets-dictionary.csv") to 
+see a description of each of these phenotypes.  
 
 Subset the phenotypes to include only those analyzed in the paper.
 
@@ -73,7 +78,7 @@ values. The highest are `Ins_per_islet` and WPIC at 3.6%.
 
 #### Phenotype Ranges
 
-```{r pheno_ranges}
+```{r pheno_ranges, warning=FALSE}
 tmp = pheno_clin %>%
   select(num_islets:weight_10wk) %>%
   summarize_all(funs(min, max), na.rm = TRUE) %>%
@@ -222,7 +227,7 @@ tmp = tmp %>%
   mutate(model = map(data, mod_fxn)) %>%
   mutate(summ = map(model, tidy)) %>%
   unnest(summ)
-kable(tmp, caption = "Effects of Sex, Wave & Diet Days on Phenotypes")
+# kable(tmp, caption = "Effects of Sex, Wave & Diet Days on Phenotypes")
 ```
 
 ```{r sex_diet_wave_effects}
