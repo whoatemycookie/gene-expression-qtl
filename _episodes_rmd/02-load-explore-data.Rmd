@@ -39,7 +39,7 @@ Load in the clinical phenotypes.
 load("../data/pheno_clin_v6.RData")
 ```
 
-See the [data dictionary]("../data/Attie-232_Attie_DO_Islets-dictionary.csv") to 
+See the [data dictionary](../data/Attie-232_Attie_DO_Islets-dictionary.csv) to 
 see a description of each of these phenotypes.  
 
 Subset the phenotypes to include only those analyzed in the paper.
@@ -271,7 +271,7 @@ tmp = pheno_clin_log %>%
   unnest(summ) %>%
   filter(term != "(Intercept)") %>%
   mutate(p.adj = p.adjust(p.value))
-kable(tmp, caption = "Effects of Sex and Food Intake on Body Weight")
+# kable(tmp, caption = "Effects of Sex and Food Intake on Body Weight")
 ```
 
 ### Correlation Plots

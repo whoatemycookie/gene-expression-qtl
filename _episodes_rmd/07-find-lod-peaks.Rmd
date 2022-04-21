@@ -35,7 +35,7 @@ To find peaks above a given threshold LOD value, use the function `find_peaks()`
 
 You need to provide both the `scan1()` output, the marker/pseudomarker map and a threshold. We will use the 95% threshold from the permutations in the previous lesson.
 
-```{r find_peaks}
+```{r find_peaks, eval=FALSE}
 operm <- scan1perm(pr, iron$pheno, Xcovar=Xcovar, n_perm=1000)
 thr <- summary(operm)
 find_peaks(scan1_output = out, map = map, threshold = thr, prob = 0.95, expand2markers = FALSE)
@@ -43,7 +43,7 @@ find_peaks(scan1_output = out, map = map, threshold = thr, prob = 0.95, expand2m
 
 The `find_peaks()` function can also pick out multiple peaks on a chromosome: each peak must exceed the chosen threshold, and the argument `peakdrop` indicates the amount that the LOD curve must drop between the lowest of two adjacent peaks.  Use this feature with caution.
 
-```{r find_multiple_peaks}
+```{r find_multiple_peaks, eval=FALSE}
 find_peaks(scan1_output = out, map = map, threshold = thr, peakdrop = 1.8, prob = 0.95, expand2markers = FALSE)
 ```
 
