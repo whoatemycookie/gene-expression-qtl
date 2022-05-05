@@ -27,54 +27,20 @@ library(broom)
 # compliments of Daniel Gatti. See Data Dryad entry for more information.
 ```
 
-## Clinical Phenotypes
+## Physiological Phenotypes
 
-The data used in these analyses are available from 
+The complete data used in these analyses are available from 
 [Data Dryad](https://doi.org/10.5061/dryad.pj105). 
 
 Load in the clinical phenotypes.
 
 ```{r load_phenos}
 # load the data
-load("../data/pheno_clin_v6.RData")
+load("../data/attie_DO500_clinical.phenotypes.RData")
 ```
 
 See the [data dictionary](../data/Attie-232_Attie_DO_Islets-dictionary.csv) to 
 see a description of each of these phenotypes.  
-
-Subset the phenotypes to include only those analyzed in the paper.
-
-```{r subset_phenos}
-# subset the phenotypes to only those addressed in the paper
-pheno2keep <- pheno_clin %>% 
-  select(weight_10wk, weight_6wk, weight_2wk,
-         Ins_14wk, Ins_10wk, Ins_6wk, Ins_per_islet, Ins_tAUC,
-         HOMA_IR_0min, HOMA_B_0min,
-         Glu_14wk, Glu_10wk, Glu_6wk, Glu_tAUC,
-         TG_14wk, TG_10wk, TG_6wk,
-         food_ave, WPIC, num_islets)
-pheno_clin <- pheno_clin[,c(1:11, 166, 
-                            which(colnames(pheno_clin) %in% names(pheno2keep)))]
-
-# convert sex and DO wave (batch) to factors
-pheno_clin$sex = factor(pheno_clin$sex)
-pheno_clin$DOwave = factor(pheno_clin$DOwave)
-```
-
-### QA/QC
-
-#### Proportion Missing Data
-
-```{r pheno_missing_data, warning=FALSE}
-tmp = pheno_clin %>% 
-  mutate_all(is.na) %>% 
-  summarize_all(mean) %>%
-  gather(phenotype, value)
-kable(tmp, caption = "Proportion of Missing Data")
-```
-
-The phenotypes that we're mapping (on the right) are mostly free of missing 
-values. The highest are `Ins_per_islet` and WPIC at 3.6%.
 
 #### Phenotype Ranges
 
@@ -104,50 +70,13 @@ pheno_clin %>%
     labs(title = "Distribution of Log Transformed Phenotypes")
 ```
 
-Log transform and standardize each phenotype. Consider setting points that are 
-more than 5 std. dev. from the mean to NA. Only do this if the final 
-distribution doesn't look skewed.
+Subset the phenotypes to include only those analyzed in the paper.
 
-```{r pheno_std, warning=FALSE}
-pheno_clin_log = pheno_clin %>%
-                   mutate_if(is.numeric, log)
-pheno_clin_std = pheno_clin_log %>%
-                   select(mouse, num_islets:weight_10wk) %>%
-                   mutate_if(is.numeric, scale)
-pheno_clin_std %>%
-  select(num_islets:weight_10wk) %>%
-  gather(phenotype, value) %>%
-  ggplot(aes(x = phenotype, y = value)) +
-    geom_boxplot() +
-    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) +
-    labs(title = "Distribution of Standardized Phenotypes")
+```{r convert_factors}
+# convert sex and DO wave (batch) to factors
+pheno_clin$sex = factor(pheno_clin$sex)
+pheno_clin$DOwave = factor(pheno_clin$DOwave)
 ```
-
-```{r outliers, warning=FALSE}
-outliers = pheno_clin_std %>% 
-              gather(pheno, value, -mouse) %>%
-              filter(abs(value) > 5)
-kable(outliers, caption = "Potential Outliers")
-```
-
-### All Pairs
-
-```{r pheno_all_pairs, warning=FALSE, fig.width=10, fig.height=10}
-ggpairs(select(pheno_clin_log, num_islets:weight_10wk)) +
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
-```
-
-The HOMA phenotypes have odd distributions.
-
-```{r homair_vs_homab, warning=FALSE}
-saveRDS(pheno_clin_log, 
-        file = "../data/pheno_clin_log_outliers_removed.rds")
-ggplot(pheno_clin_log, aes(HOMA_IR_0min, HOMA_B_0min, color = DOwave, shape = sex)) +
-  geom_point()
-```
-
-There doesn't appear to be a batch effect, but there are a large number of low 
-values. Is there some lower bound to the HOMA measurements?
 
 ### Figure 1 Boxplots
 
@@ -211,6 +140,68 @@ pheno_clin %>%
     scale_y_log10() +
     facet_wrap(~phenotype, scales = "free_y")
 ```
+
+### QA/QC
+
+#### Proportion Missing Data
+
+```{r pheno_missing_data, warning=FALSE}
+tmp = pheno_clin %>% 
+  mutate_all(is.na) %>% 
+  summarize_all(mean) %>%
+  gather(phenotype, value)
+kable(tmp, caption = "Proportion of Missing Data")
+```
+
+The phenotypes that we're mapping (on the right) are mostly free of missing 
+values. The highest are `Ins_per_islet` and WPIC at 3.6%.
+
+
+Log transform and standardize each phenotype. Consider setting points that are 
+more than 5 std. dev. from the mean to NA. Only do this if the final 
+distribution doesn't look skewed.
+
+```{r pheno_std, warning=FALSE}
+pheno_clin_log = pheno_clin %>%
+                   mutate_if(is.numeric, log)
+pheno_clin_std = pheno_clin_log %>%
+                   select(mouse, num_islets:weight_10wk) %>%
+                   mutate_if(is.numeric, scale)
+pheno_clin_std %>%
+  select(num_islets:weight_10wk) %>%
+  gather(phenotype, value) %>%
+  ggplot(aes(x = phenotype, y = value)) +
+    geom_boxplot() +
+    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) +
+    labs(title = "Distribution of Standardized Phenotypes")
+```
+
+```{r outliers, warning=FALSE}
+outliers = pheno_clin_std %>% 
+              gather(pheno, value, -mouse) %>%
+              filter(abs(value) > 5)
+kable(outliers, caption = "Potential Outliers")
+```
+
+### All Pairs
+
+```{r pheno_all_pairs, warning=FALSE, fig.width=10, fig.height=10}
+ggpairs(select(pheno_clin_log, num_islets:weight_10wk)) +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
+```
+
+The HOMA phenotypes have odd distributions.
+
+```{r homair_vs_homab, warning=FALSE}
+saveRDS(pheno_clin_log, 
+        file = "../data/pheno_clin_log_outliers_removed.rds")
+ggplot(pheno_clin_log, aes(HOMA_IR_0min, HOMA_B_0min, color = DOwave, shape = sex)) +
+  geom_point()
+```
+
+There doesn't appear to be a batch effect, but there are a large number of low 
+values. Is there some lower bound to the HOMA measurements?
+
 
 ### Tests for sex, wave and diet_days.
 
@@ -301,3 +292,5 @@ corrplot.mixed(tmp, upper = "ellipse", lower = "number",
 corrplot.mixed(tmp, upper = "ellipse", lower = "number", 
                main = "Male Clinical Phenotype Correlation")
 ```
+
+## Gene Expression Phenotypes

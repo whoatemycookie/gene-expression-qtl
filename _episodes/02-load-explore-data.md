@@ -28,9 +28,9 @@ library(broom)
 ~~~
 {: .language-r}
 
-## Clinical Phenotypes
+## Physiological Phenotypes
 
-The data used in these analyses are available from 
+The complete data used in these analyses are available from 
 [Data Dryad](https://doi.org/10.5061/dryad.pj105). 
 
 Load in the clinical phenotypes.
@@ -38,89 +38,12 @@ Load in the clinical phenotypes.
 
 ~~~
 # load the data
-load("../data/pheno_clin_v6.RData")
+load("../data/attie_DO500_clinical.phenotypes.RData")
 ~~~
 {: .language-r}
 
 See the [data dictionary](../data/Attie-232_Attie_DO_Islets-dictionary.csv) to 
 see a description of each of these phenotypes.  
-
-Subset the phenotypes to include only those analyzed in the paper.
-
-
-~~~
-# subset the phenotypes to only those addressed in the paper
-pheno2keep <- pheno_clin %>% 
-  select(weight_10wk, weight_6wk, weight_2wk,
-         Ins_14wk, Ins_10wk, Ins_6wk, Ins_per_islet, Ins_tAUC,
-         HOMA_IR_0min, HOMA_B_0min,
-         Glu_14wk, Glu_10wk, Glu_6wk, Glu_tAUC,
-         TG_14wk, TG_10wk, TG_6wk,
-         food_ave, WPIC, num_islets)
-pheno_clin <- pheno_clin[,c(1:11, 166, 
-                            which(colnames(pheno_clin) %in% names(pheno2keep)))]
-
-# convert sex and DO wave (batch) to factors
-pheno_clin$sex = factor(pheno_clin$sex)
-pheno_clin$DOwave = factor(pheno_clin$DOwave)
-~~~
-{: .language-r}
-
-### QA/QC
-
-#### Proportion Missing Data
-
-
-~~~
-tmp = pheno_clin %>% 
-  mutate_all(is.na) %>% 
-  summarize_all(mean) %>%
-  gather(phenotype, value)
-kable(tmp, caption = "Proportion of Missing Data")
-~~~
-{: .language-r}
-
-
-
-Table: Proportion of Missing Data
-
-|phenotype          | value|
-|:------------------|-----:|
-|mouse              | 0.000|
-|sex                | 0.000|
-|sac_date           | 0.222|
-|partial_inflation  | 0.994|
-|coat_color         | 0.000|
-|oGTT_date          | 0.010|
-|FAD_NAD_paired     | 0.814|
-|FAD_NAD_filter_set | 0.814|
-|crumblers          | 0.962|
-|birthdate          | 0.034|
-|diet_days          | 0.034|
-|DOwave             | 0.000|
-|num_islets         | 0.034|
-|Ins_per_islet      | 0.036|
-|WPIC               | 0.036|
-|HOMA_IR_0min       | 0.010|
-|HOMA_B_0min        | 0.016|
-|Glu_tAUC           | 0.010|
-|Ins_tAUC           | 0.010|
-|Glu_6wk            | 0.000|
-|Ins_6wk            | 0.000|
-|TG_6wk             | 0.000|
-|Glu_10wk           | 0.002|
-|Ins_10wk           | 0.002|
-|TG_10wk            | 0.002|
-|Glu_14wk           | 0.002|
-|Ins_14wk           | 0.002|
-|TG_14wk            | 0.002|
-|food_ave           | 0.000|
-|weight_2wk         | 0.000|
-|weight_6wk         | 0.002|
-|weight_10wk        | 0.002|
-
-The phenotypes that we're mapping (on the right) are mostly free of missing 
-values. The highest are `Ins_per_islet` and WPIC at 3.6%.
 
 #### Phenotype Ranges
 
@@ -183,78 +106,15 @@ pheno_clin %>%
 
 <img src="../fig/rmd-02-pheno_boxplot-1.png" title="plot of chunk pheno_boxplot" alt="plot of chunk pheno_boxplot" width="612" style="display: block; margin: auto;" />
 
-Log transform and standardize each phenotype. Consider setting points that are 
-more than 5 std. dev. from the mean to NA. Only do this if the final 
-distribution doesn't look skewed.
+Subset the phenotypes to include only those analyzed in the paper.
 
 
 ~~~
-pheno_clin_log = pheno_clin %>%
-                   mutate_if(is.numeric, log)
-pheno_clin_std = pheno_clin_log %>%
-                   select(mouse, num_islets:weight_10wk) %>%
-                   mutate_if(is.numeric, scale)
-pheno_clin_std %>%
-  select(num_islets:weight_10wk) %>%
-  gather(phenotype, value) %>%
-  ggplot(aes(x = phenotype, y = value)) +
-    geom_boxplot() +
-    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) +
-    labs(title = "Distribution of Standardized Phenotypes")
+# convert sex and DO wave (batch) to factors
+pheno_clin$sex = factor(pheno_clin$sex)
+pheno_clin$DOwave = factor(pheno_clin$DOwave)
 ~~~
 {: .language-r}
-
-<img src="../fig/rmd-02-pheno_std-1.png" title="plot of chunk pheno_std" alt="plot of chunk pheno_std" width="612" style="display: block; margin: auto;" />
-
-
-~~~
-outliers = pheno_clin_std %>% 
-              gather(pheno, value, -mouse) %>%
-              filter(abs(value) > 5)
-kable(outliers, caption = "Potential Outliers")
-~~~
-{: .language-r}
-
-
-
-Table: Potential Outliers
-
-|mouse |pheno      |     value|
-|:-----|:----------|---------:|
-|DO093 |num_islets | -6.767430|
-|DO372 |num_islets | -6.217230|
-|DO093 |WPIC       | -6.161516|
-|DO372 |WPIC       | -5.068911|
-|DO372 |Glu_10wk   |  5.854390|
-|DO213 |Glu_14wk   | -9.031752|
-|DO372 |Glu_14wk   |  5.802727|
-
-### All Pairs
-
-
-~~~
-ggpairs(select(pheno_clin_log, num_islets:weight_10wk)) +
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
-~~~
-{: .language-r}
-
-<img src="../fig/rmd-02-pheno_all_pairs-1.png" title="plot of chunk pheno_all_pairs" alt="plot of chunk pheno_all_pairs" width="720" style="display: block; margin: auto;" />
-
-The HOMA phenotypes have odd distributions.
-
-
-~~~
-saveRDS(pheno_clin_log, 
-        file = "../data/pheno_clin_log_outliers_removed.rds")
-ggplot(pheno_clin_log, aes(HOMA_IR_0min, HOMA_B_0min, color = DOwave, shape = sex)) +
-  geom_point()
-~~~
-{: .language-r}
-
-<img src="../fig/rmd-02-homair_vs_homab-1.png" title="plot of chunk homair_vs_homab" alt="plot of chunk homair_vs_homab" width="612" style="display: block; margin: auto;" />
-
-There doesn't appear to be a batch effect, but there are a large number of low 
-values. Is there some lower bound to the HOMA measurements?
 
 ### Figure 1 Boxplots
 
@@ -338,6 +198,137 @@ pheno_clin %>%
 {: .language-r}
 
 <img src="../fig/rmd-02-fig1_boxplots-1.png" title="plot of chunk fig1_boxplots" alt="plot of chunk fig1_boxplots" width="612" style="display: block; margin: auto;" />
+
+### QA/QC
+
+#### Proportion Missing Data
+
+
+~~~
+tmp = pheno_clin %>% 
+  mutate_all(is.na) %>% 
+  summarize_all(mean) %>%
+  gather(phenotype, value)
+kable(tmp, caption = "Proportion of Missing Data")
+~~~
+{: .language-r}
+
+
+
+Table: Proportion of Missing Data
+
+|phenotype          | value|
+|:------------------|-----:|
+|mouse              | 0.000|
+|sex                | 0.000|
+|sac_date           | 0.222|
+|partial_inflation  | 0.994|
+|coat_color         | 0.000|
+|oGTT_date          | 0.010|
+|FAD_NAD_paired     | 0.814|
+|FAD_NAD_filter_set | 0.814|
+|crumblers          | 0.962|
+|birthdate          | 0.034|
+|diet_days          | 0.034|
+|num_islets         | 0.034|
+|Ins_per_islet      | 0.036|
+|WPIC               | 0.036|
+|HOMA_IR_0min       | 0.010|
+|HOMA_B_0min        | 0.016|
+|Glu_tAUC           | 0.010|
+|Ins_tAUC           | 0.010|
+|Glu_6wk            | 0.000|
+|Ins_6wk            | 0.000|
+|TG_6wk             | 0.000|
+|Glu_10wk           | 0.002|
+|Ins_10wk           | 0.002|
+|TG_10wk            | 0.002|
+|Glu_14wk           | 0.002|
+|Ins_14wk           | 0.002|
+|TG_14wk            | 0.002|
+|food_ave           | 0.000|
+|weight_2wk         | 0.000|
+|weight_6wk         | 0.002|
+|weight_10wk        | 0.002|
+|DOwave             | 0.000|
+
+The phenotypes that we're mapping (on the right) are mostly free of missing 
+values. The highest are `Ins_per_islet` and WPIC at 3.6%.
+
+
+Log transform and standardize each phenotype. Consider setting points that are 
+more than 5 std. dev. from the mean to NA. Only do this if the final 
+distribution doesn't look skewed.
+
+
+~~~
+pheno_clin_log = pheno_clin %>%
+                   mutate_if(is.numeric, log)
+pheno_clin_std = pheno_clin_log %>%
+                   select(mouse, num_islets:weight_10wk) %>%
+                   mutate_if(is.numeric, scale)
+pheno_clin_std %>%
+  select(num_islets:weight_10wk) %>%
+  gather(phenotype, value) %>%
+  ggplot(aes(x = phenotype, y = value)) +
+    geom_boxplot() +
+    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) +
+    labs(title = "Distribution of Standardized Phenotypes")
+~~~
+{: .language-r}
+
+<img src="../fig/rmd-02-pheno_std-1.png" title="plot of chunk pheno_std" alt="plot of chunk pheno_std" width="612" style="display: block; margin: auto;" />
+
+
+~~~
+outliers = pheno_clin_std %>% 
+              gather(pheno, value, -mouse) %>%
+              filter(abs(value) > 5)
+kable(outliers, caption = "Potential Outliers")
+~~~
+{: .language-r}
+
+
+
+Table: Potential Outliers
+
+|mouse |pheno      |     value|
+|:-----|:----------|---------:|
+|DO093 |num_islets | -6.767430|
+|DO372 |num_islets | -6.217230|
+|DO093 |WPIC       | -6.161516|
+|DO372 |WPIC       | -5.068911|
+|DO372 |Glu_10wk   |  5.854390|
+|DO213 |Glu_14wk   | -9.031752|
+|DO372 |Glu_14wk   |  5.802727|
+
+### All Pairs
+
+
+~~~
+ggpairs(select(pheno_clin_log, num_islets:weight_10wk)) +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
+~~~
+{: .language-r}
+
+<img src="../fig/rmd-02-pheno_all_pairs-1.png" title="plot of chunk pheno_all_pairs" alt="plot of chunk pheno_all_pairs" width="720" style="display: block; margin: auto;" />
+
+The HOMA phenotypes have odd distributions.
+
+
+~~~
+saveRDS(pheno_clin_log, 
+        file = "../data/pheno_clin_log_outliers_removed.rds")
+ggplot(pheno_clin_log, aes(HOMA_IR_0min, HOMA_B_0min, color = DOwave, shape = sex)) +
+  geom_point()
+~~~
+{: .language-r}
+
+<img src="../fig/rmd-02-homair_vs_homab-1.png" title="plot of chunk homair_vs_homab" alt="plot of chunk homair_vs_homab" width="612" style="display: block; margin: auto;" />
+
+There doesn't appear to be a batch effect, but there are a large number of low 
+values. Is there some lower bound to the HOMA measurements?
+
 
 ### Tests for sex, wave and diet_days.
 
@@ -455,3 +446,5 @@ corrplot.mixed(tmp, upper = "ellipse", lower = "number",
 {: .language-r}
 
 <img src="../fig/rmd-02-unnamed-chunk-3-1.png" title="plot of chunk unnamed-chunk-3" alt="plot of chunk unnamed-chunk-3" width="864" style="display: block; margin: auto;" />
+
+## Gene Expression Phenotypes
