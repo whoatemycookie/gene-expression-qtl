@@ -185,7 +185,10 @@ kable(outliers, caption = "Potential Outliers")
 
 ### All Pairs
 
-```{r pheno_all_pairs, warning=FALSE, fig.width=10, fig.height=10}
+```{r pheno_all_pairs_include, warning=FALSE, out.width= "100%"}
+knitr::include_graphics("../fig/rmd-02-pheno_all_pairs-1.png")
+```
+```{r pheno_all_pairs, warning=FALSE, fig.width=15, fig.height=15}
 ggpairs(select(pheno_clin_log, num_islets:weight_10wk)) +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
 ```

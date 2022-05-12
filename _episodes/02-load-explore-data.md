@@ -306,12 +306,19 @@ Table: Potential Outliers
 
 
 ~~~
+knitr::include_graphics("../fig/rmd-02-pheno_all_pairs-1.png")
+~~~
+{: .language-r}
+
+<img src="../fig/rmd-02-pheno_all_pairs-1.png" title="plot of chunk pheno_all_pairs_include" alt="plot of chunk pheno_all_pairs_include" width="100%" style="display: block; margin: auto;" />
+
+~~~
 ggpairs(select(pheno_clin_log, num_islets:weight_10wk)) +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
 ~~~
 {: .language-r}
 
-<img src="../fig/rmd-02-pheno_all_pairs-1.png" title="plot of chunk pheno_all_pairs" alt="plot of chunk pheno_all_pairs" width="720" style="display: block; margin: auto;" />
+<img src="../fig/rmd-02-pheno_all_pairs-1.png" title="plot of chunk pheno_all_pairs" alt="plot of chunk pheno_all_pairs" width="1080" style="display: block; margin: auto;" />
 
 The HOMA phenotypes have odd distributions.
 
