@@ -435,7 +435,7 @@ corrplot.mixed(tmp, upper = "ellipse", lower = "number",
 ~~~
 {: .language-r}
 
-<img src="../fig/rmd-02-unnamed-chunk-2-1.png" title="plot of chunk unnamed-chunk-2" alt="plot of chunk unnamed-chunk-2" width="864" style="display: block; margin: auto;" />
+<img src="../fig/rmd-02-unnamed-chunk-2-1.png" title="plot of chunk unnamed-chunk-2" alt="plot of chunk unnamed-chunk-2" width="1080" style="display: block; margin: auto;" />
 
 Males
 
@@ -452,6 +452,6 @@ corrplot.mixed(tmp, upper = "ellipse", lower = "number",
 ~~~
 {: .language-r}
 
-<img src="../fig/rmd-02-unnamed-chunk-3-1.png" title="plot of chunk unnamed-chunk-3" alt="plot of chunk unnamed-chunk-3" width="864" style="display: block; margin: auto;" />
+<img src="../fig/rmd-02-unnamed-chunk-3-1.png" title="plot of chunk unnamed-chunk-3" alt="plot of chunk unnamed-chunk-3" width="1080" style="display: block; margin: auto;" />
 
 ## Gene Expression Phenotypes

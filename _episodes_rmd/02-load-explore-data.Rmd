@@ -272,7 +272,7 @@ tmp = pheno_clin_log %>%
 
 Females
 
-```{r, fig.width=12, fig.height=12, message=FALSE, warning=FALSE}
+```{r, fig.width=15, fig.height=15, message=FALSE, warning=FALSE}
 tmp = pheno_clin_log %>% 
         filter(sex == "F") %>%
         select(num_islets:weight_10wk)
@@ -285,7 +285,7 @@ corrplot.mixed(tmp, upper = "ellipse", lower = "number",
 
 Males
 
-```{r, fig.width=12, fig.height=12, warning=FALSE, message=FALSE}
+```{r, fig.width=15, fig.height=15, warning=FALSE, message=FALSE}
 tmp = pheno_clin_log %>% 
         filter(sex == "M") %>%
         select(num_islets:weight_10wk)
