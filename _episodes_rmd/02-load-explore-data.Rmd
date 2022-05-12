@@ -272,7 +272,7 @@ tmp = pheno_clin_log %>%
 
 Females
 
-```{r, fig.width=15, fig.height=15, message=FALSE, warning=FALSE}
+```{r female_corr_plot, fig.width=15, fig.height=15, message=FALSE, warning=FALSE}
 tmp = pheno_clin_log %>% 
         filter(sex == "F") %>%
         select(num_islets:weight_10wk)
@@ -285,7 +285,7 @@ corrplot.mixed(tmp, upper = "ellipse", lower = "number",
 
 Males
 
-```{r, fig.width=15, fig.height=15, warning=FALSE, message=FALSE}
+```{r male_corr_plot, fig.width=15, fig.height=15, warning=FALSE, message=FALSE}
 tmp = pheno_clin_log %>% 
         filter(sex == "M") %>%
         select(num_islets:weight_10wk)
@@ -295,5 +295,10 @@ corrplot.mixed(tmp, upper = "ellipse", lower = "number",
 corrplot.mixed(tmp, upper = "ellipse", lower = "number", 
                main = "Male Clinical Phenotype Correlation")
 ```
-
+```{r pheno_female_corrplot, warning=FALSE, out.width= "100%"}
+knitr::include_graphics("../fig/rmd-02-female_corr_plot-1.png")
+```
+```{r pheno_male_corrplot, warning=FALSE, out.width= "100%"}
+knitr::include_graphics("../fig/rmd-02-male_corr_plot-1.png")
+```
 ## Gene Expression Phenotypes

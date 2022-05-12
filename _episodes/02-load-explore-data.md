@@ -435,7 +435,7 @@ corrplot.mixed(tmp, upper = "ellipse", lower = "number",
 ~~~
 {: .language-r}
 
-<img src="../fig/rmd-02-unnamed-chunk-2-1.png" title="plot of chunk unnamed-chunk-2" alt="plot of chunk unnamed-chunk-2" width="1080" style="display: block; margin: auto;" />
+<img src="../fig/rmd-02-female_corr_plot-1.png" title="plot of chunk female_corr_plot" alt="plot of chunk female_corr_plot" width="1080" style="display: block; margin: auto;" />
 
 Males
 
@@ -452,6 +452,19 @@ corrplot.mixed(tmp, upper = "ellipse", lower = "number",
 ~~~
 {: .language-r}
 
-<img src="../fig/rmd-02-unnamed-chunk-3-1.png" title="plot of chunk unnamed-chunk-3" alt="plot of chunk unnamed-chunk-3" width="1080" style="display: block; margin: auto;" />
+<img src="../fig/rmd-02-male_corr_plot-1.png" title="plot of chunk male_corr_plot" alt="plot of chunk male_corr_plot" width="1080" style="display: block; margin: auto;" />
 
+~~~
+knitr::include_graphics("../fig/rmd-02-female_corr_plot-1.png")
+~~~
+{: .language-r}
+
+<img src="../fig/rmd-02-female_corr_plot-1.png" title="plot of chunk pheno_female_corrplot" alt="plot of chunk pheno_female_corrplot" width="100%" style="display: block; margin: auto;" />
+
+~~~
+knitr::include_graphics("../fig/rmd-02-male_corr_plot-1.png")
+~~~
+{: .language-r}
+
+<img src="../fig/rmd-02-male_corr_plot-1.png" title="plot of chunk pheno_male_corrplot" alt="plot of chunk pheno_male_corrplot" width="100%" style="display: block; margin: auto;" />
 ## Gene Expression Phenotypes
