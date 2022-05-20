@@ -26,7 +26,7 @@ library(tidyverse)
 
 
 ~~~
-── Attaching packages ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── tidyverse 1.3.1 ──
+── Attaching packages ─────────── tidyverse 1.3.1 ──
 ~~~
 {: .output}
 
@@ -43,7 +43,7 @@ library(tidyverse)
 
 
 ~~~
-── Conflicts ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+── Conflicts ────────────── tidyverse_conflicts() ──
 ✖ dplyr::filter() masks stats::filter()
 ✖ dplyr::lag()    masks stats::lag()
 ~~~
@@ -118,15 +118,13 @@ library(RColorBrewer)
 
 
 ~~~
-setwd("/Users/corneb/Documents/MyJax/CS/Projects/McClatchy/github/whoatemycookie/2022.04.21/gene-expression-qtl/data/")
-
 ##phenotypes
-load("attie_DO500_clinical.phenotypes.RData")
+load("../data/attie_DO500_clinical.phenotypes.RData")
 
 ##mapping data
-load("attie_DO500_mapping.data.RData")
+load("../data/attie_DO500_mapping.data.RData")
 
-genoprobs <- readRDS("attie_DO500_genoprobs_qtlviewer_8state_69k.rds")
+probs <- readRDS("../data/attie_DO500_genoprobs_qtlviewer_8state_69k.rds")
 ~~~
 {: .language-r}
 
@@ -175,12 +173,6 @@ The marker map for each chromosome is stored in the `map` object. This is used t
 ### Genotype probabilities  
 
 We have already claculated genotype probabilities which we load above
-
-
-~~~
-probs = genoprobs
-~~~
-{: .language-r}
 
 
 ~~~

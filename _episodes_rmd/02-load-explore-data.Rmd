@@ -1,4 +1,4 @@
-ls---
+---
 title: "Load and explore the data"
 teaching: 15
 exercises: 30
