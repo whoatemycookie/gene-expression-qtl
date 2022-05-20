@@ -133,10 +133,11 @@ covar = model.matrix(~sex + DOwave, data = pheno_clin)
 
 Now lets perform the genome scan!
 
-```{r QTL, warning=FALSE, error=FALSE}
-
-qtl = scan1(genoprobs = probs, pheno = pheno_clin[,"weight_6wk_log", drop = FALSE], kinship = K, addcovar = covar, cores = 2)
-
+```{r QTL}
+qtl <- scan1(genoprobs = probs, 
+             pheno =  pheno_clin[,"weight_6wk_log", drop = FALSE],
+             kinship = K, 
+             addcovar = covar)
 ```
 
 Lets plot it
@@ -144,8 +145,9 @@ Lets plot it
 
 ```{r qtl_plot, fig.width=8, fig.height=6, warning=FALSE}
 
-plot_scan1(x = qtl, map = map, lodcolumn = "weight_6wk_log", main = colnames(qtl))
-  abline(h = 6, col = 2, lwd = 2)
+plot_scan1(x = qtl, map = map, 
+           lodcolumn = "weight_6wk_log", main = colnames(qtl))
+abline(h = 6, col = 2, lwd = 2)
 
 
 ```

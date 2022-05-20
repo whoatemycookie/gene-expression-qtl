@@ -26,7 +26,7 @@ library(tidyverse)
 
 
 ~~~
-── Attaching packages ─────────── tidyverse 1.3.1 ──
+── Attaching packages ─────────────────────────── tidyverse 1.3.1 ──
 ~~~
 {: .output}
 
@@ -43,7 +43,7 @@ library(tidyverse)
 
 
 ~~~
-── Conflicts ────────────── tidyverse_conflicts() ──
+── Conflicts ────────────────────────────── tidyverse_conflicts() ──
 ✖ dplyr::filter() masks stats::filter()
 ✖ dplyr::lag()    masks stats::lag()
 ~~~
@@ -229,7 +229,10 @@ Now lets perform the genome scan!
 
 
 ~~~
-qtl = scan1(genoprobs = probs, pheno = pheno_clin[,"weight_6wk_log", drop = FALSE], kinship = K, addcovar = covar, cores = 2)
+qtl <- scan1(genoprobs = probs, 
+             pheno =  pheno_clin[,"weight_6wk_log", drop = FALSE],
+             kinship = K, 
+             addcovar = covar)
 ~~~
 {: .language-r}
 
@@ -238,8 +241,9 @@ Lets plot it
 
 
 ~~~
-plot_scan1(x = qtl, map = map, lodcolumn = "weight_6wk_log", main = colnames(qtl))
-  abline(h = 6, col = 2, lwd = 2)
+plot_scan1(x = qtl, map = map, 
+           lodcolumn = "weight_6wk_log", main = colnames(qtl))
+abline(h = 6, col = 2, lwd = 2)
 ~~~
 {: .language-r}
 
