@@ -1,4 +1,4 @@
----
+ls---
 title: "Load and explore the data"
 teaching: 15
 exercises: 30
@@ -23,6 +23,8 @@ library(knitr)
 library(GGally)
 library(corrplot)
 library(broom)
+library(qtl2)
+library(qtl2convert)
 # the following analysis is from File S1 Attie_eQTL_paper_physiology.Rmd 
 # compliments of Daniel Gatti. See Data Dryad entry for more information.
 ```
@@ -301,4 +303,98 @@ knitr::include_graphics("../fig/rmd-02-female_corr_plot-1.png")
 ```{r pheno_male_corrplot, warning=FALSE, out.width= "100%"}
 knitr::include_graphics("../fig/rmd-02-male_corr_plot-1.png")
 ```
+### Founder Allele Frequency
+
+Load in the genoprobs and markers.
+
+```{r load_genoprobs}
+genoprobs = readRDS("../data/genotypes/attie_DO500_genoprobs_v5.rds")
+markers = readRDS("../data/marker_grid_0.02cM_plus.rds")
+K = calc_kinship(probs = genoprobs, type = "loco", cores = 4)
+saveRDS(K, file = "../data/kinship")
+map = map_df_to_list(map = markers, pos_column = "pos")
+```
+
+```{r founder_allele_freq,fig.height=10,fig.width=12}
+map_fxn = function(g, m) {
+  retval = apply(g, 2:3, mean) %>%
+             t() %>%
+             data.frame() %>%
+             mutate(pos = m) %>%
+             gather(founder, prop, -pos)
+  return(retval)
+}
+allele.freq = map2(genoprobs, map, map_fxn)
+allele.freq = map2(allele.freq, 1:length(allele.freq), function(af, chr) { mutate(af, chr = chr) })
+tmp = allele.freq[[1]]
+for(i in 2:length(allele.freq)) {
+  tmp = rbind(tmp, allele.freq[[i]])
+}
+allele.freq = data.frame(tmp)
+rm(tmp)
+
+cc = CCcolors
+names(cc) = LETTERS[1:8]
+ggplot(allele.freq, aes(pos, prop, color = founder)) +
+  geom_line() +
+  scale_color_manual(values = cc) +
+  facet_grid(founder~chr, scales = "free") +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1),
+        panel.spacing = unit(0.1, "lines")) +
+  labs(title = "Attie Founder Allele Proportions")
+```
+
+
+### QTL Scans
+
+```{r qtl_scans}
+rownames(pheno_clin_log) = pheno_clin_log$mouse
+covar = model.matrix(~sex + DOwave, data = pheno_clin_log)
+
+qtl = scan1(genoprobs = genoprobs, pheno = pheno_clin_log[,12:31, drop = FALSE], kinship = K, addcovar = covar, cores = 2)
+```
+
+### QTL plots
+
+```{r qtl_plots}
+for(i in 1:ncol(qtl)) {
+  plot_scan1(x = qtl, map = map, lodcolumn = i, main = colnames(qtl)[i])
+  abline(h = 6, col = 2, lwd = 2)
+}
+```
+
+### QTL Peaks
+
+```{r qtl_peaks}
+lod_threshold = 6
+peaks = find_peaks(scan1_output = qtl, map = map, threshold = lod_threshold, peakdrop = 4, prob = 0.95)
+kable(peaks %>% select (-lodindex) %>% arrange(chr, pos), caption = "Phenotype QTL Peaks with LOD >= 6")
+write_csv(peaks, file = "../data/pheno_clin_QTL_peaks.csv")
+```
+
+### QTL Peaks Figure
+
+```{r qtl_peaks_figure,warning=FALSE,messgae=FALSE}
+peaks = peaks %>%
+          arrange(lodcolumn)
+pdf("../fig/phenotype_qtl.pdf", width = 10, height = 8)
+plot_peaks(peaks, map, col = c("blue","red"), lwd = 3, tick.height = 0.8, gap = 0, main = "LOD > 6")
+box()
+dev.off()
+plot_peaks(peaks, map, col = c("blue","red"), lwd = 3, tick_height = 0.8, gap = 0, main = "LOD > 6")
+box()
+#ggplot_peaks(peaks, map, col = c("blue","red"), legend.title = "LOD > 6")
+```
+
+```{r qtl_heatmap,warning=FALSE,message=FALSE,fig.height=8,fig.width=12}
+#pdf("../fig/pheno_qtl_heatmap.pdf", width = 12, height = 8)
+#qtl_heatmap(qtl = qtl, map = map, low.thr = 3.5)
+#dev.off()
+#qtl_heatmap(qtl = qtl, map = map, low.thr = 3.5)
+```
+
+
 ## Gene Expression Phenotypes
+
+### summarized data, matrices w/sample annotation, exp data, gene annotation, 
+### like bioconductor summarized experiment etc = whole set of rectangles
