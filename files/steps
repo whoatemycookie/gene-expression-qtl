@@ -10,8 +10,8 @@ Result Interpretation (Sue Example) - now do some of this yourself
 2. introduce Attie data and describe Attie experiment, hypothesis, study design & key results
 3. explore data - summarized data, matrices w/sample annotation, exp data, gene annotation, like bioconductor summarized experiment etc = whole set of rectangles
 4. look at distribution of data and transformation to rankZ
-5. review mapping steps w/ one simple pheno - choose wisely to get a nice peak
-6. map 1 gene expression trait
+5. review mapping steps w/ one simple pheno - choose wisely to get a nice peak; insulin AUC, chr 11, Hnf1b
+6. map 1 gene expression trait - Hnf1b
 7. map enough genes so that you can look at a table (50-100?)
 8. need some other kind of summary - transcriptome map
 9. max qtl on x-axis, gene pos on y

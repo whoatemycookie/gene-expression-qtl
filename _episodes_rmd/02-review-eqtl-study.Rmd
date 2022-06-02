@@ -24,8 +24,11 @@ library(qtl2)
 Most of the more than 100 genetic loci associated with type II diabetes affect 
 the function of pancreatic islets, which produce insulin for regulating blood
 glucose levels. Susceptibility to type II diabetes (T2D) increases with obesity, 
-such that T2D-associated genetic loci operate primarily under conditions of 
-obesity. (See [Keller, Mark P et al. “Genetic Drivers of Pancreatic Islet Function.” Genetics vol. 209,1 (2018): 335-356](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5937189/).) 
+such that T2D-associated genetic loci operate mainly under conditions of 
+obesity (See [Keller, Mark P et al. “Genetic Drivers of Pancreatic Islet Function.” Genetics vol. 209,1 (2018): 335-356](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5937189/)). The 
+T2D-associated genetic loci identified from genome-wide association studies 
+(GWAS) have very small effect sizes and odds ratios only slightly greater than
+1.  
 
 
 ![LOD plot for insulin area under the curve](../fig/insulin-auc-lod-plot.pdf)  
