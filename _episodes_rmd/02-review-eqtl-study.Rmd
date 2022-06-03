@@ -31,5 +31,5 @@ T2D-associated genetic loci identified from genome-wide association studies
 1.  
 
 
-![LOD plot for insulin area under the curve](../fig/insulin-auc-lod-plot.pdf)  
+![LOD plot for insulin area under the curve](../fig/insulin-auc-lod-plot.png)  
 
