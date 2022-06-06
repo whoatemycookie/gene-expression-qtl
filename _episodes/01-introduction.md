@@ -59,5 +59,19 @@ Outbred mice on either a regular chow or high-fat high-sugar diet. Islet mRNA
 abundance was quantified and analyzed, and the study identified more than 18,000 
 eQTL.
 
+> ## What are eQTL?
+>
+> With a partner, discuss  
+> 1. your understanding of eQTL.
+> 2. how mutations result in eQTL and ultimately in disease phenotypes.
+> 3. the methods that can be used for eQTL analysis.
+>
+> > ## Solution
+> >
+> > 
+> >
+> {: .solution}
+{: .challenge}
+
 {% include links.md %}
 
