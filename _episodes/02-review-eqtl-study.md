@@ -32,15 +32,16 @@ slightly more than 1.
 
 In this study, Diversity Outbred (DO) mice were fed a high-fat, high-sugar diet 
 as a stressor, sensitizing the mice to develop diabetic traits. Body weight and 
-plasma glucose, insulin, and triglyceride measurements were taken biweekly. A 
-glucose tolerance test at 18 weeks of age provided measurement of dynamic 
-glucose and insulin changes at 5, 15, 30, 60 and 120 minutes after glucose
-administration. Area under the curve (AUC) was determined from these time points
-for both plasma glucose and insulin levels. Homeostatic model assessment (HOMA) 
-of insulin resistance (IR) and pancreatic islet function (B) were determined 
-after the glucose tolerance test was given. Islet cells were isolated from 
-pancreas, and RNA extracted and libraries constructed from isolated RNA for gene
-expression measurements.
+plasma glucose, insulin, and triglyceride measurements were taken biweekly. 
+Food intake could be measured since animals were individually housed. A glucose 
+tolerance test at 18 weeks of age provided measurement of dynamic glucose and 
+insulin changes at 5, 15, 30, 60 and 120 minutes after glucose administration. 
+Area under the curve (AUC) was determined from these time points for both plasma 
+glucose and insulin levels. Homeostatic model assessment (HOMA) of insulin 
+resistance (IR) and pancreatic islet function (B) were determined after the 
+glucose tolerance test was given. Islet cells were isolated from pancreas, and 
+RNA extracted and libraries constructed from isolated RNA for gene expression 
+measurements.
 
 Genome scans were performed with the leave-one-chromosome-out (LOCO) method for
 kinship correction. Sex and experimental cohort (DO wave) were used as 
