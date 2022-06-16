@@ -25,6 +25,7 @@ library(corrplot)
 library(broom)
 library(qtl2)
 library(qtl2convert)
+library(qtl2ggplot)
 # the following analysis is from File S1 Attie_eQTL_paper_physiology.Rmd 
 # compliments of Daniel Gatti. See Data Dryad entry for more information.
 ~~~
@@ -605,25 +606,7 @@ write_csv(peaks, file = "../data/pheno_clin_QTL_peaks.csv")
 ~~~
 peaks = peaks %>%
           arrange(lodcolumn)
-pdf("../fig/phenotype_qtl.pdf", width = 10, height = 8)
 plot_peaks(peaks, map, col = c("blue","red"), lwd = 3, tick.height = 0.8, gap = 0, main = "LOD > 6")
-box()
-dev.off()
-~~~
-{: .language-r}
-
-
-
-~~~
-quartz_off_screen 
-                2 
-~~~
-{: .output}
-
-
-
-~~~
-plot_peaks(peaks, map, col = c("blue","red"), lwd = 3, tick_height = 0.8, gap = 0, main = "LOD > 6")
 box()
 ~~~
 {: .language-r}
@@ -631,18 +614,33 @@ box()
 <img src="../fig/rmd-03-qtl_peaks_figure-1.png" title="plot of chunk qtl_peaks_figure" alt="plot of chunk qtl_peaks_figure" width="612" style="display: block; margin: auto;" />
 
 ~~~
-#ggplot_peaks(peaks, map, col = c("blue","red"), legend.title = "LOD > 6")
+plot_peaks(peaks, map, col = c("blue","red"), lwd = 3, tick_height = 0.8, gap = 0, main = "LOD > 6")
+box()
+~~~
+{: .language-r}
+
+<img src="../fig/rmd-03-qtl_peaks_figure-2.png" title="plot of chunk qtl_peaks_figure" alt="plot of chunk qtl_peaks_figure" width="612" style="display: block; margin: auto;" />
+
+~~~
+ggplot_peaks(peaks, map, col = c("blue","red"), legend.title = "LOD > 6")
+~~~
+{: .language-r}
+
+<img src="../fig/rmd-03-qtl_peaks_figure-3.png" title="plot of chunk qtl_peaks_figure" alt="plot of chunk qtl_peaks_figure" width="612" style="display: block; margin: auto;" />
+
+
+~~~
+source("../code/qtl_heatmap.R")
+qtl_heatmap(qtl = qtl, map = map, low.thr = 3.5)
 ~~~
 {: .language-r}
 
 
+
 ~~~
-#pdf("../fig/pheno_qtl_heatmap.pdf", width = 12, height = 8)
-#qtl_heatmap(qtl = qtl, map = map, low.thr = 3.5)
-#dev.off()
-#qtl_heatmap(qtl = qtl, map = map, low.thr = 3.5)
+Error in brewer.pal(9, "YlOrBr"): could not find function "brewer.pal"
 ~~~
-{: .language-r}
+{: .error}
 
 
 ## Gene Expression Phenotypes
