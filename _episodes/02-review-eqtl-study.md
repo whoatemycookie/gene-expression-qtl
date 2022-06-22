@@ -5,9 +5,11 @@ title: "Genetic Drivers of Pancreatic Islet Function"
 teaching: 15
 exercises: 15
 questions:
-- "How I can learn more from a eQTL study?"
+- "How I can learn more from an example eQTL study?"
+- "What is the hypothesis of an example eQTL study?"
 objectives:
-- .
+- Describe an example eQTL study in Diversity Outbred mice.
+- State the hypothesis from an example eQTL study in Diversity Outbred mice.
 keypoints:
 - "."
 - "."

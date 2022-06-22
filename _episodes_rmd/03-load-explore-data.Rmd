@@ -26,6 +26,7 @@ library(broom)
 library(qtl2)
 library(qtl2convert)
 library(qtl2ggplot)
+library(RColorBrewer)
 # the following analysis is from File S1 Attie_eQTL_paper_physiology.Rmd 
 # compliments of Daniel Gatti. See Data Dryad entry for more information.
 ```
@@ -298,12 +299,9 @@ corrplot.mixed(tmp, upper = "ellipse", lower = "number",
 corrplot.mixed(tmp, upper = "ellipse", lower = "number", 
                main = "Male Clinical Phenotype Correlation")
 ```
-```{r pheno_female_corrplot, warning=FALSE, out.width= "100%"}
-knitr::include_graphics("../fig/rmd-02-female_corr_plot-1.png")
-```
-```{r pheno_male_corrplot, warning=FALSE, out.width= "100%"}
-knitr::include_graphics("../fig/rmd-02-male_corr_plot-1.png")
-```
+![phenotype correlations for females](../fig/rmd-03-female_corr_plot-1.png)
+![phenotype correlations for males](../fig/rmd-03-male_corr_plot-1.png)
+
 ### Founder Allele Frequency
 
 Load in the genoprobs and markers.
@@ -376,7 +374,7 @@ write_csv(peaks, file = "../data/pheno_clin_QTL_peaks.csv")
 
 ### QTL Peaks Figure
 
-```{r qtl_peaks_figure,warning=FALSE,messgae=FALSE}
+```{r qtl_peaks_figure,warning=FALSE,message=FALSE}
 peaks = peaks %>%
           arrange(lodcolumn)
 plot_peaks(peaks, map, col = c("blue","red"), lwd = 3, tick.height = 0.8, gap = 0, main = "LOD > 6")
@@ -396,3 +394,10 @@ qtl_heatmap(qtl = qtl, map = map, low.thr = 3.5)
 
 ### summarized data, matrices w/sample annotation, exp data, gene annotation, 
 ### like bioconductor summarized experiment etc = whole set of rectangles
+
+```{r expression_data}
+dataset.islet.rnaseq$annots %>% 
+  select(gene_id, symbol, chr) %>% 
+  filter(chr=="11") %>%
+  left_join(dataset.islet.rnaseq$lod.peaks, by = c("gene_id" = "annot.id"))
+```

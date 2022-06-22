@@ -41,7 +41,7 @@ load("../data/attie_DO500_clinical.phenotypes.RData")
 ##mapping data
 load("../data/attie_DO500_mapping.data.RData")
 
-probs <- readRDS("../data/attie_DO500_genoprobs_qtlviewer_8state_69k.rds")
+genoprobs <- readRDS("../data/attie_DO500_genoprobs_qtlviewer_8state_69k.rds")
 
 ```
 
@@ -55,7 +55,7 @@ Lets check the distribution
 
 ```{r hist_untransformed}
 
-hist(pheno_clin$weight_6wk, main = "Proportion of weight at 6 weeks")
+hist(pheno_clin$Ins_tAUC, main = "insulin tAUC")
 
 ```
 
@@ -63,7 +63,7 @@ Apply the `log()` function to this data.
 
 ```{r log_transform}
 
-pheno_clin$weight_6wk_log <- log(pheno_clin$weight_6wk)
+pheno_clin$Ins_tAUC_log <- log(pheno_clin$Ins_tAUC)
 
 ```
 
@@ -71,7 +71,7 @@ Now, lets make a histogram of the log-transformed data.
 
 ```{r hist_log_transform}
 
-hist(pheno_clin$weight_6wk_log, main = "Proportion of weight at 6 weeks (log-transformed)")
+hist(pheno_clin$Ins_tAUC_log, main = "insulin tAUC (log-transformed)")
 
 ```
 
@@ -90,6 +90,13 @@ map=map
 ### Genotype probabilities  
 
 We have already claculated genotype probabilities which we load above
+
+```{r DOex_calc_genoprob}
+
+
+probs = genoprobs
+
+```
 
 ```{r dim_probs}
 
@@ -133,11 +140,10 @@ covar = model.matrix(~sex + DOwave, data = pheno_clin)
 
 Now lets perform the genome scan!
 
-```{r QTL}
-qtl <- scan1(genoprobs = probs, 
-             pheno =  pheno_clin[,"weight_6wk_log", drop = FALSE],
-             kinship = K, 
-             addcovar = covar)
+```{r QTL, warning=FALSE, error=FALSE}
+
+qtl = scan1(genoprobs = probs, pheno = pheno_clin[,"Ins_tAUC_log", drop = FALSE], kinship = K, addcovar = covar, cores = 2)
+
 ```
 
 Lets plot it
@@ -145,10 +151,10 @@ Lets plot it
 
 ```{r qtl_plot, fig.width=8, fig.height=6, warning=FALSE}
 
-plot_scan1(x = qtl, map = map, 
-           lodcolumn = "weight_6wk_log", main = colnames(qtl))
-abline(h = 6, col = 2, lwd = 2)
-
+#pdf("qtl_mapping_insulin.tauc.pdf", width=11, height=8)
+plot_scan1(x = qtl, map = map, lodcolumn = "Ins_tAUC_log")
+  abline(h = 6, col = 2, lwd = 2)
+#dev.off()
 
 ```
 

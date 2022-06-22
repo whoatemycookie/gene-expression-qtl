@@ -26,6 +26,7 @@ library(broom)
 library(qtl2)
 library(qtl2convert)
 library(qtl2ggplot)
+library(RColorBrewer)
 # the following analysis is from File S1 Attie_eQTL_paper_physiology.Rmd 
 # compliments of Daniel Gatti. See Data Dryad entry for more information.
 ~~~
@@ -456,20 +457,9 @@ corrplot.mixed(tmp, upper = "ellipse", lower = "number",
 {: .language-r}
 
 <img src="../fig/rmd-03-male_corr_plot-1.png" title="plot of chunk male_corr_plot" alt="plot of chunk male_corr_plot" width="1080" style="display: block; margin: auto;" />
+![phenotype correlations for females](../fig/rmd-03-female_corr_plot-1.png)
+![phenotype correlations for males](../fig/rmd-03-male_corr_plot-1.png)
 
-~~~
-knitr::include_graphics("../fig/rmd-02-female_corr_plot-1.png")
-~~~
-{: .language-r}
-
-<img src="../fig/rmd-02-female_corr_plot-1.png" title="plot of chunk pheno_female_corrplot" alt="plot of chunk pheno_female_corrplot" width="100%" style="display: block; margin: auto;" />
-
-~~~
-knitr::include_graphics("../fig/rmd-02-male_corr_plot-1.png")
-~~~
-{: .language-r}
-
-<img src="../fig/rmd-02-male_corr_plot-1.png" title="plot of chunk pheno_male_corrplot" alt="plot of chunk pheno_male_corrplot" width="100%" style="display: block; margin: auto;" />
 ### Founder Allele Frequency
 
 Load in the genoprobs and markers.
@@ -533,6 +523,7 @@ qtl = scan1(genoprobs = genoprobs, pheno = pheno_clin_log[,12:31, drop = FALSE],
 
 
 ~~~
+par(mfrow=c(2,10))
 for(i in 1:ncol(qtl)) {
   plot_scan1(x = qtl, map = map, lodcolumn = i, main = colnames(qtl)[i])
   abline(h = 6, col = 2, lwd = 2)
@@ -540,7 +531,7 @@ for(i in 1:ncol(qtl)) {
 ~~~
 {: .language-r}
 
-<img src="../fig/rmd-03-qtl_plots-1.png" title="plot of chunk qtl_plots" alt="plot of chunk qtl_plots" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-03-qtl_plots-2.png" title="plot of chunk qtl_plots" alt="plot of chunk qtl_plots" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-03-qtl_plots-3.png" title="plot of chunk qtl_plots" alt="plot of chunk qtl_plots" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-03-qtl_plots-4.png" title="plot of chunk qtl_plots" alt="plot of chunk qtl_plots" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-03-qtl_plots-5.png" title="plot of chunk qtl_plots" alt="plot of chunk qtl_plots" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-03-qtl_plots-6.png" title="plot of chunk qtl_plots" alt="plot of chunk qtl_plots" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-03-qtl_plots-7.png" title="plot of chunk qtl_plots" alt="plot of chunk qtl_plots" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-03-qtl_plots-8.png" title="plot of chunk qtl_plots" alt="plot of chunk qtl_plots" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-03-qtl_plots-9.png" title="plot of chunk qtl_plots" alt="plot of chunk qtl_plots" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-03-qtl_plots-10.png" title="plot of chunk qtl_plots" alt="plot of chunk qtl_plots" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-03-qtl_plots-11.png" title="plot of chunk qtl_plots" alt="plot of chunk qtl_plots" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-03-qtl_plots-12.png" title="plot of chunk qtl_plots" alt="plot of chunk qtl_plots" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-03-qtl_plots-13.png" title="plot of chunk qtl_plots" alt="plot of chunk qtl_plots" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-03-qtl_plots-14.png" title="plot of chunk qtl_plots" alt="plot of chunk qtl_plots" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-03-qtl_plots-15.png" title="plot of chunk qtl_plots" alt="plot of chunk qtl_plots" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-03-qtl_plots-16.png" title="plot of chunk qtl_plots" alt="plot of chunk qtl_plots" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-03-qtl_plots-17.png" title="plot of chunk qtl_plots" alt="plot of chunk qtl_plots" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-03-qtl_plots-18.png" title="plot of chunk qtl_plots" alt="plot of chunk qtl_plots" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-03-qtl_plots-19.png" title="plot of chunk qtl_plots" alt="plot of chunk qtl_plots" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-03-qtl_plots-20.png" title="plot of chunk qtl_plots" alt="plot of chunk qtl_plots" width="612" style="display: block; margin: auto;" />
+<img src="../fig/rmd-03-qtl_plots-1.png" title="plot of chunk qtl_plots" alt="plot of chunk qtl_plots" width="612" style="display: block; margin: auto;" />
 
 ### QTL Peaks
 
@@ -635,15 +626,26 @@ qtl_heatmap(qtl = qtl, map = map, low.thr = 3.5)
 ~~~
 {: .language-r}
 
-
-
-~~~
-Error in brewer.pal(9, "YlOrBr"): could not find function "brewer.pal"
-~~~
-{: .error}
+<img src="../fig/rmd-03-qtl_heatmap-1.png" title="plot of chunk qtl_heatmap" alt="plot of chunk qtl_heatmap" width="864" style="display: block; margin: auto;" />
 
 
 ## Gene Expression Phenotypes
 
 ### summarized data, matrices w/sample annotation, exp data, gene annotation, 
 ### like bioconductor summarized experiment etc = whole set of rectangles
+
+
+~~~
+dataset.islet.rnaseq$annots %>% 
+  select(gene_id, symbol, chr) %>% 
+  filter(chr=="11") %>%
+  left_join(dataset.islet.rnaseq$lod.peaks, by = c("gene_id" = "annot.id"))
+~~~
+{: .language-r}
+
+
+
+~~~
+Error in select(., gene_id, symbol, chr): object 'dataset.islet.rnaseq' not found
+~~~
+{: .error}
