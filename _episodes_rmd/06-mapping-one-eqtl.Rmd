@@ -77,7 +77,7 @@ map=map
 
 ### Genotype probabilities  
 
-We have already claculated genotype probabilities which we load above
+We have already calculated genotype probabilities which we load above
 
 ```{r DOex_calc_genoprob}
 
@@ -130,13 +130,13 @@ Now lets perform the genome scan!
 
 ```{r QTL, warning=FALSE, error=FALSE}
 
-qtl = scan1(genoprobs = genoprobs, pheno = counts[,"ENSMUSG00000020679", drop = FALSE], kinship = K, addcovar = covar, cores = 2)
+Hnf1b_qtl = scan1(genoprobs = genoprobs, pheno = counts[,"ENSMUSG00000020679", drop = FALSE], kinship = K, addcovar = covar, cores = 2)
 
 ```
 
 ```{r saveQTL, warning=FALSE, error=FALSE}
 # save out the file so that genoprobs don't have to be up on github
-saveRDS(qtl, file = "../data/Hnf1b_scan.rds")
+saveRDS(Hnf1b_qtl, file = "../data/Hnf1b_scan.rds")
 ```
 
 Lets plot it
@@ -144,9 +144,9 @@ Lets plot it
 
 ```{r qtl_plot, fig.width=8, fig.height=6, warning=FALSE}
 # read file back in again
-qtl <- readRDS(file = "../data/Hnf1b_scan.rds")
+Hnf1b_qtl <- readRDS(file = "../data/Hnf1b_scan.rds")
 
-plot_scan1(x = qtl, map = map, lodcolumn = "ENSMUSG00000020679", main = colnames(qtl))
+plot_scan1(x = Hnf1b_qtl, map = map, lodcolumn = "ENSMUSG00000020679", main = colnames(Hnf1b_qtl))
   abline(h = 6, col = 2, lwd = 2)
 
 
@@ -162,7 +162,7 @@ Lets find LOD peaks
 
 ```{r interval}
 lod_threshold = 6
-peaks = find_peaks(scan1_output = qtl, map = map, threshold = lod_threshold, peakdrop = 4, prob = 0.95)
+peaks = find_peaks(scan1_output = Hnf1b_qtl, map = map, threshold = lod_threshold, peakdrop = 4, prob = 0.95)
 kable(peaks %>% select (-lodindex) %>% arrange(chr, pos), caption = "Phenotype QTL Peaks with LOD >= 6")
 
 ```

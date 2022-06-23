@@ -26,7 +26,7 @@ library(tidyverse)
 
 
 ~~~
-── Attaching packages ──────────────────────────────────────────────────────────────── tidyverse 1.3.1 ──
+── Attaching packages ────────────────────────────────── tidyverse 1.3.1 ──
 ~~~
 {: .output}
 
@@ -43,7 +43,7 @@ library(tidyverse)
 
 
 ~~~
-── Conflicts ─────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+── Conflicts ───────────────────────────────────── tidyverse_conflicts() ──
 ✖ dplyr::filter() masks stats::filter()
 ✖ dplyr::lag()    masks stats::lag()
 ~~~
@@ -155,7 +155,7 @@ The marker map for each chromosome is stored in the `map` object. This is used t
 
 ### Genotype probabilities  
 
-We have already claculated genotype probabilities which we load above
+We have already calculated genotype probabilities which we load above
 
 
 ~~~
@@ -218,14 +218,14 @@ Now lets perform the genome scan!
 
 
 ~~~
-qtl = scan1(genoprobs = genoprobs, pheno = counts[,"ENSMUSG00000020679", drop = FALSE], kinship = K, addcovar = covar, cores = 2)
+Hnf1b_qtl = scan1(genoprobs = genoprobs, pheno = counts[,"ENSMUSG00000020679", drop = FALSE], kinship = K, addcovar = covar, cores = 2)
 ~~~
 {: .language-r}
 
 
 ~~~
 # save out the file so that genoprobs don't have to be up on github
-saveRDS(qtl, file = "../data/Hnf1b_scan.rds")
+saveRDS(Hnf1b_qtl, file = "../data/Hnf1b_scan.rds")
 ~~~
 {: .language-r}
 
@@ -235,9 +235,9 @@ Lets plot it
 
 ~~~
 # read file back in again
-qtl <- readRDS(file = "../data/Hnf1b_scan.rds")
+Hnf1b_qtl <- readRDS(file = "../data/Hnf1b_scan.rds")
 
-plot_scan1(x = qtl, map = map, lodcolumn = "ENSMUSG00000020679", main = colnames(qtl))
+plot_scan1(x = Hnf1b_qtl, map = map, lodcolumn = "ENSMUSG00000020679", main = colnames(Hnf1b_qtl))
   abline(h = 6, col = 2, lwd = 2)
 ~~~
 {: .language-r}
@@ -255,7 +255,7 @@ Lets find LOD peaks
 
 ~~~
 lod_threshold = 6
-peaks = find_peaks(scan1_output = qtl, map = map, threshold = lod_threshold, peakdrop = 4, prob = 0.95)
+peaks = find_peaks(scan1_output = Hnf1b_qtl, map = map, threshold = lod_threshold, peakdrop = 4, prob = 0.95)
 kable(peaks %>% select (-lodindex) %>% arrange(chr, pos), caption = "Phenotype QTL Peaks with LOD >= 6")
 ~~~
 {: .language-r}

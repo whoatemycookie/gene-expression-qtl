@@ -26,7 +26,7 @@ library(tidyverse)
 
 
 ~~~
-── Attaching packages ──────────────────────────────────────────────────────────────── tidyverse 1.3.1 ──
+── Attaching packages ────────────────────────────────── tidyverse 1.3.1 ──
 ~~~
 {: .output}
 
@@ -43,7 +43,7 @@ library(tidyverse)
 
 
 ~~~
-── Conflicts ─────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+── Conflicts ───────────────────────────────────── tidyverse_conflicts() ──
 ✖ dplyr::filter() masks stats::filter()
 ✖ dplyr::lag()    masks stats::lag()
 ~~~
@@ -235,14 +235,14 @@ Now lets perform the genome scan!
 
 
 ~~~
-qtl = scan1(genoprobs = probs, pheno = pheno_clin[,"Ins_tAUC_log", drop = FALSE], kinship = K, addcovar = covar, cores = 2)
+Ins_tAUC_qtl = scan1(genoprobs = probs, pheno = pheno_clin[,"Ins_tAUC_log", drop = FALSE], kinship = K, addcovar = covar, cores = 2)
 ~~~
 {: .language-r}
 
 
 ~~~
 # save out the file so that genoprobs don't have to be up on github
-saveRDS(qtl, file = "../data/ins_tAUC_log_scan.rds")
+saveRDS(Ins_tAUC_qtl, file = "../data/ins_tAUC_log_scan.rds")
 ~~~
 {: .language-r}
 
@@ -252,9 +252,9 @@ Lets plot it
 
 ~~~
 # read file back in again
-qtl <- readRDS(file = "../data/ins_tAUC_log_scan.rds")
+Ins_tAUC_qtl <- readRDS(file = "../data/ins_tAUC_log_scan.rds")
 #pdf("qtl_mapping_insulin.tauc.pdf", width=11, height=8)
-plot_scan1(x = qtl, map = map, lodcolumn = "Ins_tAUC_log")
+plot_scan1(x = Ins_tAUC_qtl, map = map, lodcolumn = "Ins_tAUC_log")
   abline(h = 6, col = 2, lwd = 2)
 ~~~
 {: .language-r}
@@ -277,7 +277,7 @@ Lets find LOD peaks
 
 ~~~
 lod_threshold = 6
-peaks = find_peaks(scan1_output = qtl, map = map, threshold = lod_threshold, peakdrop = 4, prob = 0.95)
+peaks = find_peaks(scan1_output = Ins_tAUC_qtl, map = map, threshold = lod_threshold, peakdrop = 4, prob = 0.95)
 kable(peaks %>% select (-lodindex) %>% arrange(chr, pos), caption = "Phenotype QTL Peaks with LOD >= 6")
 ~~~
 {: .language-r}
