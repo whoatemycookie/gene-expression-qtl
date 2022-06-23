@@ -134,10 +134,17 @@ qtl = scan1(genoprobs = genoprobs, pheno = counts[,"ENSMUSG00000020679", drop = 
 
 ```
 
+```{r saveQTL, warning=FALSE, error=FALSE}
+# save out the file so that genoprobs don't have to be up on github
+saveRDS(qtl, file = "../data/Hnf1b_scan.rds")
+```
+
 Lets plot it
 
 
 ```{r qtl_plot, fig.width=8, fig.height=6, warning=FALSE}
+# read file back in again
+qtl <- readRDS(file = "../data/Hnf1b_scan.rds")
 
 plot_scan1(x = qtl, map = map, lodcolumn = "ENSMUSG00000020679", main = colnames(qtl))
   abline(h = 6, col = 2, lwd = 2)

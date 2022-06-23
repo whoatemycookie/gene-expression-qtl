@@ -26,7 +26,7 @@ library(tidyverse)
 
 
 ~~~
-── Attaching packages ─────────────────────────────────────────────────────────────── tidyverse 1.3.1 ──
+── Attaching packages ──────────────────────────────────────────────────────────────── tidyverse 1.3.1 ──
 ~~~
 {: .output}
 
@@ -43,7 +43,7 @@ library(tidyverse)
 
 
 ~~~
-── Conflicts ────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+── Conflicts ─────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
 ✖ dplyr::filter() masks stats::filter()
 ✖ dplyr::lag()    masks stats::lag()
 ~~~
@@ -222,11 +222,21 @@ qtl = scan1(genoprobs = genoprobs, pheno = counts[,"ENSMUSG00000020679", drop = 
 ~~~
 {: .language-r}
 
+
+~~~
+# save out the file so that genoprobs don't have to be up on github
+saveRDS(qtl, file = "../data/Hnf1b_scan.rds")
+~~~
+{: .language-r}
+
 Lets plot it
 
 
 
 ~~~
+# read file back in again
+qtl <- readRDS(file = "../data/Hnf1b_scan.rds")
+
 plot_scan1(x = qtl, map = map, lodcolumn = "ENSMUSG00000020679", main = colnames(qtl))
   abline(h = 6, col = 2, lwd = 2)
 ~~~

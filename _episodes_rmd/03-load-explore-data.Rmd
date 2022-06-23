@@ -399,5 +399,5 @@ qtl_heatmap(qtl = qtl, map = map, low.thr = 3.5)
 dataset.islet.rnaseq$annots %>% 
   select(gene_id, symbol, chr) %>% 
   filter(chr=="11") %>%
-  left_join(dataset.islet.rnaseq$lod.peaks, by = c("gene_id" = "annot.id"))
+  left_join(dataset.islet.rnaseq$lod.peaks, by = c("chr" = "chrom", "gene_id" = "annot.id"))
 ```
