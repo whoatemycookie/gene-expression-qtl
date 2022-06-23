@@ -140,7 +140,7 @@ covar = model.matrix(~sex + DOwave, data = pheno_clin)
 
 Now lets perform the genome scan!
 
-```{r QTL, warning=FALSE, error=FALSE}
+```{r QTL, warning=FALSE, eval=FALSE}
 
 Ins_tAUC_qtl = scan1(genoprobs = probs, pheno = pheno_clin[,"Ins_tAUC_log", drop = FALSE], kinship = K, addcovar = covar, cores = 2)
 ```
