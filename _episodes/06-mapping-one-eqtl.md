@@ -26,7 +26,7 @@ library(tidyverse)
 
 
 ~~~
-── Attaching packages ─────────────────────────────────────────────────────── tidyverse 1.3.1 ──
+── Attaching packages ─────────────────────────────────────────── tidyverse 1.3.1 ──
 ~~~
 {: .output}
 
@@ -43,7 +43,7 @@ library(tidyverse)
 
 
 ~~~
-── Conflicts ────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+── Conflicts ────────────────────────────────────────────── tidyverse_conflicts() ──
 ✖ dplyr::filter() masks stats::filter()
 ✖ dplyr::lag()    masks stats::lag()
 ~~~
@@ -222,27 +222,35 @@ Hnf1b_qtl = scan1(genoprobs = genoprobs, pheno = counts[,"ENSMUSG00000020679", d
 ~~~
 {: .language-r}
 
-
-~~~
-# save out the file so that genoprobs don't have to be up on github
-saveRDS(Hnf1b_qtl, file = "../data/Hnf1b_scan.rds")
-~~~
-{: .language-r}
-
 Lets plot it
 
 
 
 ~~~
-# read file back in again
-Hnf1b_qtl <- readRDS(file = "../data/Hnf1b_scan.rds")
-
 plot_scan1(x = Hnf1b_qtl, map = map, lodcolumn = "ENSMUSG00000020679", main = colnames(Hnf1b_qtl))
+~~~
+{: .language-r}
+
+
+
+~~~
+Error in plot_scan1(x = Hnf1b_qtl, map = map, lodcolumn = "ENSMUSG00000020679", : object 'Hnf1b_qtl' not found
+~~~
+{: .error}
+
+
+
+~~~
   abline(h = 6, col = 2, lwd = 2)
 ~~~
 {: .language-r}
 
-<img src="../fig/rmd-06-qtl_plot-1.png" title="plot of chunk qtl_plot" alt="plot of chunk qtl_plot" width="576" style="display: block; margin: auto;" />
+
+
+~~~
+Error in int_abline(a = a, b = b, h = h, v = v, untf = untf, ...): plot.new has not been called yet
+~~~
+{: .error}
 
 ### [Performing a permutation test](https://smcclatchy.github.io/mapping/10-perform-perm-test/) 
 
@@ -256,19 +264,29 @@ Lets find LOD peaks
 ~~~
 lod_threshold = 6
 peaks = find_peaks(scan1_output = Hnf1b_qtl, map = map, threshold = lod_threshold, peakdrop = 4, prob = 0.95)
+~~~
+{: .language-r}
+
+
+
+~~~
+Error in align_scan1_map(scan1_output, map): object 'Hnf1b_qtl' not found
+~~~
+{: .error}
+
+
+
+~~~
 kable(peaks %>% select (-lodindex) %>% arrange(chr, pos), caption = "Phenotype QTL Peaks with LOD >= 6")
 ~~~
 {: .language-r}
 
 
 
-Table: Phenotype QTL Peaks with LOD >= 6
-
-|lodcolumn          |chr |       pos|       lod|     ci_lo|     ci_hi|
-|:------------------|:---|---------:|---------:|---------:|---------:|
-|ENSMUSG00000020679 |9   | 109.08150|  6.714179| 107.32742| 111.54793|
-|ENSMUSG00000020679 |11  |  84.40138| 20.773852|  83.59326|  84.68618|
-|ENSMUSG00000020679 |17  |  72.00172|  6.363912|  70.93501|  72.03042|
+~~~
+Error in select(., -lodindex): object 'peaks' not found
+~~~
+{: .error}
 
 Lets plot them:
 

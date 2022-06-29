@@ -26,7 +26,7 @@ library(tidyverse)
 
 
 ~~~
-── Attaching packages ─────────────────────────────────────────────────────── tidyverse 1.3.1 ──
+── Attaching packages ─────────────────────────────────────────── tidyverse 1.3.1 ──
 ~~~
 {: .output}
 
@@ -43,7 +43,7 @@ library(tidyverse)
 
 
 ~~~
-── Conflicts ────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+── Conflicts ────────────────────────────────────────────── tidyverse_conflicts() ──
 ✖ dplyr::filter() masks stats::filter()
 ✖ dplyr::lag()    masks stats::lag()
 ~~~
@@ -240,26 +240,38 @@ Ins_tAUC_qtl = scan1(genoprobs = probs, pheno = pheno_clin[,"Ins_tAUC_log", drop
 {: .language-r}
 
 
-~~~
-# save out the file so that genoprobs don't have to be up on github
-saveRDS(Ins_tAUC_qtl, file = "../data/ins_tAUC_log_scan.rds")
-~~~
-{: .language-r}
-
 Lets plot it
 
 
 
 ~~~
-# read file back in again
-Ins_tAUC_qtl <- readRDS(file = "../data/ins_tAUC_log_scan.rds")
 #pdf("qtl_mapping_insulin.tauc.pdf", width=11, height=8)
 plot_scan1(x = Ins_tAUC_qtl, map = map, lodcolumn = "Ins_tAUC_log")
+~~~
+{: .language-r}
+
+
+
+~~~
+Error in plot_scan1(x = Ins_tAUC_qtl, map = map, lodcolumn = "Ins_tAUC_log"): object 'Ins_tAUC_qtl' not found
+~~~
+{: .error}
+
+
+
+~~~
   abline(h = 6, col = 2, lwd = 2)
 ~~~
 {: .language-r}
 
-<img src="../fig/rmd-05-qtl_plot-1.png" title="plot of chunk qtl_plot" alt="plot of chunk qtl_plot" width="576" style="display: block; margin: auto;" />
+
+
+~~~
+Error in int_abline(a = a, b = b, h = h, v = v, untf = untf, ...): plot.new has not been called yet
+~~~
+{: .error}
+
+
 
 ~~~
 #dev.off()
@@ -278,17 +290,29 @@ Lets find LOD peaks
 ~~~
 lod_threshold = 6
 peaks = find_peaks(scan1_output = Ins_tAUC_qtl, map = map, threshold = lod_threshold, peakdrop = 4, prob = 0.95)
+~~~
+{: .language-r}
+
+
+
+~~~
+Error in align_scan1_map(scan1_output, map): object 'Ins_tAUC_qtl' not found
+~~~
+{: .error}
+
+
+
+~~~
 kable(peaks %>% select (-lodindex) %>% arrange(chr, pos), caption = "Phenotype QTL Peaks with LOD >= 6")
 ~~~
 {: .language-r}
 
 
 
-Table: Phenotype QTL Peaks with LOD >= 6
-
-|lodcolumn    |chr |      pos|      lod|    ci_lo|    ci_hi|
-|:------------|:---|--------:|--------:|--------:|--------:|
-|Ins_tAUC_log |11  | 83.59467| 11.25884| 83.58553| 84.95444|
+~~~
+Error in select(., -lodindex): object 'peaks' not found
+~~~
+{: .error}
 
 Lets plot them:
 

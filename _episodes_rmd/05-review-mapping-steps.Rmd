@@ -145,17 +145,11 @@ Now lets perform the genome scan!
 Ins_tAUC_qtl = scan1(genoprobs = probs, pheno = pheno_clin[,"Ins_tAUC_log", drop = FALSE], kinship = K, addcovar = covar, cores = 2)
 ```
 
-```{r saveQTL, warning=FALSE, error=FALSE}
-# save out the file so that genoprobs don't have to be up on github
-saveRDS(Ins_tAUC_qtl, file = "../data/ins_tAUC_log_scan.rds")
-```
 
 Lets plot it
 
 
 ```{r qtl_plot, fig.width=8, fig.height=6, warning=FALSE}
-# read file back in again
-Ins_tAUC_qtl <- readRDS(file = "../data/ins_tAUC_log_scan.rds")
 #pdf("qtl_mapping_insulin.tauc.pdf", width=11, height=8)
 plot_scan1(x = Ins_tAUC_qtl, map = map, lodcolumn = "Ins_tAUC_log")
   abline(h = 6, col = 2, lwd = 2)
