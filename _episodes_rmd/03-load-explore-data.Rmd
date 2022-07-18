@@ -395,9 +395,42 @@ qtl_heatmap(qtl = qtl, map = map, low.thr = 3.5)
 ### summarized data, matrices w/sample annotation, exp data, gene annotation, 
 ### like bioconductor summarized experiment etc = whole set of rectangles
 
-```{r expression_data}
-dataset.islet.rnaseq$annots %>% 
-  select(gene_id, symbol, chr) %>% 
-  filter(chr=="11") %>%
-  left_join(dataset.islet.rnaseq$lod.peaks, by = c("chr" = "chrom", "gene_id" = "annot.id"))
+```{r load_expression_data}
+# load the expression data along with annotations and metadata
+load("../data/dataset.islet.rnaseq.RData")
+
+# look at raw counts
+dataset.islet.rnaseq$raw[1:6,1:6]
+
+# look at gene annotations
+dataset.islet.rnaseq$annots[1:6,]
+
+# look at sample metadata
+# mouse sex, birth dates and DO waves
+table(dataset.islet.rnaseq$samples[, c("sex", "birthdate")])
+table(dataset.islet.rnaseq$samples[, c("sex", "DOwave")])
+
+# look at raw counts
+dataset.islet.rnaseq$raw[1:6,1:6]
+
+# look at normalized counts
+dataset.islet.rnaseq$expr[1:6,1:6]
+
+# look at LOD peaks
+dataset.islet.rnaseq$lod.peaks[1:6,]
+
+# look at a region of interest
+chr11_peaks <- dataset.islet.rnaseq$annots %>% 
+   select(gene_id, chr) %>% 
+   filter(chr=="11") %>%
+   left_join(dataset.islet.rnaseq$lod.peaks, 
+             by = c("chr" = "chrom", "gene_id" = "annot.id")) 
+chr11_peaks
+
+# sort chromosome 11 peaks by LOD score
+chr11_peaks %>% arrange(desc(lod))
+
+# range of LOD scores and positions
+range(chr11_peaks$lod, na.rm = TRUE)
+range(chr11_peaks$pos, na.rm = TRUE)
 ```
