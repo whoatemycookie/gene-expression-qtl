@@ -3,7 +3,7 @@ title: "Mapping Many Gene Expression Traits"
 teaching: 30
 exercises: 30
 questions:
-- "??????"
+- "How do I map many genes?"
 objectives:
 - "????"
 keypoints:
