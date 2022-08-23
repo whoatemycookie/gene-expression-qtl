@@ -425,10 +425,18 @@ chr11_peaks <- dataset.islet.rnaseq$annots %>%
    filter(chr=="11") %>%
    left_join(dataset.islet.rnaseq$lod.peaks, 
              by = c("chr" = "chrom", "gene_id" = "annot.id")) 
-chr11_peaks
+
+# look at the first several rows of chromosome 11 peaks
+head(chr11_peaks)
+
+# how many rows?
+dim(chr11_peaks)
+
+# how many rows have LOD scores?
+chr11_peaks %>% filter(!is.na(lod)) %>% dim()
 
 # sort chromosome 11 peaks by LOD score
-chr11_peaks %>% arrange(desc(lod))
+chr11_peaks %>% arrange(desc(lod)) %>% head()
 
 # range of LOD scores and positions
 range(chr11_peaks$lod, na.rm = TRUE)

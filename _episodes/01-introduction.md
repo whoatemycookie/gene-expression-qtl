@@ -27,22 +27,23 @@ phenotype is relatively simple and well understood. The most common human
 disorders, however, involve many genes interacting with the environment and with 
 one another, a far more complicated path to follow than the path from a single 
 gene mutation to its resulting protein to a disease phenotype. Cardiovascular 
-disease, Alzheimer's disease, arthritis, diabetes and cancer involve many a 
+disease, Alzheimer's disease, arthritis, diabetes and cancer involve a 
 complex interplay of genes with environment, and their mechanisms are not well 
-understood. Genome-wide association studies (GWAS) demonstrate that most 
-variants in common diseases like diabetes are located in non-coding regions of 
-the genome and are therefore likely to be involved in gene regulation. 
+understood. Genome-wide association studies (GWAS) associate genetic loci with disease
+traits, yet most GWAS variants for common diseases like diabetes are located in non-coding 
+regions of the genome. These variants are therefore likely to be involved in gene 
+regulation. 
 
 ![](../fig/cis-regulation-single-gene.png)
 
 Gene regulation controls the quantity, timing and locale of gene expression. 
 Analyzing genome variants through cell or tissue gene expression is known as 
-expression quantitative trait locus (eQTL) analysis. An eQTL explains part of 
-the variation in gene expression. Specifically, genetic variants underlying eQTL 
-explain variation in gene expression levels. eQTL analysis can reveal the 
-architecture of quantitative traits, connect DNA sequence variation to 
-phenotypic variation, and shed light on transcriptional regulation and 
-regulatory variation. Traditional analytic techniques like linkage and 
+expression quantitative trait locus (eQTL) analysis. An eQTL is a locus associated with
+expression of a gene or genes. An eQTL explains some of the variation in gene expression. 
+Specifically, genetic variants underlying eQTL explain variation in gene expression 
+levels. eQTL studies can reveal the architecture of quantitative traits, connect DNA 
+sequence variation to phenotypic variation, and shed light on transcriptional regulation 
+and regulatory variation. Traditional analytic techniques like linkage and 
 association mapping can be applied to thousands of gene expression traits 
 (transcripts) in eQTL analysis, such that gene expression can be mapped in much 
 the same way as a physiological phenotype like blood pressure or heart rate. 

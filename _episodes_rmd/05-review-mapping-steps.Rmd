@@ -3,9 +3,9 @@ title: "Review Mapping Steps"
 teaching: 30
 exercises: 30
 questions:
-- "??????"
+- "What is the procedure for mapping quantitative traits?"
 objectives:
-- "????"
+- "Remember and practice QTL mapping steps."
 keypoints:
 - "????"
 source: Rmd
