@@ -4,11 +4,14 @@ title: "Mediation Analysis"
 teaching: 10
 exercises: 2
 questions:
+- "What is mediation analysis?"
+- "How is mediation analysis used in genetics and genomics?"
 - "How do I explore causal relations with mediation analysis?"
 objectives:
-- "Interpret the relationship between sequence, expression and phenotype variation from qtl2 mapping results."
+- "Describe mediation analysis as applied in genetics and genomics."
 keypoints:
-- "Edit the .Rmd files not the .md files"
+- "Mediation analysis investigates an intermediary between an independent variable and its effect on a dependent variable."
+- "Mediation analysis is used in high-throughput genomics studies to identify molecular phenotypes, such as gene expression or methylation traits, that mediate the effect of genetic variation on disease phenotypes or other outcomes of interest." 
 ---
 
 ```{r, include=FALSE}

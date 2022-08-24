@@ -34,7 +34,7 @@ traits, yet most GWAS variants for common diseases like diabetes are located in 
 regions of the genome. These variants are therefore likely to be involved in gene 
 regulation. 
 
-![](../fig/cis-regulation-single-gene.png)
+![GWAS variants such as SNPs are often in non-coding regions of the genome, indicating that they regulate gene expression. Here a non-coding SNP influences expression of a gene, which in turn affects a disease phenotype or other outcome of interest.](../fig/cis-regulation-single-gene.png)
 
 Gene regulation controls the quantity, timing and locale of gene expression. 
 Analyzing genome variants through cell or tissue gene expression is known as 
@@ -48,7 +48,17 @@ association mapping can be applied to thousands of gene expression traits
 (transcripts) in eQTL analysis, such that gene expression can be mapped in much 
 the same way as a physiological phenotype like blood pressure or heart rate. 
 Joining gene expression and physiological phenotypes with genetic variation can 
-uncover genes with variants affecting disease phenotypes. 
+uncover genes with variants affecting disease phenotypes.
+
+To the simple diagram above we'll add two more details. Non-coding SNPs can 
+regulate gene expression from nearby on the same chromosome (in cis):
+
+![Genetic variants like SNPs often affect gene expression locally near the gene that they regulate (in cis).](../fig/cis-regulation-gene1.png)
+
+SNPs that affect gene expression from afar, often from a different chromosome 
+from the gene that they regulate are called trans regulators.
+
+![Alternatively, SNPs often affect gene expression distally from the gene that they regulate (in trans), often from a different chromosome altogether.](../fig/trans-regulation-gene2.png)
 
 In this lesson we revisit genetic mapping and apply it to gene expression. The 
 examples are from 
