@@ -23,7 +23,11 @@ the coding region of the CFTR gene alters the three-dimensional structure of
 resulting chloride channel proteins in epithelial cells, affecting not only 
 chloride transport but also sodium and potassium transport in the lungs, 
 pancreas and skin. The path from gene mutation to altered protein to disease 
-phenotype is relatively simple and well understood. The most common human 
+phenotype is relatively simple and well understood. 
+
+![Single-gene diseases like cystic fibrosis are relatively well understood. In cystic fibrosis, mutations in the coding region of the CFTR gene result in a defective protein, leading to excess mucus production that can damage the lungs and digestive system.](../fig/single-gene-disease.png)
+
+The most common human 
 disorders, however, involve many genes interacting with the environment and with 
 one another, a far more complicated path to follow than the path from a single 
 gene mutation to its resulting protein to a disease phenotype. Cardiovascular 
