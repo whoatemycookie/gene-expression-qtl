@@ -18,212 +18,323 @@ source("../bin/chunk-options.R")
 knitr_fig_path("09-")
 ```
 
-```{r load_dependencies, echo=FALSE}
+### Load Libraries  
+
+```{r load libraries}
+library(tidyverse)
 library(qtl2)
-iron <- read_cross2( system.file("extdata", "iron.zip", package="qtl2") )
-map <- insert_pseudomarkers(map=iron$gmap, step=1)
-pr <- calc_genoprob(cross=iron, map=map, error_prob=0.002)
-kinship <- calc_kinship(pr)
-kinship_loco <- calc_kinship(pr, "loco")
-Xcovar <- get_x_covar(iron)
-out <- scan1(genoprobs = pr, pheno = iron$pheno, Xcovar=Xcovar)
-out_pg_loco <- scan1(pr, iron$pheno, kinship_loco, Xcovar=Xcovar)
-bin_pheno <- apply(iron$pheno, 2, function(a) as.numeric(a > median(a)))
-rownames(bin_pheno) <- rownames(iron$pheno)
-c2eff <- scan1coef(pr[,"2"], iron$pheno[,"liver"])
-```
+library(qtl2convert)
+#library(qtl2db)
+library(GGally)
+library(broom)
+library(knitr)
+library(corrplot)
+library(RColorBrewer)
+library(qtl2ggplot)
 
-Recall that to model data from a cross, we use
 
-![](../fig/linear-genetic-model.png)  
- 
 
-where <i>y<sub>j</sub></i> is the phenotype of the <i>j</i>th individual, &mu; 
-is the mean phenotype value, <i>&beta;<sub>k</sub></i> is the effect of the 
-<i>kth</i> genotype, <i>X<sub>jk</sub></i> is the genotype for individual j, and &epsilon;<sub>j</sub> is the error for the <i>j</i>th individual. In the figure 
-below, &mu; equals `r round(c2eff["D2Mit17", 4], 1)`, and &beta; equals 
-`r round(abs(c2eff["D2Mit17", 1]), 1)` for the alternative hypothesis 
-(QTL exists).
+setwd("/Users/corneb/Documents/MyJax/CS/Projects/McClatchy/data/attie/box/")
+source("/Users/corneb/Documents/MyJax/CS/Projects/McClatchy/data/attie/box/gg_transcriptome_map.R")
+source("/Users/corneb/Documents/MyJax/CS/Projects/McClatchy/github/whoatemycookie/2022.04.21/gene-expression-qtl/code/qtl_heatmap.R")
 
-![](../fig/nullvalt.png)
 
-This linear model is <i>y</i> = `r round(c2eff["D2Mit17",4], 1)` + 
-`r round(abs(c2eff["D2Mit17",1]), 1)`X + &epsilon;. The model intersects the 
-genotype groups at their group means, and is based on &mu; and 
-<i>&beta;<sub>k</sub></i> for chromosome 2 marker D2Mit17 located at 56.8 cM.  
-
-The effect of genotype `r dimnames(c2eff)[[2]][[3]]` (the &beta; for the 
-`r dimnames(c2eff)[[2]][[3]]` genotype) at marker D2Mit17 is 
-`r round(c2eff["D2Mit17", 3], 1)`, while the effect of the 
-`r dimnames(c2eff)[[2]][[1]]` genotype is `r round(c2eff["D2Mit17", 1], 1)` on 
-the liver phenotype. The effect of the `r dimnames(c2eff)[[2]][[2]]` genotype is 
-`r round(c2eff["D2Mit17",2], 1)` relative to &mu; equals 
-`r round(c2eff["D2Mit17",4], 1)`.
-
-The `scan1()` function returns only LOD scores. To obtain estimated QTL effects,
-use the function `scan1coef()`. This function takes a single phenotype and the 
-genotype probabilities for a single chromosome and returns a matrix with the 
-estimated coefficients at each putative QTL location along the chromosome.
-
-For example, to get the estimated QTL effects on chromosome 2 for the liver 
-phenotype, we would provide the chromosome 2 genotype probabilities and the 
-liver phenotype to the function `scan1coef()` as follows:
-
-```{r est_effects_liver_c2}
-c2eff <- scan1coef(pr[,"2"], iron$pheno[,"liver"])
-```
-
-The result is a matrix of `r nrow(c2eff)` positions &times; `r ncol(c2eff)-1` 
-genotypes. An additional column contains the intercept values (&mu;).
-
-```{r effects_matrix_dim}
-dim(c2eff)
-head(c2eff)
-```
-
-To plot the QTL effects, use the function `plot_coef()`.
-
-```{r plot_effects_liver_simple}
-plot_coef(c2eff, map, legend = "topright")
-```
-
-The plot shows effect values on the y-axis and cM values on the x-axis. The
-value of the intercept (&mu;) appears at the top. The effect of the `r dimnames(c2eff)[[2]][[2]]` genotype is centered around zero, with the effects
-of the other two genotypes above and below.  
-
-To plot only the effects, use the argument `columns` to indicate which 
-coefficients to plot. Add `scan1_output` to include a LOD plot at the bottom.
-
-```{r plot_effects_liver_c2}
-plot_coef(c2eff, map, columns = 1:3, scan1_output = out, 
-          main = "Chromosome 2 QTL effects and LOD scores",
-          legend = "topright")
-```
-
-If instead you want additive and dominance effects, you can provide a square matrix of _contrasts_, as follows:
-
-```{r est_effects_liver_c2_contr}
-c2effB <- scan1coef(pr[,"2"], iron$pheno[,"liver"],
-                    contrasts=cbind(mu=c(1,1,1), a=c(-1, 0, 1), d=c(-0.5, 1, -0.5)))
+#setwd("/projects/compsci/corneb_cs/projects/macclatchy/data/")
+#source("/projects/compsci/corneb_cs/projects/macclatchy/data/gg_transcriptome_map.R")
+#source("/projects/compsci/corneb_cs/projects/macclatchy/data/qtl_heatmap.R")
 
 ```
 
-The result will then contain the estimates of `mu`, `a` (the additive effect), and `d` (the dominance effect). 
+## Load Data
 
-```{r add_dom_matrix_dim}
-dim(c2effB)
-head(c2effB)
+```{r load_dependencies}
+
+#expression data
+load("../data/attie_DO500_expr.datasets.RData")
+
+##mapping data
+load("../data/attie_DO500_mapping.data.RData")
+
+probs <- readRDS("../data/attie_DO500_genoprobs_qtlviewer_8state_69k.rds")
+
+##phenotypes
+load("../data/attie_DO500_clinical.phenotypes.RData")
+
+##loading previous results
+load("../data/dataset.islet.rnaseq.RData")
+
+#annot.samples = dataset.islet.rnaseq$samples
+#names(annot.samples)[1] <- c("Mouse.ID")
+#annot.samples$Mouse.ID = gsub("[^[:alnum:]]", "", annot.samples$Mouse.ID)
+
+#annot.mrna = dataset.islet.rnaseq$annots
+#names(annot.mrna)[1] = c("id")
+#annot.mrna = annot.mrna %>% dplyr::rename(ensembl = id)
+
+expr.mrna <- counts
+
 ```
-For marker D2Mit17, `mu`, `a`, and `d` are `r (c2effB)[which(rownames(c2effB)=="D2Mit17"),]`.
+##making the transciptome map for the 50 cis/trans genes in last lesson
 
-Here's a plot of the chromosome 2 additive and dominance effects, which are in the second and third columns.
 
-```{r add_dom_contrasts, eval=FALSE}
-plot_coef(c2effB, map["2"], columns=2:3, col=col)
-```
+Load in the LOD peaks over 6 from previous lesson.
 
-![](../fig/chr2_effects_contrasts.png)
+```{r lod_summary,warning=FALSE,message=FALSE}
 
-If you provide a kinship matrix to `scan1coef()`, it fits a linear mixed model (LMM) to account for a residual polygenic effect. Here let's use the kinship matrix from the LOCO method.
+lod_summary = dataset.islet.rnaseq$lod.peaks
 
-```{r est_effects_pg_liver_c2}
-c2eff_pg <- scan1coef(pr[,"2"], iron$pheno[,"liver"], kinship_loco[["2"]])
-dim(c2eff_pg)
-head(c2eff_pg)
-```
+ensembl = get_ensembl_genes()
+id    = ensembl$gene_id
+chr   = seqnames(ensembl)
+start = start(ensembl) * 1e-6
+end   = end(ensembl)   * 1e-6
+df = data.frame(ensembl = id, gene_chr = chr, gene_start = start, gene_end = end,
+     stringsAsFactors = F)
+colnames(lod_summary)[colnames(lod_summary) == "annot.id"] = "ensembl"
+colnames(lod_summary)[colnames(lod_summary) == "chrom"] = "qtl_chr"
+colnames(lod_summary)[colnames(lod_summary) == "pos"] = "qtl_pos"
+colnames(lod_summary)[colnames(lod_summary) == "lod"] = "qtl_lod"
+lod_summary = left_join(lod_summary, df, by = "ensembl")
+lod_summary = mutate(lod_summary, gene_chr = factor(gene_chr, levels = c(1:19, "X")),
+                     qtl_chr = factor(qtl_chr, levels = c(1:19, "X")))
+rm(df)
 
-Here's a plot of the estimates.
+## summary:
 
-```{r plot_effects_pg_liver_c2}
-plot_coef(c2eff_pg, map, columns = 1:3, scan1_output = out_pg_loco, main = "Chromosome 2 QTL effects and LOD scores", legend = "topright")
-```
+lod_summary$cis.trans <- ifelse(lod_summary$qtl_chr == lod_summary$gene_chr, "cis", "trans")
+table(lod_summary$cis.trans)
 
-You can also get estimated additive and dominance effects, using a matrix of contrasts.
-
-```{r est_effects_pg_liver_c2_contr}
-c2effB_pg <- scan1coef(pr[,"2"], iron$pheno[,"liver"], kinship_loco[["2"]],
-                       contrasts=cbind(mu=c(1,1,1), a=c(-1, 0, 1), d=c(-0.5, 1, -0.5)))
-```
-
-Here's a plot of the results.
-
-```{r add_dom_contrasts_loco, eval=FALSE}
-plot(c2effB_pg, map["2"], columns=2:3, col=col)
-```
-
-![](../fig/chr2_effects_pg_add_dom.png)
-
-Another option for estimating the QTL effects is to treat them as [random effects](https://stats.stackexchange.com/questions/4700/what-is-the-difference-between-fixed-effect-random-effect-and-mixed-effect-mode#151800) and calculate [Best Linear Unbiased Predictors](https://en.wikipedia.org/wiki/Best_linear_unbiased_prediction) (BLUPs). This is particularly valuable for multi-parent populations such as the Collaborative Cross and Diversity Outbred mice, where the large number of possible genotypes at a QTL leads to considerable variability in the effect estimates. To calculate BLUPs, use `scan1blup()`; it takes the same arguments as `scan1coef()`, including
-the option of a kinship matrix to account for a residual polygenic effect.
-
-```{r scan1blup}
-c2blup <- scan1blup(pr[,"2"], iron$pheno[,"liver"], kinship_loco[["2"]])
-```
-
-Here is a plot of the BLUPs (as dashed curves) alongside the standard estimates.
-
-```{r plotblup}
-plot_coef(c2eff, map["2"], columns=1:3)
-plot(c2blup, map["2"], columns=1:3, add=TRUE, lty=2, legend = "topright")
-```
-
-The `scan1coef` function can also provide estimated QTL effects for binary traits, with `model="binary"`. (However, `scan1blup` has not yet been implemented for binary traits.)
-
-```{r scan1coef_binary}
-c2eff_bin <- scan1coef(pr[,"2"], bin_pheno[,"liver"], model="binary")
-```
-
-Here's a plot of the effects. They're a bit tricky to interpret, as they are basically log odds ratios.
-
-![](../fig/chr2_effects_binary.png)
-
-Finally, to plot the raw phenotypes against the genotypes at a single putative QTL position, you can use the function `plot_pxg()`. This takes a vector of genotypes as produced by the `maxmarg()` function, which picks the most likely genotype from a set of genotype probabilities, provided it is greater than some specified value (the argument `minprob`). Note that the “marg” in “maxmarg” stands for “marginal”, as this function is selecting the genotype at each position that has maximum marginal probability.
-
-For example, we could get inferred genotypes at the chr 2 QTL for the liver phenotype (at 28.6 cM) as follows:
-
-```{r get_inferred_genotypes}
-g <- maxmarg(pr, map, chr=2, pos=28.6, return_char=TRUE)
-```
-
-We use `return_char=TRUE` to have `maxmarg()` return a vector of character strings with the genotype labels.
-
-We then plot the liver phenotype against these genotypes as follows:
-
-```{r plot_pheno_geno}
-par(mar=c(4.1, 4.1, 0.6, 0.6))
-plot_pxg(g, iron$pheno[,"liver"], ylab="Liver phenotype")
-```
-
-```{r plot_pheno_geno_se}
-par(mar=c(4.1, 4.1, 0.6, 0.6))
-plot_pxg(g, iron$pheno[,"liver"], SEmult=2, swap_axes=TRUE, xlab="Liver phenotype")
 ```
 
 
-> ## Challenge 1
-> Find the QTL effects for chromosome 16 for the liver phenotype.  
-> 1) Create an object `c16eff` to contain the effects.  
-> 2) Plot the chromosome 16 coefficients and add the LOD plot at bottom.
->
-> >
-> > ## Solution to Challenge 1
-> > 1) `c16eff <- scan1coef(pr[,"16"], iron$pheno[,"liver"])`  
-> > 2) `plot_coef(c16eff, map, legend = "topright", scan1_output = out)`
-> {: .solution}
-{: .challenge}
+### Plot Transcriptome Map
 
-> ## Challenge 2
-> In the code block above, we use `swap_axes=TRUE` to place the phenotype
-> on the x-axis. 
-> We can use `SEmult=2` to include the mean ± 2 SE intervals.  
-> 1) How would you decide which chromosome to plot? Discuss this with 
-> your neighbor, then write your responses in the collaborative document.  
-> 2) Calculate and plot the best linear unbiased predictors (blups) for
-> spleen on the chromosome of your choice.
->
-> >
-> > ## Solution to Challenge 2
-> >
-> >
-> {: .solution}
-{: .challenge}
+```{r fig.width=10,fig.height=10,warning=FALSE,message=FALSE}
+
+lod_summary = mutate(lod_summary, cis = (gene_chr == qtl_chr) & (abs(gene_start - qtl_pos) < 4))
+out.plot = ggtmap(data = lod_summary %>% filter(qtl_lod >= 7.18), cis.points = TRUE, cis.radius = 4)
+pdf("../results/transcriptome_map.pdf", width = 10, height = 10)
+out.plot
+dev.off()
+out.plot
+```
+
+### QTL Density Plot
+
+```{r trans_eqtl_sliding_window,warning=FALSE,message=FALSE}
+breaks = matrix(c(seq(0, 200, 4), seq(1, 201, 4), seq(2, 202, 4), seq(3, 203, 4)), ncol = 4)
+tmp = as.list(1:ncol(breaks)) 
+for(i in 1:ncol(breaks)) {
+tmp[[i]] = lod_summary %>%
+             filter(qtl_lod >= 7.18 & cis == FALSE) %>%
+             arrange(qtl_chr, qtl_pos) %>%
+             group_by(qtl_chr) %>%
+             mutate(win = cut(qtl_pos, breaks = breaks[,i])) %>%
+             group_by(qtl_chr, win) %>% 
+             summarize(cnt = n()) %>%
+             separate(win, into = c("other", "prox", "dist")) %>%
+             mutate(prox = as.numeric(prox), 
+                    dist = as.numeric(dist), 
+                    mid = 0.5 * (prox + dist)) %>%
+             select(qtl_chr, mid, cnt)
+}
+
+trans = bind_rows(tmp[[1]], tmp[[1]], tmp[[3]], tmp[[4]])
+rm(tmp)
+
+out.plot = ggplot(trans, aes(mid, cnt)) +
+             geom_line() +
+             geom_hline(aes(yintercept = 100), linetype = 2, color = "grey50") +
+             facet_grid(.~qtl_chr, scales = "free") +
+             theme(panel.background = element_blank(),
+             panel.border = element_rect(fill = 0, color = "grey70"),
+             panel.spacing = unit(0, "lines"),
+             axis.text.x = element_text(angle = 90)) +
+             labs(title = "trans-eQTL Histogram", x = "Mb", y = "Number of Transcripts")
+pdf("../results/trans_eqtl_density.pdf", width = 10, height = 8)
+print(out.plot)
+dev.off()
+out.plot
+```
+
+```{r cis_eqtl_sliding_window,warning=FALSE,message=FALSE}
+breaks = matrix(c(seq(0, 200, 4), seq(1, 201, 4), seq(2, 202, 4), seq(3, 203, 4)), ncol = 4)
+tmp = as.list(1:ncol(breaks)) 
+for(i in 1:ncol(breaks)) {
+tmp[[i]] = lod_summary %>%
+             filter(qtl_lod >= 7.18 & cis == TRUE) %>%
+             arrange(qtl_chr, qtl_pos) %>%
+             group_by(qtl_chr) %>%
+             mutate(win = cut(qtl_pos, breaks = breaks[,i])) %>%
+             group_by(qtl_chr, win) %>% 
+             summarize(cnt = n()) %>%
+             separate(win, into = c("other", "prox", "dist")) %>%
+             mutate(prox = as.numeric(prox), 
+                    dist = as.numeric(dist), 
+                    mid = 0.5 * (prox + dist)) %>%
+             select(qtl_chr, mid, cnt)
+}
+
+cis = bind_rows(tmp[[1]], tmp[[2]], tmp[[3]], tmp[[4]])
+rm(tmp1, tmp2, tmp3, tmp4)
+
+out.plot = ggplot(cis, aes(mid, cnt)) +
+             geom_line(color = "#4286f4") +
+             geom_hline(aes(yintercept = 100), linetype = 2, color = "grey50") +
+             facet_grid(.~qtl_chr, scales = "free") +
+             theme(panel.background = element_blank(),
+                   panel.border = element_rect(fill = 0, color = "grey70"),
+                   panel.spacing = unit(0, "lines"),
+                   axis.text.x = element_text(angle = 90)) +
+           labs(title = "cis-eQTL Histogram", x = "Mb", y = "Number of Transcripts")
+pdf("../results/cis_eqtl_density.pdf", width = 10, height = 8)
+print(out.plot)
+dev.off()
+out.plot
+```
+
+
+```{r num_cis_eqtl}
+tmp = lod_summary %>%
+        filter(qtl_lod >= 7.18) %>%
+        group_by(cis) %>%
+        count()
+kable(tmp, caption = "Number of cis- and trans-eQTL")
+rm(tmp)
+```
+
+## Islet RNASeq eQTL Hotspots
+
+### Select eQTL Hotspots
+
+Select trans-eQTL hotspots with more than 100 genes at the 7.18 LOD thresholds. Retain the maximum per chromosome.
+
+```{r select_eqtl_hotspots}
+hotspots = trans %>%
+             group_by(qtl_chr) %>%
+             filter(cnt >= 100) %>%
+             summarize(center = median(mid)) %>%
+             mutate(proximal = center - 2, distal = center + 2)
+kable(hotspots, caption = "Islet trans-eQTL hotspots")
+```
+
+
+```{r select_cis_eqtl_hotspots}
+cis.hotspots = cis %>%
+             group_by(qtl_chr) %>%
+             filter(cnt >= 100) %>%
+             summarize(center = median(mid)) %>%
+             mutate(proximal = center - 2, distal = center + 2)
+kable(cis.hotspots, caption = "Islet cis-eQTL hotspots")
+```
+
+Given the hotspot locations, retain all genes with LOD > 7.18 and trans-eQTL within +/- 4Mb of the mid-point of the hotspot.
+
+```{r select_eqtl_genes}
+hotspot.genes = as.list(hotspots$qtl_chr)
+names(hotspot.genes) = hotspots$qtl_chr
+for(i in 1:nrow(hotspots)) {
+  hotspot.genes[[i]] = lod_summary %>% 
+                         filter(qtl_lod >= 7.18) %>%
+                         filter(qtl_chr == hotspots$qtl_chr[i] & 
+                           qtl_pos >= hotspots$proximal[i] & 
+                           qtl_pos <= hotspots$distal[i] &
+                           (gene_chr != hotspots$qtl_chr[i] |
+                           (gene_chr == hotspots$qtl_chr[i] &
+                            gene_start > hotspots$distal[i] + 1 &
+                            gene_end < hotspots$proximal[i] - 1)))
+  write_csv(hotspot.genes[[i]], file = paste0("../results/chr", names(hotspot.genes)[i], "_hotspot_genes.csv"))
+}
+```
+
+Number of genes in each hotspot.
+
+```{r num_hotspot_genes}
+hotspots = data.frame(hotspots, count = sapply(hotspot.genes, nrow))
+kable(hotspots, caption = "Number of genes per hotspot")
+```
+
+```{r select_cis_eqtl_genes}
+cis.hotspot.genes = as.list(cis.hotspots$qtl_chr)
+names(cis.hotspot.genes) = cis.hotspots$qtl_chr
+for(i in 1:nrow(cis.hotspots)) {
+  cis.hotspot.genes[[i]] = lod_summary %>% 
+                             select(ensembl, marker.id, qtl_chr, qtl_pos, qtl_lod) %>%
+                             filter(qtl_lod >= 7.18) %>%
+                             filter(qtl_chr == cis.hotspots$qtl_chr[i] & 
+                                    qtl_pos >= cis.hotspots$proximal[i] & 
+                                    qtl_pos <= cis.hotspots$distal[i])
+  write_csv(cis.hotspot.genes[[i]], file = paste0("../results/chr", names(cis.hotspot.genes)[i], "_cis_hotspot_genes.csv"))
+}
+```
+
+Number of genes in each cis-hotspot.
+
+```{r num_cis_hotspot_genes}
+cis.hotspots = data.frame(cis.hotspots, count = sapply(cis.hotspot.genes, nrow))
+kable(cis.hotspots, caption = "Number of genes per cis-hotspot")
+```
+
+Get the expression of genes that map to each hotspot.
+
+```{r get_hotspot_genes, warning=FALSE}
+for(i in 1:length(hotspot.genes)) {
+  tmp = data.frame(ensembl = hotspot.genes[[i]]$ensembl, t(expr.mrna[,hotspot.genes[[i]]$ensembl]))
+  hotspot.genes[[i]] = left_join(hotspot.genes[[i]], tmp, by = "ensembl")
+  write_csv(hotspot.genes[[i]], file = paste0("../results/chr", names(hotspot.genes)[i], "_hotspot_genes.csv"))
+}
+```
+
+### Hotspot Gene Correlation
+
+```{r hotspot_gene_corr,fig.width=10,fig.height=10}
+breaks = -100:100/100
+colors = colorRampPalette(rev(brewer.pal(11, "Spectral")))(length(breaks) - 1)
+for(i in 1:length(hotspot.genes)) {
+  chr = names(hotspot.genes)[i]
+  tmp = hotspot.genes[[i]] %>%
+    select(starts_with("DO")) %>%
+    t() %>%
+    as.matrix() %>%
+    cor()
+  dimnames(tmp) = list(hotspot.genes[[i]]$ensembl, hotspot.genes[[i]]$ensembl)
+  side.colors = cut(hotspot.genes[[i]]$qtl_lod, breaks = 100)
+  side.colors = colorRampPalette(rev(brewer.pal(9, "YlOrRd")))(length(levels(side.colors)))[as.numeric(side.colors)]
+  names(side.colors) = rownames(tmp)
+  pdf(paste0("../results/hotspot_gene_cor_chr", chr, ".pdf"), width = 10, height = 10)
+  heatmap(tmp, symm = TRUE, scale = "none", main = paste("Chr", chr, "Gene Correlation"), breaks = breaks, col = colors, RowSideColors = side.colors, ColSideColors = side.colors)
+  dev.off()
+  heatmap(tmp, symm = TRUE, scale = "none", main = paste("Chr", chr, "Gene Correlation"), breaks = breaks, col = colors, RowSideColors = side.colors, ColSideColors = side.colors)
+}
+```
+
+### Hotspot Principal Components
+
+```{r calc_hotspot_pcs,warning=FALSE}
+hotspot.pcs = as.list(names(hotspot.genes))
+names(hotspot.pcs) = names(hotspot.genes)
+do.wave = pheno_clin[rownames(expr.mrna),"DOwave",drop=F]
+wave.col = as.numeric(as.factor(do.wave[,1]))
+#hotspot.genes.rns <- list()
+for(i in 1:length(hotspot.genes)) {
+  tmp = hotspot.genes[[i]] %>%
+          select(starts_with("DO")) %>%
+          as.matrix() %>%
+          t() %>%
+          prcomp()
+  hotspot.pcs[[i]] = tmp$x
+  #rownames(hotspot.pcs[[i]]) <- gsub("\\.x","", rownames(hotspot.pcs[[i]]))
+  #rownames(hotspot.pcs[[i]]) <- gsub("\\.y","", rownames(hotspot.pcs[[i]]))
+  tmp = gather(data.frame(mouse = rownames(hotspot.pcs[[i]]), hotspot.pcs[[i]]), pc, value, -mouse)
+  tmp$mouse <- gsub("\\.x","", tmp$mouse)
+  tmp$mouse <- gsub("\\.y","", tmp$mouse)
+  tmp = left_join(tmp, pheno_clin %>% select(mouse, sex, DOwave, diet_days), by = "mouse")
+  print(tmp %>%
+    filter(pc %in% paste0("PC", 1:4)) %>%
+    mutate(DOwave = factor(DOwave)) %>%
+    ggplot(aes(DOwave, value, fill = sex)) +
+    geom_boxplot() +
+    facet_grid(pc~.) +
+    labs(title = paste("Chr", names(hotspot.genes)[i], "Hotspot")))
+}
+```
