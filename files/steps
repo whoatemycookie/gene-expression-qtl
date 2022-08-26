@@ -18,4 +18,11 @@ Result Interpretation (Sue Example) - now do some of this yourself
 10. provide script and data to run, LOD object = 120000markers by 20k genes - find peaks; do not run in class
 11. make real transcriptome map - cis vs trans qtl - gene regulation, big vs. small LODs; trans bands - transcription factors
 12. mediation analysis and causal models
+  Akr1e1 chr13 local qtl LOD 17 distal qtl LOD 110
+  run mediation on islet RNA
+  attie data eqtl viewer
 
+  Myo15b chr2 qtl decent lod drop Hnf4a (hotspot)
+  pull example out of hotspot that points back
+  in this case chr2 hotspot points to Hnf4a
+  
