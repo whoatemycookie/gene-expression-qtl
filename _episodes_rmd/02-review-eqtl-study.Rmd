@@ -33,7 +33,16 @@ T2D-associated genetic loci operate mainly under conditions of obesity (See
 [Keller, Mark P et al. “Genetic Drivers of Pancreatic Islet Function.” Genetics vol. 209,1 (2018): 335-356](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5937189/)). Like 
 most GWAS loci, the T2D-associated genetic loci identified from genome-wide 
 association studies (GWAS) have very small effect sizes and odds ratios just 
-slightly more than 1.  
+slightly more than 1.
+
+This study explored islet gene expression in diabetes. The authors hypothesized 
+that gene expression changes in response to dietary challenge would reveal 
+signaling pathways involved in stress responses. The expression of many genes
+often map to the same locus, indicating that expression of these genes is
+controlled in common. If their mRNAs encode proteins with common physiological 
+functions, the function of the controlling gene(s) is revealed. Variation in 
+expression of the controlling gene(s), rather than a genetic variant, can be 
+tested as an immediate cause of a disease-related phenotype.
 
 In this study, Diversity Outbred (DO) mice were fed a high-fat, high-sugar diet 
 as a stressor, sensitizing the mice to develop diabetic traits. Body weight and 

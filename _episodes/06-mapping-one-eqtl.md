@@ -26,12 +26,12 @@ library(tidyverse)
 
 
 ~~~
-── Attaching packages ────────────────────────────────── tidyverse 1.3.2 ──
+── Attaching packages ────────────────────────────────────────────── tidyverse 1.3.2 ──
 ✔ ggplot2 3.3.6     ✔ purrr   0.3.4
 ✔ tibble  3.1.8     ✔ dplyr   1.0.9
-✔ tidyr   1.2.0     ✔ stringr 1.4.0
-✔ readr   2.1.2     ✔ forcats 0.5.1
-── Conflicts ───────────────────────────────────── tidyverse_conflicts() ──
+✔ tidyr   1.2.0     ✔ stringr 1.4.1
+✔ readr   2.1.2     ✔ forcats 0.5.2
+── Conflicts ───────────────────────────────────────────────── tidyverse_conflicts() ──
 ✖ dplyr::filter() masks stats::filter()
 ✖ dplyr::lag()    masks stats::lag()
 ~~~
@@ -126,7 +126,7 @@ hist(counts$ENSMUSG00000020679, main = "Hnf1b")
 ~~~
 {: .language-r}
 
-<img src="../fig/rmd-06-hist_untransformed-1.png" title="plot of chunk hist_untransformed" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" />
+<img src="../fig/rmd-06-hist_untransformed-1.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" />
 
 These counts are normalised
 
@@ -165,7 +165,7 @@ plot_genoprob(probs, map, ind = 1, chr = 1)
 ~~~
 {: .language-r}
 
-<img src="../fig/rmd-06-geno_plot-1.png" title="plot of chunk geno_plot" alt="plot of chunk geno_plot" width="576" style="display: block; margin: auto;" />
+<img src="../fig/rmd-06-geno_plot-1.png" alt="plot of chunk geno_plot" width="576" style="display: block; margin: auto;" />
 
 ### [Kinship Matrix](https://smcclatchy.github.io/mapping/04-calc-kinship/)
 
@@ -180,7 +180,7 @@ heatmap(K[[1]][1:n_samples, 1:n_samples])
 ~~~
 {: .language-r}
 
-<img src="../fig/rmd-06-kinship_probs-1.png" title="plot of chunk kinship_probs" alt="plot of chunk kinship_probs" width="576" style="display: block; margin: auto;" />
+<img src="../fig/rmd-06-kinship_probs-1.png" alt="plot of chunk kinship_probs" width="576" style="display: block; margin: auto;" />
 
 ### Covariates    
 

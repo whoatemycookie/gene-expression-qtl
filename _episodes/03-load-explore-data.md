@@ -108,7 +108,7 @@ pheno_clin %>%
 ~~~
 {: .language-r}
 
-<img src="../fig/rmd-03-pheno_boxplot-1.png" title="plot of chunk pheno_boxplot" alt="plot of chunk pheno_boxplot" width="612" style="display: block; margin: auto;" />
+<img src="../fig/rmd-03-pheno_boxplot-1.png" alt="plot of chunk pheno_boxplot" width="612" style="display: block; margin: auto;" />
 
 Subset the phenotypes to include only those analyzed in the paper.
 
@@ -136,7 +136,7 @@ pheno_clin %>%
 ~~~
 {: .language-r}
 
-<img src="../fig/rmd-03-bw_boxplot-1.png" title="plot of chunk bw_boxplot" alt="plot of chunk bw_boxplot" width="612" style="display: block; margin: auto;" />
+<img src="../fig/rmd-03-bw_boxplot-1.png" alt="plot of chunk bw_boxplot" width="612" style="display: block; margin: auto;" />
 
 
 ~~~
@@ -153,7 +153,7 @@ pheno_clin %>%
 ~~~
 {: .language-r}
 
-<img src="../fig/rmd-03-glucose_boxplot-1.png" title="plot of chunk glucose_boxplot" alt="plot of chunk glucose_boxplot" width="612" style="display: block; margin: auto;" />
+<img src="../fig/rmd-03-glucose_boxplot-1.png" alt="plot of chunk glucose_boxplot" width="612" style="display: block; margin: auto;" />
 
 
 ~~~
@@ -170,7 +170,7 @@ pheno_clin %>%
 ~~~
 {: .language-r}
 
-<img src="../fig/rmd-03-insulin_boxplot-1.png" title="plot of chunk insulin_boxplot" alt="plot of chunk insulin_boxplot" width="612" style="display: block; margin: auto;" />
+<img src="../fig/rmd-03-insulin_boxplot-1.png" alt="plot of chunk insulin_boxplot" width="612" style="display: block; margin: auto;" />
 
 
 ~~~
@@ -187,7 +187,7 @@ pheno_clin %>%
 ~~~
 {: .language-r}
 
-<img src="../fig/rmd-03-trig_boxplot-1.png" title="plot of chunk trig_boxplot" alt="plot of chunk trig_boxplot" width="612" style="display: block; margin: auto;" />
+<img src="../fig/rmd-03-trig_boxplot-1.png" alt="plot of chunk trig_boxplot" width="612" style="display: block; margin: auto;" />
 
 
 ~~~
@@ -201,7 +201,7 @@ pheno_clin %>%
 ~~~
 {: .language-r}
 
-<img src="../fig/rmd-03-fig1_boxplots-1.png" title="plot of chunk fig1_boxplots" alt="plot of chunk fig1_boxplots" width="612" style="display: block; margin: auto;" />
+<img src="../fig/rmd-03-fig1_boxplots-1.png" alt="plot of chunk fig1_boxplots" width="612" style="display: block; margin: auto;" />
 
 ### QA/QC
 
@@ -281,7 +281,7 @@ pheno_clin_std %>%
 ~~~
 {: .language-r}
 
-<img src="../fig/rmd-03-pheno_std-1.png" title="plot of chunk pheno_std" alt="plot of chunk pheno_std" width="612" style="display: block; margin: auto;" />
+<img src="../fig/rmd-03-pheno_std-1.png" alt="plot of chunk pheno_std" width="612" style="display: block; margin: auto;" />
 
 
 ~~~
@@ -314,7 +314,7 @@ knitr::include_graphics("../fig/rmd-02-pheno_all_pairs-1.png")
 ~~~
 {: .language-r}
 
-<img src="../fig/rmd-02-pheno_all_pairs-1.png" title="plot of chunk pheno_all_pairs_include" alt="plot of chunk pheno_all_pairs_include" width="100%" style="display: block; margin: auto;" />
+<img src="../fig/rmd-02-pheno_all_pairs-1.png" alt="plot of chunk pheno_all_pairs_include" width="100%" style="display: block; margin: auto;" />
 
 ~~~
 ggpairs(select(pheno_clin_log, num_islets:weight_10wk)) +
@@ -322,7 +322,7 @@ ggpairs(select(pheno_clin_log, num_islets:weight_10wk)) +
 ~~~
 {: .language-r}
 
-<img src="../fig/rmd-03-pheno_all_pairs-1.png" title="plot of chunk pheno_all_pairs" alt="plot of chunk pheno_all_pairs" width="1080" style="display: block; margin: auto;" />
+<img src="../fig/rmd-03-pheno_all_pairs-1.png" alt="plot of chunk pheno_all_pairs" width="1080" style="display: block; margin: auto;" />
 
 The HOMA phenotypes have odd distributions.
 
@@ -335,7 +335,7 @@ ggplot(pheno_clin_log, aes(HOMA_IR_0min, HOMA_B_0min, color = DOwave, shape = se
 ~~~
 {: .language-r}
 
-<img src="../fig/rmd-03-homair_vs_homab-1.png" title="plot of chunk homair_vs_homab" alt="plot of chunk homair_vs_homab" width="612" style="display: block; margin: auto;" />
+<img src="../fig/rmd-03-homair_vs_homab-1.png" alt="plot of chunk homair_vs_homab" width="612" style="display: block; margin: auto;" />
 
 There doesn't appear to be a batch effect, but there are a large number of low 
 values. Is there some lower bound to the HOMA measurements?
@@ -375,7 +375,7 @@ rm(tmp)
 ~~~
 {: .language-r}
 
-<img src="../fig/rmd-03-sex_diet_wave_effects-1.png" title="plot of chunk sex_diet_wave_effects" alt="plot of chunk sex_diet_wave_effects" width="612" style="display: block; margin: auto;" />
+<img src="../fig/rmd-03-sex_diet_wave_effects-1.png" alt="plot of chunk sex_diet_wave_effects" width="612" style="display: block; margin: auto;" />
 
 ### Weight vs. Food Intake
 
@@ -401,7 +401,7 @@ pheno_clin_log %>%
 ~~~
 {: .output}
 
-<img src="../fig/rmd-03-bw_vs_food-1.png" title="plot of chunk bw_vs_food" alt="plot of chunk bw_vs_food" width="612" style="display: block; margin: auto;" />
+<img src="../fig/rmd-03-bw_vs_food-1.png" alt="plot of chunk bw_vs_food" width="612" style="display: block; margin: auto;" />
 
 
 ~~~
@@ -439,7 +439,7 @@ corrplot.mixed(tmp, upper = "ellipse", lower = "number",
 ~~~
 {: .language-r}
 
-<img src="../fig/rmd-03-female_corr_plot-1.png" title="plot of chunk female_corr_plot" alt="plot of chunk female_corr_plot" width="1080" style="display: block; margin: auto;" />
+<img src="../fig/rmd-03-female_corr_plot-1.png" alt="plot of chunk female_corr_plot" width="1080" style="display: block; margin: auto;" />
 
 Males
 
@@ -456,7 +456,7 @@ corrplot.mixed(tmp, upper = "ellipse", lower = "number",
 ~~~
 {: .language-r}
 
-<img src="../fig/rmd-03-male_corr_plot-1.png" title="plot of chunk male_corr_plot" alt="plot of chunk male_corr_plot" width="1080" style="display: block; margin: auto;" />
+<img src="../fig/rmd-03-male_corr_plot-1.png" alt="plot of chunk male_corr_plot" width="1080" style="display: block; margin: auto;" />
 ![phenotype correlations for females](../fig/rmd-03-female_corr_plot-1.png)
 ![phenotype correlations for males](../fig/rmd-03-male_corr_plot-1.png)
 
@@ -505,7 +505,7 @@ ggplot(allele.freq, aes(pos, prop, color = founder)) +
 ~~~
 {: .language-r}
 
-<img src="../fig/rmd-03-founder_allele_freq-1.png" title="plot of chunk founder_allele_freq" alt="plot of chunk founder_allele_freq" width="864" style="display: block; margin: auto;" />
+<img src="../fig/rmd-03-founder_allele_freq-1.png" alt="plot of chunk founder_allele_freq" width="864" style="display: block; margin: auto;" />
 
 
 ### QTL Scans
@@ -531,7 +531,7 @@ for(i in 1:ncol(qtl)) {
 ~~~
 {: .language-r}
 
-<img src="../fig/rmd-03-qtl_plots-1.png" title="plot of chunk qtl_plots" alt="plot of chunk qtl_plots" width="612" style="display: block; margin: auto;" />
+<img src="../fig/rmd-03-qtl_plots-1.png" alt="plot of chunk qtl_plots" width="612" style="display: block; margin: auto;" />
 
 ### QTL Peaks
 
@@ -602,7 +602,7 @@ box()
 ~~~
 {: .language-r}
 
-<img src="../fig/rmd-03-qtl_peaks_figure-1.png" title="plot of chunk qtl_peaks_figure" alt="plot of chunk qtl_peaks_figure" width="612" style="display: block; margin: auto;" />
+<img src="../fig/rmd-03-qtl_peaks_figure-1.png" alt="plot of chunk qtl_peaks_figure" width="612" style="display: block; margin: auto;" />
 
 ~~~
 plot_peaks(peaks, map, col = c("blue","red"), lwd = 3, tick_height = 0.8, gap = 0, main = "LOD > 6")
@@ -610,14 +610,14 @@ box()
 ~~~
 {: .language-r}
 
-<img src="../fig/rmd-03-qtl_peaks_figure-2.png" title="plot of chunk qtl_peaks_figure" alt="plot of chunk qtl_peaks_figure" width="612" style="display: block; margin: auto;" />
+<img src="../fig/rmd-03-qtl_peaks_figure-2.png" alt="plot of chunk qtl_peaks_figure" width="612" style="display: block; margin: auto;" />
 
 ~~~
 ggplot_peaks(peaks, map, col = c("blue","red"), legend.title = "LOD > 6")
 ~~~
 {: .language-r}
 
-<img src="../fig/rmd-03-qtl_peaks_figure-3.png" title="plot of chunk qtl_peaks_figure" alt="plot of chunk qtl_peaks_figure" width="612" style="display: block; margin: auto;" />
+<img src="../fig/rmd-03-qtl_peaks_figure-3.png" alt="plot of chunk qtl_peaks_figure" width="612" style="display: block; margin: auto;" />
 
 
 ~~~
@@ -626,7 +626,7 @@ qtl_heatmap(qtl = qtl, map = map, low.thr = 3.5)
 ~~~
 {: .language-r}
 
-<img src="../fig/rmd-03-qtl_heatmap-1.png" title="plot of chunk qtl_heatmap" alt="plot of chunk qtl_heatmap" width="864" style="display: block; margin: auto;" />
+<img src="../fig/rmd-03-qtl_heatmap-1.png" alt="plot of chunk qtl_heatmap" width="864" style="display: block; margin: auto;" />
 
 
 ## Gene Expression Phenotypes
@@ -837,6 +837,36 @@ head(chr11_peaks)
 4 ENSMUSG00000000120  11  11_95962181  95.96218 11.257591
 5 ENSMUSG00000000125  11         <NA>        NA        NA
 6 ENSMUSG00000000126  11  11_26992236  26.99224  6.013533
+~~~
+{: .output}
+
+
+
+~~~
+# how many rows?
+dim(chr11_peaks)
+~~~
+{: .language-r}
+
+
+
+~~~
+[1] 1810    5
+~~~
+{: .output}
+
+
+
+~~~
+# how many rows have LOD scores?
+chr11_peaks %>% filter(!is.na(lod)) %>% dim()
+~~~
+{: .language-r}
+
+
+
+~~~
+[1] 1208    5
 ~~~
 {: .output}
 
