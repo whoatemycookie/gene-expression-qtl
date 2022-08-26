@@ -1,7 +1,7 @@
 ---
 title: "Introduction"
-teaching: 0
-exercises: 0
+teaching: 10
+exercises: 10
 questions:
 - "What are expression quantitative trait loci (eQTL)?"
 - "How are eQTL used in genetic studies?"
@@ -64,8 +64,8 @@ from the gene that they regulate are called trans regulators.
 
 ![Alternatively, SNPs often affect gene expression distally from the gene that they regulate (in trans), often from a different chromosome altogether.](../fig/trans-regulation-gene2.png)
 
-In this lesson we revisit genetic mapping and apply it to gene expression. The 
-examples are from 
+In this lesson we revisit genetic mapping of quantitative traist and apply its
+methods to gene expression. The examples are from 
 [Genetic Drivers of Pancreatic Islet Function](https://doi.org/10.1534/genetics.118.300864)
 by Keller, et al. This study offers supporting evidence for type 2 
 diabetes-associated loci in human GWAS, most of which affect pancreatic islet 

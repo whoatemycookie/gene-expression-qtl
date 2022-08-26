@@ -18,17 +18,11 @@ keypoints:
 
 
 
-![Attie et al, 2018 Supplementary Figure S7](../files/Attieetal2018-supplementary/SFig7_Keller_2018_chr11.pdf)
+![A non-coding SNP affects expression of gene 1 in cis. Gene 1 mediates the effect of the SNP on gene 2.](../fig/mediator-gene1.png)
 
-````
-> ## Challenge: Interpreting qtl2 results
+
+> ## Challenge: 
 >
-> Refer to the figure above.
->
-> 1). What does panel A show? What conclusions could you draw from panel A?   
-> 2). What does panel B show? What conclusions could you draw from panel B?   
-> 3). What does panel C show? What conclusions could you draw from panel C?  
-> 4). How are panels A through C related to one another? What story do they tell together?
 > > ## Solution
 > >
 > > 
@@ -36,6 +30,6 @@ keypoints:
 > > 
 > {: .solution}
 {: .challenge}
-````
+
 
 {% include links.md %}
