@@ -5,12 +5,10 @@ exercises: 30
 questions:
 - "How do I create and interpret a transcriptome map?"
 objectives:
-- Explain why and when kinship calculation matters in mapping.
-- Create a kinship matrix for individuals.
+- Describe a transcriptome map.
+- Interpret a transcriptome map.
 keypoints:
-- "Kinship matrices account for relationships among individuals."
-- "Kinship is calculated as the proportion of shared alleles between individuals."
-- "Kinship calculation is a precursor to a genome scan via a linear mixed model."
+- "Transcriptome maps aid in understanding gene expression regulation."
 source: Rmd
 ---
 
@@ -23,29 +21,18 @@ knitr_fig_path("08-")
 
 ### Load Libraries  
 
-```{r load libraries}
+```{r load libraries, message=FALSE}
 library(tidyverse)
 library(qtl2)
 library(qtl2convert)
 #library(qtl2db)
 library(GGally)
 library(broom)
-library(knitr)
 library(corrplot)
 library(RColorBrewer)
 library(qtl2ggplot)
-
-
-
-setwd("/Users/corneb/Documents/MyJax/CS/Projects/McClatchy/data/attie/box/")
-source("/Users/corneb/Documents/MyJax/CS/Projects/McClatchy/data/attie/box/gg_transcriptome_map.R")
-source("/Users/corneb/Documents/MyJax/CS/Projects/McClatchy/github/whoatemycookie/2022.04.21/gene-expression-qtl/code/qtl_heatmap.R")
-
-
-#setwd("/projects/compsci/corneb_cs/projects/macclatchy/data/")
-#source("/projects/compsci/corneb_cs/projects/macclatchy/data/gg_transcriptome_map.R")
-#source("/projects/compsci/corneb_cs/projects/macclatchy/data/qtl_heatmap.R")
-
+source("../code/gg_transcriptome_map.R")
+source("../code/qtl_heatmap.R")
 ```
 
 ## Load Data
@@ -140,7 +127,7 @@ tmp[[i]] = lod_summary %>%
              mutate(prox = as.numeric(prox), 
                     dist = as.numeric(dist), 
                     mid = 0.5 * (prox + dist)) %>%
-             select(qtl_chr, mid, cnt)
+             dplyr::select(qtl_chr, mid, cnt)
 }
 
 trans = bind_rows(tmp[[1]], tmp[[1]], tmp[[3]], tmp[[4]])
@@ -176,7 +163,7 @@ tmp[[i]] = lod_summary %>%
              mutate(prox = as.numeric(prox), 
                     dist = as.numeric(dist), 
                     mid = 0.5 * (prox + dist)) %>%
-             select(qtl_chr, mid, cnt)
+             dplyr::select(qtl_chr, mid, cnt)
 }
 
 cis = bind_rows(tmp[[1]], tmp[[2]], tmp[[3]], tmp[[4]])
@@ -264,7 +251,7 @@ names(cis.hotspot.genes) = cis.hotspots$qtl_chr
 for(i in 1:nrow(cis.hotspots)) {
   cis.hotspot.genes[[i]] = lod_summary %>% 
                              #select(ensembl, marker.id, qtl_chr, qtl_pos, qtl_lod) %>%
-                             select(ensembl, qtl_chr, qtl_pos, qtl_lod) %>%
+                             dplyr::select(ensembl, qtl_chr, qtl_pos, qtl_lod) %>%
                              filter(qtl_lod >= 7.18) %>%
                              filter(qtl_chr == cis.hotspots$qtl_chr[i] & 
                                     qtl_pos >= cis.hotspots$proximal[i] & 
@@ -298,7 +285,7 @@ colors = colorRampPalette(rev(brewer.pal(11, "Spectral")))(length(breaks) - 1)
 for(i in 1:length(hotspot.genes)) {
   chr = names(hotspot.genes)[i]
   tmp = hotspot.genes[[i]] %>%
-    select(starts_with("DO")) %>%
+    dplyr::select(starts_with("DO")) %>%
     t() %>%
     as.matrix() %>%
     cor()

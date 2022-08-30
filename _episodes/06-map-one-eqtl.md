@@ -20,80 +20,14 @@ source: Rmd
 
 ~~~
 library(tidyverse)
-~~~
-{: .language-r}
-
-
-
-~~~
-── Attaching packages ─────────────────────────────────────── tidyverse 1.3.2 ──
-✔ ggplot2 3.3.6     ✔ purrr   0.3.4
-✔ tibble  3.1.8     ✔ dplyr   1.0.9
-✔ tidyr   1.2.0     ✔ stringr 1.4.1
-✔ readr   2.1.2     ✔ forcats 0.5.2
-── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
-✖ dplyr::filter() masks stats::filter()
-✖ dplyr::lag()    masks stats::lag()
-~~~
-{: .output}
-
-
-
-~~~
 library(qtl2)
-~~~
-{: .language-r}
-
-
-
-~~~
-
-Attaching package: 'qtl2'
-
-The following object is masked from 'package:readr':
-
-    read_csv
-~~~
-{: .output}
-
-
-
-~~~
 library(qtl2convert)
 #library(qtl2db)
 library(GGally)
-~~~
-{: .language-r}
-
-
-
-~~~
-Registered S3 method overwritten by 'GGally':
-  method from   
-  +.gg   ggplot2
-~~~
-{: .output}
-
-
-
-~~~
 library(broom)
-library(knitr)
 library(corrplot)
-~~~
-{: .language-r}
-
-
-
-~~~
-corrplot 0.92 loaded
-~~~
-{: .output}
-
-
-
-~~~
 library(RColorBrewer)
+library(knitr)
 ~~~
 {: .language-r}
 
@@ -201,7 +135,7 @@ Now lets perform the genome scan!
 
 
 ~~~
-qtl = scan1(genoprobs = genoprobs, pheno = counts[,"ENSMUSG00000020679", drop = FALSE], kinship = K, addcovar = covar, cores = 2)
+qtl = scan1(genoprobs = probs, pheno = counts[,"ENSMUSG00000020679", drop = FALSE], kinship = K, addcovar = covar, cores = 2)
 ~~~
 {: .language-r}
 
@@ -229,7 +163,9 @@ Lets find LOD peaks
 ~~~
 lod_threshold = 6
 peaks = find_peaks(scan1_output = qtl, map = map, threshold = lod_threshold, peakdrop = 4, prob = 0.95)
-kable(peaks %>% select (-lodindex) %>% arrange(chr, pos), caption = "Phenotype QTL Peaks with LOD >= 6")
+kable(peaks %>% 
+        dplyr::select(-lodindex) %>% 
+        arrange(chr, pos), caption = "Phenotype QTL Peaks with LOD >= 6")
 ~~~
 {: .language-r}
 

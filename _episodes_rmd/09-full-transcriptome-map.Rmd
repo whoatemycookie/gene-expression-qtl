@@ -5,11 +5,9 @@ exercises: 20
 questions:
 - "How do I create a full transcriptome map?"
 objectives:
-- Obtain estimated QTL effects.
-- Plot estimated QTL effects.
+- 
 keypoints:
-- "Estimated founder allele effects can be plotted from the mapping model coefficients."
-- "Additive and dominance effects can be plotted using contrasts."
+- "."
 source: Rmd
 ---
 
@@ -20,7 +18,7 @@ knitr_fig_path("09-")
 
 ### Load Libraries  
 
-```{r load libraries}
+```{r load libraries, message=FALSE}
 library(tidyverse)
 library(qtl2)
 library(qtl2convert)
@@ -32,17 +30,11 @@ library(corrplot)
 library(RColorBrewer)
 library(qtl2ggplot)
 
+BiocManager::install("biomaRt")
+library(biomaRt)
 
-
-setwd("/Users/corneb/Documents/MyJax/CS/Projects/McClatchy/data/attie/box/")
-source("/Users/corneb/Documents/MyJax/CS/Projects/McClatchy/data/attie/box/gg_transcriptome_map.R")
-source("/Users/corneb/Documents/MyJax/CS/Projects/McClatchy/github/whoatemycookie/2022.04.21/gene-expression-qtl/code/qtl_heatmap.R")
-
-
-#setwd("/projects/compsci/corneb_cs/projects/macclatchy/data/")
-#source("/projects/compsci/corneb_cs/projects/macclatchy/data/gg_transcriptome_map.R")
-#source("/projects/compsci/corneb_cs/projects/macclatchy/data/qtl_heatmap.R")
-
+source("../code/gg_transcriptome_map.R")
+source("../code/qtl_heatmap.R")
 ```
 
 ## Load Data
@@ -136,7 +128,7 @@ tmp[[i]] = lod_summary %>%
              mutate(prox = as.numeric(prox), 
                     dist = as.numeric(dist), 
                     mid = 0.5 * (prox + dist)) %>%
-             select(qtl_chr, mid, cnt)
+             dplyr::select(qtl_chr, mid, cnt)
 }
 
 trans = bind_rows(tmp[[1]], tmp[[1]], tmp[[3]], tmp[[4]])
@@ -172,7 +164,7 @@ tmp[[i]] = lod_summary %>%
              mutate(prox = as.numeric(prox), 
                     dist = as.numeric(dist), 
                     mid = 0.5 * (prox + dist)) %>%
-             select(qtl_chr, mid, cnt)
+             dplyr::select(qtl_chr, mid, cnt)
 }
 
 cis = bind_rows(tmp[[1]], tmp[[2]], tmp[[3]], tmp[[4]])
@@ -259,7 +251,7 @@ cis.hotspot.genes = as.list(cis.hotspots$qtl_chr)
 names(cis.hotspot.genes) = cis.hotspots$qtl_chr
 for(i in 1:nrow(cis.hotspots)) {
   cis.hotspot.genes[[i]] = lod_summary %>% 
-                             select(ensembl, marker.id, qtl_chr, qtl_pos, qtl_lod) %>%
+                             dplyr::select(ensembl, marker.id, qtl_chr, qtl_pos, qtl_lod) %>%
                              filter(qtl_lod >= 7.18) %>%
                              filter(qtl_chr == cis.hotspots$qtl_chr[i] & 
                                     qtl_pos >= cis.hotspots$proximal[i] & 
@@ -293,7 +285,7 @@ colors = colorRampPalette(rev(brewer.pal(11, "Spectral")))(length(breaks) - 1)
 for(i in 1:length(hotspot.genes)) {
   chr = names(hotspot.genes)[i]
   tmp = hotspot.genes[[i]] %>%
-    select(starts_with("DO")) %>%
+    dplyr::select(starts_with("DO")) %>%
     t() %>%
     as.matrix() %>%
     cor()
@@ -318,7 +310,7 @@ wave.col = as.numeric(as.factor(do.wave[,1]))
 #hotspot.genes.rns <- list()
 for(i in 1:length(hotspot.genes)) {
   tmp = hotspot.genes[[i]] %>%
-          select(starts_with("DO")) %>%
+          dplyr::select(starts_with("DO")) %>%
           as.matrix() %>%
           t() %>%
           prcomp()
@@ -328,7 +320,7 @@ for(i in 1:length(hotspot.genes)) {
   tmp = gather(data.frame(mouse = rownames(hotspot.pcs[[i]]), hotspot.pcs[[i]]), pc, value, -mouse)
   tmp$mouse <- gsub("\\.x","", tmp$mouse)
   tmp$mouse <- gsub("\\.y","", tmp$mouse)
-  tmp = left_join(tmp, pheno_clin %>% select(mouse, sex, DOwave, diet_days), by = "mouse")
+  tmp = left_join(tmp, pheno_clin %>% dplyr::select(mouse, sex, DOwave, diet_days), by = "mouse")
   print(tmp %>%
     filter(pc %in% paste0("PC", 1:4)) %>%
     mutate(DOwave = factor(DOwave)) %>%

@@ -20,79 +20,13 @@ source: Rmd
 
 ~~~
 library(tidyverse)
-~~~
-{: .language-r}
-
-
-
-~~~
-── Attaching packages ────────────────────────────────────────────── tidyverse 1.3.2 ──
-✔ ggplot2 3.3.6     ✔ purrr   0.3.4
-✔ tibble  3.1.8     ✔ dplyr   1.0.9
-✔ tidyr   1.2.0     ✔ stringr 1.4.1
-✔ readr   2.1.2     ✔ forcats 0.5.2
-── Conflicts ───────────────────────────────────────────────── tidyverse_conflicts() ──
-✖ dplyr::filter() masks stats::filter()
-✖ dplyr::lag()    masks stats::lag()
-~~~
-{: .output}
-
-
-
-~~~
 library(qtl2)
-~~~
-{: .language-r}
-
-
-
-~~~
-
-Attaching package: 'qtl2'
-
-The following object is masked from 'package:readr':
-
-    read_csv
-~~~
-{: .output}
-
-
-
-~~~
 library(qtl2convert)
 #library(qtl2db)
 library(GGally)
-~~~
-{: .language-r}
-
-
-
-~~~
-Registered S3 method overwritten by 'GGally':
-  method from   
-  +.gg   ggplot2
-~~~
-{: .output}
-
-
-
-~~~
 library(broom)
 library(knitr)
 library(corrplot)
-~~~
-{: .language-r}
-
-
-
-~~~
-corrplot 0.92 loaded
-~~~
-{: .output}
-
-
-
-~~~
 library(RColorBrewer)
 ~~~
 {: .language-r}
@@ -155,7 +89,7 @@ The marker map for each chromosome is stored in the `map` object. This is used t
 
 ### Genotype probabilities  
 
-We have already claculated genotype probabilities which we load above
+We have already calculated genotype probabilities which we load above
 
 
 ~~~
@@ -286,14 +220,16 @@ Error in align_scan1_map(scan1_output, map): object 'Ins_tAUC_qtl' not found
 
 
 ~~~
-kable(peaks %>% select (-lodindex) %>% arrange(chr, pos), caption = "Phenotype QTL Peaks with LOD >= 6")
+kable(peaks %>% 
+        dplyr::select(-lodindex) %>% 
+        arrange(chr, pos), caption = "Phenotype QTL Peaks with LOD >= 6")
 ~~~
 {: .language-r}
 
 
 
 ~~~
-Error in select(., -lodindex): object 'peaks' not found
+Error in dplyr::select(., -lodindex): object 'peaks' not found
 ~~~
 {: .error}
 

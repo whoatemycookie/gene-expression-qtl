@@ -159,7 +159,9 @@ for(i in 1:ncol(qtl)) {
 ```{r qtl_peaks}
 lod_threshold = 6
 peaks = find_peaks(scan1_output = qtl, map = map, threshold = lod_threshold, peakdrop = 4, prob = 0.95)
-kable(peaks %>% select (-lodindex) %>% arrange(chr, pos), caption = "Expression QTL (eQTL) Peaks with LOD >= 6")
+kable(peaks %>% 
+        dplyr::select(-lodindex) %>% 
+        arrange(chr, pos), caption = "Expression QTL (eQTL) Peaks with LOD >= 6")
 write_csv(peaks, "../data/gene.counts_qtl_peaks_random.csv")
 
 ```

@@ -25,11 +25,9 @@ library(qtl2convert)
 #library(qtl2db)
 library(GGally)
 library(broom)
-library(knitr)
 library(corrplot)
 library(RColorBrewer)
-
-
+library(knitr)
 ```
 
 ## Load Data
@@ -56,11 +54,7 @@ Lets check the distribution
 
 
 ```{r hist_untransformed}
-
-
 hist(counts$ENSMUSG00000020679, main = "Hnf1b")
-
-
 ```
 
 These counts are normalised
@@ -80,7 +74,6 @@ map=map
 We have already claculated genotype probabilities which we load above
 
 ```{r DOex_calc_genoprob}
-
 
 probs = genoprobs
 
@@ -130,7 +123,7 @@ Now lets perform the genome scan!
 
 ```{r QTL, warning=FALSE, error=FALSE}
 
-qtl = scan1(genoprobs = genoprobs, pheno = counts[,"ENSMUSG00000020679", drop = FALSE], kinship = K, addcovar = covar, cores = 2)
+qtl = scan1(genoprobs = probs, pheno = counts[,"ENSMUSG00000020679", drop = FALSE], kinship = K, addcovar = covar, cores = 2)
 
 ```
 
@@ -156,8 +149,9 @@ Lets find LOD peaks
 ```{r interval}
 lod_threshold = 6
 peaks = find_peaks(scan1_output = qtl, map = map, threshold = lod_threshold, peakdrop = 4, prob = 0.95)
-kable(peaks %>% select (-lodindex) %>% arrange(chr, pos), caption = "Phenotype QTL Peaks with LOD >= 6")
-
+kable(peaks %>% 
+        dplyr::select(-lodindex) %>% 
+        arrange(chr, pos), caption = "Phenotype QTL Peaks with LOD >= 6")
 ```
 
 Lets plot them:
