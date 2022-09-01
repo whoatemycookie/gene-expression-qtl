@@ -31,20 +31,6 @@ library(RColorBrewer)
 library(qtl2ggplot)
 
 BiocManager::install("biomaRt")
-~~~
-{: .language-r}
-
-
-
-~~~
-Warning: package(s) not installed when version(s) same as current; use `force = TRUE` to
-  re-install: 'biomaRt'
-~~~
-{: .warning}
-
-
-
-~~~
 library(biomaRt)
 
 source("../code/gg_transcriptome_map.R")
@@ -81,7 +67,7 @@ load("../data/dataset.islet.rnaseq.RData")
 expr.mrna <- counts
 ~~~
 {: .language-r}
-##making the transciptome map for the 50 cis/trans genes in last lesson
+##making the transcriptome map for the 50 cis/trans genes in last lesson
 
 
 Load in the LOD peaks over 6 from previous lesson.

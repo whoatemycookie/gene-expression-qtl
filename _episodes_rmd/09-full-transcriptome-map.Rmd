@@ -18,7 +18,7 @@ knitr_fig_path("09-")
 
 ### Load Libraries  
 
-```{r load libraries, message=FALSE}
+```{r load libraries, message=FALSE, warning=FALSE}
 library(tidyverse)
 library(qtl2)
 library(qtl2convert)
@@ -66,7 +66,7 @@ load("../data/dataset.islet.rnaseq.RData")
 expr.mrna <- counts
 
 ```
-##making the transciptome map for the 50 cis/trans genes in last lesson
+##making the transcriptome map for the 50 cis/trans genes in last lesson
 
 
 Load in the LOD peaks over 6 from previous lesson.
@@ -102,7 +102,6 @@ table(lod_summary$cis.trans)
 ### Plot Transcriptome Map
 
 ```{r fig.width=10,fig.height=10,warning=FALSE,message=FALSE}
-
 lod_summary = mutate(lod_summary, cis = (gene_chr == qtl_chr) & (abs(gene_start - qtl_pos) < 4))
 out.plot = ggtmap(data = lod_summary %>% filter(qtl_lod >= 7.18), cis.points = TRUE, cis.radius = 4)
 pdf("../results/transcriptome_map.pdf", width = 10, height = 10)
