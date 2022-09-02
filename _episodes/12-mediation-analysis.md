@@ -18,8 +18,13 @@ keypoints:
 
 
 
-![A non-coding SNP affects expression of gene 1 in cis. Gene 1 mediates the effect of the SNP on gene 2.](../fig/mediator-gene1.png)
+![A non-coding SNP affects expression of gene 1 in cis. Gene 1 mediates expression of gene 2.](../fig/mediator-gene1.png)
 
+![Chromosome 13 gene Akr1e1 is affected by expression in both cis and trans by genes on chromosomes 13 and 4.](../fig/LOD-plot-Akr1e1.png)
+
+![Chromosome 11 gene Myo15b is affected by expression of a trans gene in the chromosome 2 hotspot.](../fig/LOD-plot-Myo15b.png)
+
+![Mediating expression of Myo15b identifies Hnf4a as the gene that drops the LOD score from greater than 70 to less than 50.](../fig/mediation-Hnf4a-Myo15b.png)
 
 > ## Challenge: 
 >
