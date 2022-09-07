@@ -511,11 +511,17 @@ ggplot(allele.freq, aes(pos, prop, color = founder)) +
 ### QTL Scans
 
 
+
+
 ~~~
 rownames(pheno_clin_log) = pheno_clin_log$mouse
 covar = model.matrix(~sex + DOwave, data = pheno_clin_log)
 
-qtl = scan1(genoprobs = genoprobs, pheno = pheno_clin_log[,12:31, drop = FALSE], kinship = K, addcovar = covar, cores = 2)
+qtl = scan1(genoprobs = genoprobs, 
+            pheno = pheno_clin_log[,12:31, drop = FALSE], 
+            kinship = K, 
+            addcovar = covar, 
+            cores = 2)
 ~~~
 {: .language-r}
 
@@ -539,7 +545,7 @@ for(i in 1:ncol(qtl)) {
 ~~~
 lod_threshold = 6
 peaks = find_peaks(scan1_output = qtl, map = map, threshold = lod_threshold, peakdrop = 4, prob = 0.95)
-kable(peaks %>% select (-lodindex) %>% arrange(chr, pos), caption = "Phenotype QTL Peaks with LOD >= 6")
+kable(peaks %>% dplyr::select (-lodindex) %>% arrange(chr, pos), caption = "Phenotype QTL Peaks with LOD >= 6")
 ~~~
 {: .language-r}
 

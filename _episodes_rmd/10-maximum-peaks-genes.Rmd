@@ -16,3 +16,6 @@ source("../bin/chunk-options.R")
 knitr_fig_path("10-")
 ```
 
+![LOD plot for gene Hnf1b.](../fig/LOD-plot-Hnf1b.png)
+
+![SNP association plot for gene Hnf1b.](../fig/SNP-association-Hnf1b.png)

@@ -22,14 +22,12 @@ source: Rmd
 library(tidyverse)
 library(qtl2)
 library(qtl2convert)
-#library(qtl2db)
 library(GGally)
 library(broom)
 library(knitr)
 library(corrplot)
 library(RColorBrewer)
 library(qtl2ggplot)
-
 
 source("../code/gg_transcriptome_map.R")
 source("../code/qtl_heatmap.R")
@@ -40,15 +38,15 @@ source("../code/qtl_heatmap.R")
 
 
 ~~~
-#expression data
+# expression data
 load("../data/attie_DO500_expr.datasets.RData")
 
-##mapping data
+# mapping data
 load("../data/attie_DO500_mapping.data.RData")
 
 probs <- readRDS("../data/attie_DO500_genoprobs_qtlviewer_8state_69k.rds")
 
-##phenotypes
+# phenotypes
 load("../data/attie_DO500_clinical.phenotypes.RData")
 ~~~
 {: .language-r}
@@ -85,7 +83,7 @@ The marker map for each chromosome is stored in the `map` object. This is used t
 
 ### Genotype probabilities  
 
-We have already claculated genotype probabilities which we load above
+We have already calculated genotype probabilities which we load above
 
 
 
@@ -114,29 +112,27 @@ Pick 50 random genes (cis and trans genes)
 
 
 ~~~
-#rm(pheno_clin_std, outliers, ins_secr_raw)
-#rownames(pheno_clin_log) = pheno_clin_log$mouse
-#covar = model.matrix(~sex + DOwave, data = pheno_clin_log)
 genes = colnames(counts)
 chr11 = which(genes=="ENSMUSG00000020679")
 genes = genes[-chr11]
 
 sams <- sample(length(genes), 50, replace = FALSE, prob = NULL)
-#sams <- c("ENSMUSG00000020679", genes[sams])
 genes <- genes[c(chr11, sams)]
 
-
-#takes around 10 minutes
-
 qtl.file = "../data/gene.counts_qtl_cis.trans_random.rds"
+
 qtl = NULL
+
 if(file.exists(qtl.file)) {
   qtl = readRDS(qtl.file)
-} else {
-  qtl = scan1(genoprobs = probs, pheno = counts[,genes, drop = FALSE], kinship = K, addcovar = covar, cores = 2)
-  #qtl = scan1(genoprobs = genoprobs, pheno = pheno_clin_log[,pheno2keep$short_name, drop = FALSE], kinship = K, addcovar = covar, cores = 2)
-  saveRDS(qtl, file = qtl.file)
-}
+  } else {
+    qtl = scan1(genoprobs = probs, 
+                pheno = counts[,genes, drop = FALSE],
+                kinship = K, 
+                addcovar = covar, 
+                cores = 2)
+    saveRDS(qtl, file = qtl.file)
+    }
 ~~~
 {: .language-r}
 
@@ -144,12 +140,13 @@ if(file.exists(qtl.file)) {
 
 
 ~~~
-#qtl = as.data.frame(qtl.file)
-
 for(i in 1:ncol(qtl)) {
-  plot_scan1(x = qtl, map = map, lodcolumn = i, main = colnames(qtl)[i])
+  plot_scan1(x = qtl, 
+             map = map, 
+             lodcolumn = i, 
+             main = colnames(qtl)[i])
   abline(h = 6, col = 2, lwd = 2)
-}
+  }
 ~~~
 {: .language-r}
 
@@ -160,7 +157,11 @@ for(i in 1:ncol(qtl)) {
 
 ~~~
 lod_threshold = 6
-peaks = find_peaks(scan1_output = qtl, map = map, threshold = lod_threshold, peakdrop = 4, prob = 0.95)
+peaks = find_peaks(scan1_output = qtl, 
+                   map = map, 
+                   threshold = lod_threshold, 
+                   peakdrop = 4, 
+                   prob = 0.95)
 kable(peaks %>% 
         dplyr::select(-lodindex) %>% 
         arrange(chr, pos), caption = "Expression QTL (eQTL) Peaks with LOD >= 6")
@@ -295,8 +296,14 @@ write_csv(peaks, "../data/gene.counts_qtl_peaks_random.csv")
 
 ~~~
 peaks = peaks %>%
-arrange(lodcolumn)
-plot_peaks(peaks, map, col = c("blue","red"), lwd = 3, tick_height = 0.8, gap = 0, main = "LOD > 6")
+  arrange(lodcolumn)
+plot_peaks(peaks, 
+           map, 
+           col = c("blue","red"), 
+           lwd = 3, 
+           tick_height = 0.8, 
+           gap = 0, 
+           main = "LOD > 6")
 box()
 ~~~
 {: .language-r}
@@ -304,7 +311,10 @@ box()
 <img src="../fig/rmd-07-qtl_peaks_figure-1.png" alt="plot of chunk qtl_peaks_figure" width="612" style="display: block; margin: auto;" />
 
 ~~~
-ggplot_peaks(peaks, map, col = c("blue","red"), legend.title = "LOD > 6") 
+ggplot_peaks(peaks, 
+             map, 
+             col = c("blue","red"), 
+             legend.title = "LOD > 6") 
 ~~~
 {: .language-r}
 

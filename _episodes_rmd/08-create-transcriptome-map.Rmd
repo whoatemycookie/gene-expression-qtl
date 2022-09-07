@@ -25,7 +25,6 @@ knitr_fig_path("08-")
 library(tidyverse)
 library(qtl2)
 library(qtl2convert)
-#library(qtl2db)
 library(GGally)
 library(broom)
 library(corrplot)
@@ -39,30 +38,21 @@ source("../code/qtl_heatmap.R")
 
 ```{r load_dependencies}
 
-#expression data
+# expression data
 load("../data/attie_DO500_expr.datasets.RData")
 
-##mapping data
+# mapping data
 load("../data/attie_DO500_mapping.data.RData")
 
 probs <- readRDS("../data/attie_DO500_genoprobs_qtlviewer_8state_69k.rds")
 
-##phenotypes
+# phenotypes
 load("../data/attie_DO500_clinical.phenotypes.RData")
 
-##loading previous results
+# loading previous results
 load("../data/dataset.islet.rnaseq.RData")
 
-#annot.samples = dataset.islet.rnaseq$samples
-#names(annot.samples)[1] <- c("Mouse.ID")
-#annot.samples$Mouse.ID = gsub("[^[:alnum:]]", "", annot.samples$Mouse.ID)
-
-#annot.mrna = dataset.islet.rnaseq$annots
-#names(annot.mrna)[1] = c("id")
-#annot.mrna = annot.mrna %>% dplyr::rename(ensembl = id)
-
 expr.mrna <- counts
-
 ```
 ##making the transciptome map for the 50 cis/trans genes in last lesson
 
@@ -72,29 +62,33 @@ Load in the LOD peaks over 6 from previous lesson.
 ```{r lod_summary,warning=FALSE,message=FALSE}
 
 lod_summary = read.csv("../data/gene.counts_qtl_peaks_random.csv")
-lod_summary$marker.id <- paste0(lod_summary$chr,"_", lod_summary$pos*1000000)
+lod_summary$marker.id <- paste0(lod_summary$chr,
+                                "_",
+                                lod_summary$pos * 1000000)
 
 ensembl = get_ensembl_genes()
 id    = ensembl$gene_id
 chr   = seqnames(ensembl)
 start = start(ensembl) * 1e-6
 end   = end(ensembl)   * 1e-6
-df = data.frame(ensembl = id, gene_chr = chr, gene_start = start, gene_end = end,
-     stringsAsFactors = F)
+df = data.frame(ensembl = id, 
+                gene_chr = chr, 
+                gene_start = start, 
+                gene_end = end,
+                stringsAsFactors = F)
 colnames(lod_summary)[colnames(lod_summary) == "lodcolumn"] = "ensembl"
 colnames(lod_summary)[colnames(lod_summary) == "chr"] = "qtl_chr"
 colnames(lod_summary)[colnames(lod_summary) == "pos"] = "qtl_pos"
 colnames(lod_summary)[colnames(lod_summary) == "lod"] = "qtl_lod"
 lod_summary = left_join(lod_summary, df, by = "ensembl")
-lod_summary = mutate(lod_summary, gene_chr = factor(gene_chr, levels = c(1:19, "X")),
+lod_summary = mutate(lod_summary, 
+                     gene_chr = factor(gene_chr, levels = c(1:19, "X")),
                      qtl_chr = factor(qtl_chr, levels = c(1:19, "X")))
 rm(df)
 
-## summary:
-
+# summary:
 lod_summary$cis.trans <- ifelse(lod_summary$qtl_chr == lod_summary$gene_chr, "cis", "trans")
 table(lod_summary$cis.trans)
-
 ```
 
 
@@ -102,8 +96,13 @@ table(lod_summary$cis.trans)
 
 ```{r fig.width=10,fig.height=10,warning=FALSE,message=FALSE}
 
-lod_summary = mutate(lod_summary, cis = (gene_chr == qtl_chr) & (abs(gene_start - qtl_pos) < 4))
-out.plot = ggtmap(data = lod_summary %>% filter(qtl_lod >= 7.18), cis.points = TRUE, cis.radius = 4)
+lod_summary = mutate(lod_summary, 
+                     cis = (gene_chr == qtl_chr) &
+                       (abs(gene_start - qtl_pos) < 4))
+out.plot = ggtmap(data = lod_summary %>% 
+                    filter(qtl_lod >= 7.18), 
+                  cis.points = TRUE, 
+                  cis.radius = 4)
 pdf("../results/transcriptome_map_random.pdf", width = 10, height = 10)
 out.plot
 dev.off()
@@ -113,24 +112,31 @@ out.plot
 ### QTL Density Plot
 
 ```{r trans_eqtl_sliding_window,warning=FALSE,message=FALSE}
-breaks = matrix(c(seq(0, 200, 4), seq(1, 201, 4), seq(2, 202, 4), seq(3, 203, 4)), ncol = 4)
+breaks = matrix(c(seq(0, 200, 4), 
+                  seq(1, 201, 4), 
+                  seq(2, 202, 4), 
+                  seq(3, 203, 4)), 
+                ncol = 4)
 tmp = as.list(1:ncol(breaks)) 
 for(i in 1:ncol(breaks)) {
-tmp[[i]] = lod_summary %>%
-             filter(qtl_lod >= 7.18 & cis == FALSE) %>%
-             arrange(qtl_chr, qtl_pos) %>%
-             group_by(qtl_chr) %>%
-             mutate(win = cut(qtl_pos, breaks = breaks[,i])) %>%
-             group_by(qtl_chr, win) %>% 
-             summarize(cnt = n()) %>%
-             separate(win, into = c("other", "prox", "dist")) %>%
-             mutate(prox = as.numeric(prox), 
-                    dist = as.numeric(dist), 
-                    mid = 0.5 * (prox + dist)) %>%
-             dplyr::select(qtl_chr, mid, cnt)
-}
+  tmp[[i]] = lod_summary %>%
+    filter(qtl_lod >= 7.18 & cis == FALSE) %>%
+    arrange(qtl_chr, qtl_pos) %>%
+    group_by(qtl_chr) %>%
+    mutate(win = cut(qtl_pos, breaks = breaks[,i])) %>%
+    group_by(qtl_chr, win) %>%
+    summarize(cnt = n()) %>%
+    separate(win, into = c("other", "prox", "dist")) %>%
+    mutate(prox = as.numeric(prox),
+           dist = as.numeric(dist),
+           mid = 0.5 * (prox + dist)) %>%
+    dplyr::select(qtl_chr, mid, cnt)
+  }
 
-trans = bind_rows(tmp[[1]], tmp[[1]], tmp[[3]], tmp[[4]])
+trans = bind_rows(tmp[[1]], 
+                  tmp[[1]], 
+                  tmp[[3]], 
+                  tmp[[4]])
 rm(tmp)
 
 out.plot = ggplot(trans, aes(mid, cnt)) +
@@ -149,7 +155,11 @@ out.plot
 ```
 
 ```{r cis_eqtl_sliding_window,warning=FALSE,message=FALSE}
-breaks = matrix(c(seq(0, 200, 4), seq(1, 201, 4), seq(2, 202, 4), seq(3, 203, 4)), ncol = 4)
+breaks = matrix(c(seq(0, 200, 4), 
+                  seq(1, 201, 4), 
+                  seq(2, 202, 4), 
+                  seq(3, 203, 4)), 
+                ncol = 4)
 tmp = as.list(1:ncol(breaks)) 
 for(i in 1:ncol(breaks)) {
 tmp[[i]] = lod_summary %>%
@@ -213,7 +223,6 @@ kable(hotspots, caption = "Islet trans-eQTL hotspots")
 ```{r select_cis_eqtl_hotspots}
 cis.hotspots = cis %>%
              group_by(qtl_chr) %>%
-             #filter(cnt >= 100) %>%
              summarize(center = median(mid)) %>%
              mutate(proximal = center - 2, distal = center + 2)
 kable(cis.hotspots, caption = "Islet cis-eQTL hotspots")
@@ -225,16 +234,17 @@ Given the hotspot locations, retain all genes with LOD > 7.18 and trans-eQTL wit
 hotspot.genes = as.list(hotspots$qtl_chr)
 names(hotspot.genes) = hotspots$qtl_chr
 for(i in 1:nrow(hotspots)) {
-  hotspot.genes[[i]] = lod_summary %>% 
-                         filter(qtl_lod >= 7.18) %>%
-                         filter(qtl_chr == hotspots$qtl_chr[i] & 
+  hotspot.genes[[i]] = lod_summary %>%
+    filter(qtl_lod >= 7.18) %>%
+    filter(qtl_chr == hotspots$qtl_chr[i] & 
                            qtl_pos >= hotspots$proximal[i] & 
                            qtl_pos <= hotspots$distal[i] &
                            (gene_chr != hotspots$qtl_chr[i] |
                            (gene_chr == hotspots$qtl_chr[i] &
                             gene_start > hotspots$distal[i] + 1 &
                             gene_end < hotspots$proximal[i] - 1)))
-  write_csv(hotspot.genes[[i]], file = paste0("../results/chr", names(hotspot.genes)[i], "_hotspot_genes_random.csv"))
+  write_csv(hotspot.genes[[i]], file = paste0("../results/chr",
+                                              names(hotspot.genes)[i], "_hotspot_genes_random.csv"))
 }
 ```
 
@@ -249,21 +259,23 @@ kable(hotspots, caption = "Number of genes per hotspot")
 cis.hotspot.genes = as.list(cis.hotspots$qtl_chr)
 names(cis.hotspot.genes) = cis.hotspots$qtl_chr
 for(i in 1:nrow(cis.hotspots)) {
-  cis.hotspot.genes[[i]] = lod_summary %>% 
-                             #select(ensembl, marker.id, qtl_chr, qtl_pos, qtl_lod) %>%
-                             dplyr::select(ensembl, qtl_chr, qtl_pos, qtl_lod) %>%
-                             filter(qtl_lod >= 7.18) %>%
-                             filter(qtl_chr == cis.hotspots$qtl_chr[i] & 
-                                    qtl_pos >= cis.hotspots$proximal[i] & 
-                                    qtl_pos <= cis.hotspots$distal[i])
-  write_csv(cis.hotspot.genes[[i]], file = paste0("../results/chr", names(cis.hotspot.genes)[i], "_cis_hotspot_genes_random.csv"))
-}
+  cis.hotspot.genes[[i]] = lod_summary %>%
+    dplyr::select(ensembl, qtl_chr, qtl_pos, qtl_lod) %>%
+    filter(qtl_lod >= 7.18) %>%
+    filter(qtl_chr == cis.hotspots$qtl_chr[i] &
+             qtl_pos >= cis.hotspots$proximal[i] &
+             qtl_pos <= cis.hotspots$distal[i])
+  write_csv(cis.hotspot.genes[[i]], 
+            file = paste0("../results/chr",
+                          names(cis.hotspot.genes)[i], "_cis_hotspot_genes_random.csv"))
+  }
 ```
 
 Number of genes in each cis-hotspot.
 
 ```{r num_cis_hotspot_genes}
-cis.hotspots = data.frame(cis.hotspots, count = sapply(cis.hotspot.genes, nrow))
+cis.hotspots = data.frame(cis.hotspots, 
+                          count = sapply(cis.hotspot.genes, nrow))
 kable(cis.hotspots, caption = "Number of genes per cis-hotspot")
 ```
 
@@ -271,8 +283,11 @@ Get the expression of genes that map to each hotspot.
 
 ```{r get_hotspot_genes, warning=FALSE}
 for(i in 1:length(hotspot.genes)) {
-  tmp = data.frame(ensembl = hotspot.genes[[i]]$ensembl, t(expr.mrna[,hotspot.genes[[i]]$ensembl]))
-  hotspot.genes[[i]] = left_join(hotspot.genes[[i]], tmp, by = "ensembl")
+  tmp = data.frame(ensembl = hotspot.genes[[i]]$ensembl,
+                   t(expr.mrna[,hotspot.genes[[i]]$ensembl]))
+  hotspot.genes[[i]] = left_join(hotspot.genes[[i]], 
+                                 tmp, 
+                                 by = "ensembl")
   write_csv(hotspot.genes[[i]], path = paste0("../results/chr", names(hotspot.genes)[i], "_hotspot_genes_random.csv"))
 }
 ```

@@ -15,3 +15,6 @@ source: Rmd
 
 
 
+![LOD plot for gene Hnf1b.](../fig/LOD-plot-Hnf1b.png)
+
+![SNP association plot for gene Hnf1b.](../fig/SNP-association-Hnf1b.png)

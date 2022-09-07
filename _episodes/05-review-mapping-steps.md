@@ -22,7 +22,6 @@ source: Rmd
 library(tidyverse)
 library(qtl2)
 library(qtl2convert)
-#library(qtl2db)
 library(GGally)
 library(broom)
 library(knitr)
@@ -35,10 +34,10 @@ library(RColorBrewer)
 
 
 ~~~
-##phenotypes
+# phenotypes
 load("../data/attie_DO500_clinical.phenotypes.RData")
 
-##mapping data
+# mapping data
 load("../data/attie_DO500_mapping.data.RData")
 
 genoprobs <- readRDS("../data/attie_DO500_genoprobs_qtlviewer_8state_69k.rds")
@@ -126,7 +125,6 @@ The kinship matrix has already been calculated and loaded in above
 
 ~~~
 n_samples <- 50
-
 heatmap(K[[1]][1:n_samples, 1:n_samples])
 ~~~
 {: .language-r}
@@ -162,7 +160,6 @@ Lets plot it
 
 
 ~~~
-#pdf("qtl_mapping_insulin.tauc.pdf", width=11, height=8)
 plot_scan1(x = Ins_tAUC_qtl, map = map, lodcolumn = "Ins_tAUC_log")
 ~~~
 {: .language-r}
@@ -187,13 +184,6 @@ Error in plot_scan1(x = Ins_tAUC_qtl, map = map, lodcolumn = "Ins_tAUC_log"): ob
 Error in int_abline(a = a, b = b, h = h, v = v, untf = untf, ...): plot.new has not been called yet
 ~~~
 {: .error}
-
-
-
-~~~
-#dev.off()
-~~~
-{: .language-r}
 
 ### [Performing a permutation test](https://smcclatchy.github.io/mapping/10-perform-perm-test/) 
 

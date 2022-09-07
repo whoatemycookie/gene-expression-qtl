@@ -22,27 +22,23 @@ knitr_fig_path("05-")
 library(tidyverse)
 library(qtl2)
 library(qtl2convert)
-#library(qtl2db)
 library(GGally)
 library(broom)
 library(knitr)
 library(corrplot)
 library(RColorBrewer)
-
 ```
 
 ## Load Data
 
 ```{r load_dependencies}
-
-##phenotypes
+# phenotypes
 load("../data/attie_DO500_clinical.phenotypes.RData")
 
-##mapping data
+# mapping data
 load("../data/attie_DO500_mapping.data.RData")
 
 genoprobs <- readRDS("../data/attie_DO500_genoprobs_qtlviewer_8state_69k.rds")
-
 ```
 
 ### Phenotypes
@@ -54,25 +50,19 @@ Lets check the distribution
 
 
 ```{r hist_untransformed}
-
 hist(pheno_clin$Ins_tAUC, main = "insulin tAUC")
-
 ```
 
 Apply the `log()` function to this data.
 
 ```{r log_transform}
-
 pheno_clin$Ins_tAUC_log <- log(pheno_clin$Ins_tAUC)
-
 ```
 
 Now, lets make a histogram of the log-transformed data.
 
 ```{r hist_log_transform}
-
 hist(pheno_clin$Ins_tAUC_log, main = "insulin tAUC (log-transformed)")
-
 ```
 
 This looks much better!
@@ -82,9 +72,7 @@ This looks much better!
 The marker map for each chromosome is stored in the `map` object. This is used to plot the LOD scores calculated at each marker during QTL mapping.  Here we are using the 69K grid marker file
 
 ```{r map information, include=FALSE}
-
 map=map
-
 ```
 
 ### Genotype probabilities  
@@ -92,22 +80,15 @@ map=map
 We have already calculated genotype probabilities which we load above
 
 ```{r DOex_calc_genoprob}
-
-
 probs = genoprobs
-
 ```
 
 ```{r dim_probs}
-
 dim(probs[[1]])
-
 ```
 
 ```{r geno_plot, fig.width=8, fig.height=6}
-
 plot_genoprob(probs, map, ind = 1, chr = 1)
-
 ```
 
 ### [Kinship Matrix](https://smcclatchy.github.io/mapping/04-calc-kinship/)
@@ -116,11 +97,8 @@ The kinship matrix has already been calculated and loaded in above
 
 
 ```{r kinship_probs, fig.width=8, fig.height=8}
-
 n_samples <- 50
-
 heatmap(K[[1]][1:n_samples, 1:n_samples])
-
 ```
 
 ### Covariates    
@@ -128,20 +106,17 @@ heatmap(K[[1]][1:n_samples, 1:n_samples])
 Now lets add the necessary covariates. For these analysis, lets see which covariates are significant (???)
 
 ```{r covariates}
-
 # convert sex and DO wave (batch) to factors
 pheno_clin$sex = factor(pheno_clin$sex)
 pheno_clin$DOwave = factor(pheno_clin$DOwave)
 
 covar = model.matrix(~sex + DOwave, data = pheno_clin)
-
 ```
 ### [Performing a genome scan](https://smcclatchy.github.io/mapping/06-perform-genome-scan/) 
 
 Now lets perform the genome scan!
 
 ```{r QTL, warning=FALSE, eval=FALSE}
-
 Ins_tAUC_qtl = scan1(genoprobs = probs, pheno = pheno_clin[,"Ins_tAUC_log", drop = FALSE], kinship = K, addcovar = covar, cores = 2)
 ```
 
@@ -150,11 +125,8 @@ Lets plot it
 
 
 ```{r qtl_plot, fig.width=8, fig.height=6, warning=FALSE}
-#pdf("qtl_mapping_insulin.tauc.pdf", width=11, height=8)
 plot_scan1(x = Ins_tAUC_qtl, map = map, lodcolumn = "Ins_tAUC_log")
   abline(h = 6, col = 2, lwd = 2)
-#dev.off()
-
 ```
 
 ### [Performing a permutation test](https://smcclatchy.github.io/mapping/10-perform-perm-test/) 
@@ -171,7 +143,6 @@ peaks = find_peaks(scan1_output = Ins_tAUC_qtl, map = map, threshold = lod_thres
 kable(peaks %>% 
         dplyr::select(-lodindex) %>% 
         arrange(chr, pos), caption = "Phenotype QTL Peaks with LOD >= 6")
-
 ```
 
 Lets plot them:

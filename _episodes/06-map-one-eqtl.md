@@ -22,7 +22,6 @@ source: Rmd
 library(tidyverse)
 library(qtl2)
 library(qtl2convert)
-#library(qtl2db)
 library(GGally)
 library(broom)
 library(corrplot)
@@ -35,15 +34,15 @@ library(knitr)
 
 
 ~~~
-#expression data
+# expression data
 load("../data/attie_DO500_expr.datasets.RData")
 
-##mapping data
+# mapping data
 load("../data/attie_DO500_mapping.data.RData")
 
 genoprobs <- readRDS("../data/attie_DO500_genoprobs_qtlviewer_8state_69k.rds")
 
-##phenotypes
+# phenotypes
 load("../data/attie_DO500_clinical.phenotypes.RData")
 ~~~
 {: .language-r}
@@ -109,7 +108,6 @@ The kinship matrix has already been calculated and loaded in above
 
 ~~~
 n_samples <- 50
-
 heatmap(K[[1]][1:n_samples, 1:n_samples])
 ~~~
 {: .language-r}
@@ -135,7 +133,11 @@ Now lets perform the genome scan!
 
 
 ~~~
-qtl = scan1(genoprobs = probs, pheno = counts[,"ENSMUSG00000020679", drop = FALSE], kinship = K, addcovar = covar, cores = 2)
+qtl = scan1(genoprobs = probs, 
+            pheno = counts[,"ENSMUSG00000020679", drop = FALSE], 
+            kinship = K, 
+            addcovar = covar, 
+            cores = 2)
 ~~~
 {: .language-r}
 
@@ -144,8 +146,11 @@ Lets plot it
 
 
 ~~~
-plot_scan1(x = qtl, map = map, lodcolumn = "ENSMUSG00000020679", main = colnames(qtl))
-  abline(h = 6, col = 2, lwd = 2)
+plot_scan1(x = qtl, 
+           map = map, 
+           lodcolumn = "ENSMUSG00000020679", 
+           main = colnames(qtl))
+abline(h = 6, col = 2, lwd = 2)
 ~~~
 {: .language-r}
 
@@ -162,7 +167,10 @@ Lets find LOD peaks
 
 ~~~
 lod_threshold = 6
-peaks = find_peaks(scan1_output = qtl, map = map, threshold = lod_threshold, peakdrop = 4, prob = 0.95)
+peaks = find_peaks(scan1_output = qtl, 
+                   map = map, 
+                   threshold = lod_threshold, 
+                   peakdrop = 4, prob = 0.95)
 kable(peaks %>% 
         dplyr::select(-lodindex) %>% 
         arrange(chr, pos), caption = "Phenotype QTL Peaks with LOD >= 6")
