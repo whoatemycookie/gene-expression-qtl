@@ -16,30 +16,38 @@ source("../bin/chunk-options.R")
 knitr_fig_path("05-")
 ```
 
+In this tutorial, we are going to use the gene expression data as our phenotype to map QTLs.  That is, we are looking to find any QTLs (cis or trans) that are responsible for variation in gene expression across samples.  
+
+We are using the same directory as our previous tutorial, which you can check by typing `getwd()` in the Console.  If you are not in the correct directory, type in `setwd(???)` in the console or Session -> Set Working Directory -> Choose Directory in the RStudio menu to set your working directory to the main directory. 
+
+Let's load in the libraries. If are using the same R session as the previous lesson, you will not need load these libraries in again.  
 
 ### Load Libraries  
 
 ```{r load libraries, message=FALSE}
+# SHOULD WE SHOW THIS OR WILL THESE LOADED IN ALREADY ?????
 library(tidyverse)
+library(knitr)
+library(GGally)
+library(corrplot)
+library(broom)
 library(qtl2)
 library(qtl2convert)
-library(GGally)
-library(broom)
-library(corrplot)
+library(qtl2ggplot)
 library(RColorBrewer)
-library(knitr)
 ```
-
 
 ### Load Data
 
-Let's load the data. This time we are loading gene expression for `21,771` genes.  
+Let's load the data. This time we are loading gene expression data for `21,771` genes: `attie_DO500_expr.datasets.RData` that includes normalised and raw gene expression data.  
 
 ```{r load_dependencies}
 
 #expression data
 load("../data/attie_DO500_expr.datasets.RData")
-load("../data/dataset.islet.rnaseq.RData")
+
+#previous data
+#load("../data/dataset.islet.rnaseq.RData")
 
 ##phenotypes
 load("../data/attie_DO500_clinical.phenotypes.RData")
@@ -54,49 +62,45 @@ probs = readRDS("../data/attie_DO500_genoprobs_v5.rds")
 
 ### Expression Data
 
-Gene expression information is in the `norm` data object. These  counts have been normalised which has been explianed in a previous lesson [link???]. Because we are 
-working with `insulin tAUC` phenotype, let's map the expression counts for 
-`Hnf1b` which is known to influence this phenotype is these data. Before we do, 
-let's check the distribution for `Hnf1b` expression data.
+Raw gene expression counts are in the `counts` data object. These counts have been normalised and saved in the `norm` data object. More information is about normalisation is [here](https://whoatemycookie.github.io/gene-expression-qtl/03-load-explore-data/index.html#gene-expression-phenotypes). 
 
-!! ADD here are about normalisation !!
+Because we are working with the `insulin tAUC` phenotype, let's map the expression counts for `Hnf1b` which is known to influence this phenotype is these data. 
+
+Before we do, let's check the distribution for `Hnf1b` expression data.  Here is the distribution of the raw counts:
 
 
 ```{r hist_untransformed}
 hist(counts$ENSMUSG00000020679, main = "Hnf1b")
 ```
 
-The histogram indicates that distribution of these counts are normalised.
+and here is the distribution of the normalised counts:
+
+
+```{r hist_transformed}
+hist(norm$ENSMUSG00000020679, main = "Hnf1b")
+```
+
+The histogram indicates that distribution of these counts are normalised.  
 
 
 ### The Marker Map  
 
-The marker map for each chromosome is stored in the `map` object. This is used 
-to plot the LOD scores calculated at each marker during QTL mapping.  Here we 
-are using the 69K grid marker file.  
-
-We are using the same marker map as in the previous [lesson](https://smcclatchy.github.io/gene-expression-qtl/05-review-mapping-steps/index.html#the-marker-map)
+We are using the same marker map as in the previous [lesson](https://smcclatchy.github.io/gene-expression-qtl/04-review-mapping-steps/index.html#the-marker-map)
 
 
 ### Genotype probabilities  
 
-We have already calculated genotype probabilities which we loaded above called 
-`probs`.  This contains the 8 state genotype probabilities using the 69k grid 
-map of the same 500 DO mice that also have clinical phenotypes. 
-
-We have explored this earlier in th previous [lesson](https://smcclatchy.github.io/gene-expression-qtl/05-review-mapping-steps/index.html#genotype-probabilities)
+We have already calculated genotype probabilities which we loaded above called `probs`.  This contains the 8 state genotype probabilities using the 69k grid  map of the same 500 DO mice that also have clinical phenotypes. We have explored this earlier in th previous [lesson](https://smcclatchy.github.io/gene-expression-qtl/04-review-mapping-steps/index.html#genotype-probabilities)
 
 
 ### [Kinship Matrix](https://smcclatchy.github.io/mapping/04-calc-kinship/)
 
-The kinship matrix has already been calculated and loaded in above.  Again, we 
-have explored this in the previous [lesson](https://smcclatchy.github.io/gene-expression-qtl/05-review-mapping-steps/index.html#kinship-matrix)
+The kinship matrix has already been calculated and loaded in above.  Again, we have explored this in the previous [lesson](https://smcclatchy.github.io/gene-expression-qtl/04-review-mapping-steps/index.html#kinship-matrix)
 
 
 ### Covariates    
 
-Now let's add the necessary covariates. For `Hnf1b` expression data, let's see 
-which covariates are significant.
+Now let's add the necessary covariates. For `Hnf1b` expression data, let's see which covariates are significant.
 
 ```{r covariates sig}
 
@@ -134,9 +138,7 @@ rm(tmp)
 
 ```
 
-We can see that sex, DOwave and diet are significant.  Here DOwave is the group 
-or batch number as not all mice were submitted for genotyping at the same time.  
-Because of this, we now have to correct for it.
+We can see that sex, DOwave and diet are significant.  Here DOwave is the group or batch number as not all mice were submitted for genotyping at the same time.  Because of this, we now have to correct for it.
 
 
 ```{r covariates}
@@ -191,12 +193,12 @@ kable(peaks %>%
 
 > ## Challenge
 > Now choose another gene expression trait in `norm` data object and perform 
-> the same steps.  
-> 1). Check the distribution. Does it need transforming? 
-> 2). Are there any sex, batch, diet effects? 
-> 3). Run a genome scan with the genotype probabilities and kinship provided.  
-> 4). Plot the genome scan for this gene.
-> 5). Find the peaks above LOD score of 6.  
+> the same steps.   
+> 1). Check the distribution of the raw counts and normalised counts
+> 2). Are there any sex, batch, diet effects?   
+> 3). Run a genome scan with the genotype probabilities and kinship provided.   
+> 4). Plot the genome scan for this gene.   
+> 5). Find the peaks above LOD score of 6.   
 >
 > > ## Solution
 > > 
