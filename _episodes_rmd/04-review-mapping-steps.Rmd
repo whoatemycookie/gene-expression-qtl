@@ -20,7 +20,7 @@ Before we begin to run QTL mapping on gene expression data to find eQTLs, let's 
 
 Make sure that you are in your main directory. If you’re not sure where you are working right now, you can check your working directory with `getwd()`. If you are not in your main directory, run `setwd("????")` in the Console or Session -> Set Working Directory -> Choose Directory in the RStudio menu to set your working directory to the main directory.
 
-Once you are in your scripts directory, create a new R script with File -> New File -> R script, or use the +document icon at upper left.
+Once you are in your main directory, create a new R script with File -> New File -> R script, or use the +document icon at upper left.
 
 In case you need a little help with some of these steps, a link is provided with links back to the original lesson, if available. 
 
@@ -34,13 +34,13 @@ Below are the neccessary libraries that we require for this review and the follo
 # SHOULD WE SHOW THIS OR WILL THESE LOADED IN ALREADY ?????
 library(tidyverse)
 library(knitr)
-#library(GGally)
-#library(corrplot)
-#library(broom)
+library(GGally)
+library(corrplot)
+library(broom)
 library(qtl2)
-#library(qtl2convert)
-#library(qtl2ggplot)
-#library(RColorBrewer)
+library(qtl2convert)
+library(qtl2ggplot)
+library(RColorBrewer)
 
 ```
 

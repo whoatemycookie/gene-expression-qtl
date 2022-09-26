@@ -19,7 +19,7 @@ Before we begin to run QTL mapping on gene expression data to find eQTLs, let's 
 
 Make sure that you are in your main directory. If you’re not sure where you are working right now, you can check your working directory with `getwd()`. If you are not in your main directory, run `setwd("????")` in the Console or Session -> Set Working Directory -> Choose Directory in the RStudio menu to set your working directory to the main directory.
 
-Once you are in your scripts directory, create a new R script with File -> New File -> R script, or use the +document icon at upper left.
+Once you are in your main directory, create a new R script with File -> New File -> R script, or use the +document icon at upper left.
 
 In case you need a little help with some of these steps, a link is provided with links back to the original lesson, if available. 
 
@@ -33,13 +33,13 @@ Below are the neccessary libraries that we require for this review and the follo
 # SHOULD WE SHOW THIS OR WILL THESE LOADED IN ALREADY ?????
 library(tidyverse)
 library(knitr)
-#library(GGally)
-#library(corrplot)
-#library(broom)
+library(GGally)
+library(corrplot)
+library(broom)
 library(qtl2)
-#library(qtl2convert)
-#library(qtl2ggplot)
-#library(RColorBrewer)
+library(qtl2convert)
+library(qtl2ggplot)
+library(RColorBrewer)
 ~~~
 {: .language-r}
 
@@ -181,23 +181,6 @@ tmp = tmp %>%
   mutate(model = map(data, mod_fxn)) %>%
   mutate(summ = map(model, tidy)) %>%
   unnest(summ) 
-~~~
-{: .language-r}
-
-
-
-~~~
-Error in `mutate()`:
-! Problem while computing `summ = map(model, tidy)`.
-ℹ The error occurred in group 1: phenotype = "Ins_tAUC_log".
-Caused by error in `as_mapper()`:
-! object 'tidy' not found
-~~~
-{: .error}
-
-
-
-~~~
 #  kable(tmp, caption = "Effects of Sex, Wave & Diet Days on Phenotypes")
 
 tmp
@@ -207,11 +190,18 @@ tmp
 
 
 ~~~
-# A tibble: 1 × 2
+# A tibble: 7 × 8
 # Groups:   phenotype [1]
-  phenotype    data              
-  <chr>        <list>            
-1 Ins_tAUC_log <tibble [500 × 5]>
+  phenotype    data               model  term  estimate std.e…¹ stati…²  p.value
+  <chr>        <list>             <list> <chr>    <dbl>   <dbl>   <dbl>    <dbl>
+1 Ins_tAUC_log <tibble [500 × 5]> <lm>   (Int…  4.49    0.447    10.1   1.10e-21
+2 Ins_tAUC_log <tibble [500 × 5]> <lm>   sexM   0.457   0.0742    6.17  1.48e- 9
+3 Ins_tAUC_log <tibble [500 × 5]> <lm>   DOwa… -0.294   0.118    -2.49  1.33e- 2
+4 Ins_tAUC_log <tibble [500 × 5]> <lm>   DOwa… -0.395   0.118    -3.36  8.46e- 4
+5 Ins_tAUC_log <tibble [500 × 5]> <lm>   DOwa… -0.176   0.118    -1.49  1.38e- 1
+6 Ins_tAUC_log <tibble [500 × 5]> <lm>   DOwa… -0.137   0.118    -1.16  2.46e- 1
+7 Ins_tAUC_log <tibble [500 × 5]> <lm>   diet…  0.00111 0.00346   0.322 7.48e- 1
+# … with abbreviated variable names ¹​std.error, ²​statistic
 ~~~
 {: .output}
 
@@ -230,16 +220,7 @@ rm(tmp)
 ~~~
 {: .language-r}
 
-
-
-~~~
-Error in `filter()`:
-! Problem while computing `..1 = term != "(Intercept)"`.
-ℹ The error occurred in group 1: phenotype = "Ins_tAUC_log".
-Caused by error in `mask$eval_all_filter()`:
-! object 'term' not found
-~~~
-{: .error}
+<img src="../fig/rmd-04-covariates sig-1.png" alt="plot of chunk covariates sig" width="612" style="display: block; margin: auto;" />
 
 We can see that sex and DOwave (especially the third batch) are significant. Here DOwave is the group or batch number as not all mice are in the experient at the same time. Because of this, we now have to correct for it.
 
