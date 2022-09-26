@@ -26,7 +26,7 @@ In case you need a little help with some of these steps, a link is provided with
 
 ### Load Libraries  
 
-Below are the neccessary libraries that we require for this review and the following lessons in this course. 
+Below are the neccessary libraries that we require for this review and the following lessons in this course.  They are already installed on your machines so go ahead an load them using the following code:
 
 
 ~~~
@@ -74,7 +74,7 @@ In this data set, we have 20 phenotypes for 500 Diversity Outbred mice. `pheno_c
 
 Since the paper is interested in type 2 diabetes and insulin secretion, we will choose `insulin tAUC` (area  under the curve (AUC) which was calculated without any correction for baseline differences) for this review
 
-Many statistical models, including the QTL mapping model in qtl2, expect that the incoming data will be normally distributed. You may use transformations such as log or square root to make your data more normally distributed. Since `insulin tAUC` data does not contain zeros or negative numbers, we will log transform the data. 
+Many statistical models, including the QTL mapping model in qtl2, expect that the incoming data will be normally distributed. You may use transformations such as log or square root to make your data more normally distributed. Here, we will log transform the data. 
 
 Here is a histogram of the untransformed data.
 
@@ -111,6 +111,18 @@ This looks much better!
 
 The marker map for each chromosome is stored in the `map` object. This is used to plot the LOD scores calculated at each marker during QTL mapping. Each list element is a numeric vector with each marker position in megabases (Mb). Here we are using the 69K grid marker file. Often when there are numerous genotype arrays used in a study, we interoplate all to a 69k grid file so we are able to combine all samples across different array types. 
 
+Look at the structure of `map` in the Environment tab by clicking the triangle to the left or by running `str(map)` in the Console. 
+
+> ## Challenge
+> 1). Determine the length of `map`.  
+> 2). How many markers are on chromosome 1?  
+>
+> > ## Solution to Challenge 2  
+> > 1). `length(map)`  
+> > 2). `length(map[[1]])`  
+> {: .solution}
+{: .challenge} 
+
 
 ### Genotype probabilities  
 
@@ -139,7 +151,7 @@ plot_genoprob(probs, map, ind = 1, chr = 1)
 
 <img src="../fig/rmd-04-geno_plot-1.png" alt="plot of chunk geno_plot" width="576" style="display: block; margin: auto;" />
 
-In the plot above, the founder contributions, which range between 0 and 1, are colored from white (= 0) to black (= 1.0). A value of ~0.5 is grey. The markers are on the X-axis and the eight founders (denoted by the letters A through H) on the Y-axis. Starting at the left, we see that this sample has genotype BB because the row for B is black, indicating values of 1.0. Moving along the genome to the right, the genotype becomes CE where rows C and E are gray, followed by CD, FH, AG, GH, etc. The values at each marker sum to 1.0.  
+In the plot above, the founder contributions, which range between 0 and 1, are colored from white (= 0) to black (= 1.0). A value of ~0.5 is grey. The markers are on the X-axis and the eight founders (denoted by the letters A through H) on the Y-axis. Starting at the left, we see that this sample has genotype GH because the rows for G & H are grey, indicating values of 0.5 for both alleles. Moving along the genome to the right, the genotype becomes HH where where the row is black indicating a value of 1.0.  This is followed by CD, DD, DG, AD, AH, CE, etc. The values at each marker sum to 1.0.  
 
 
 ### [Kinship Matrix](https://smcclatchy.github.io/mapping/04-calc-kinship/)
@@ -164,6 +176,7 @@ The figure above shows kinship between all pairs of samples. Light yellow indica
 Next, we need to create additive covariates that will be used in the mapping model.  First, we need to see which covariates are significant. In the data set, we have `sex`, `DOwave` (Wave (i.e., batch) of DO mice) 
 and `diet_days` (number of days on diet) to test whether there are any gender, batch or diet effects.
 
+First we are going to select out the covariates and phenotype we want from `pheno_clin` data frame.  Then reformat these selected variables into a long format (using the `gather` command) grouped by the phenotypes (in this case, we only have `Ins_tAUC_log`)
 
 
 ~~~
@@ -174,9 +187,23 @@ tmp = pheno_clin %>%
         gather(phenotype, value, -mouse, -sex, -DOwave, -diet_days) %>%
         group_by(phenotype) %>%
         nest()
+~~~
+{: .language-r}
+
+Let's create a linear model function that will regress the covariates and the phenotype.
+
+
+~~~
 mod_fxn = function(df) {
   lm(value ~ sex + DOwave + diet_days, data = df)
 }
+~~~
+{: .language-r}
+
+Now let's apply that function to the data object `tmp` that we created above. 
+
+
+~~~
 tmp = tmp %>%
   mutate(model = map(data, mod_fxn)) %>%
   mutate(summ = map(model, tidy)) %>%
@@ -206,7 +233,6 @@ tmp
 {: .output}
 
 
-
 ~~~
 tmp %>%
   filter(term != "(Intercept)") %>%
@@ -220,7 +246,7 @@ rm(tmp)
 ~~~
 {: .language-r}
 
-<img src="../fig/rmd-04-covariates sig-1.png" alt="plot of chunk covariates sig" width="612" style="display: block; margin: auto;" />
+<img src="../fig/rmd-04-covariates sig function plots-1.png" alt="plot of chunk covariates sig function plots" width="612" style="display: block; margin: auto;" />
 
 We can see that sex and DOwave (especially the third batch) are significant. Here DOwave is the group or batch number as not all mice are in the experient at the same time. Because of this, we now have to correct for it.
 
@@ -262,6 +288,7 @@ plot_scan1(x = qtl, map = map, lodcolumn = "Ins_tAUC_log")
 
 <img src="../fig/rmd-04-qtl_plot-1.png" alt="plot of chunk qtl_plot" width="576" style="display: block; margin: auto;" />
 
+We can see a very strong peak on chromosome 11 with no other distibuishable peaks.
 
 ### [Finding LOD peaks](https://smcclatchy.github.io/mapping/07-find-lod-peaks/)
 

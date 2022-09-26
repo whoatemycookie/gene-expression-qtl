@@ -72,14 +72,14 @@ Lets check the distributin of these 50 gene expression phenotypes
 
 
 ~~~
-par(mfrow=c(2,3))
+par(mfrow=c(2,5))
 for(gene in genes){
   hist(norm[,gene], main = names(norm[gene]))
   }
 ~~~
 {: .language-r}
 
-<img src="../fig/rmd-06-hist_untransformed-1.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-2.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-3.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-4.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-5.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-6.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-7.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-8.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-9.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" />
+<img src="../fig/rmd-06-hist_untransformed-1.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-2.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-3.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-4.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-5.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-6.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" />
 The histogram indicates that distribution of these counts are normalised (as they should be).
 
 ### The Marker Map  
@@ -138,16 +138,16 @@ tmp
 # Groups:   expression [51]
    expression         data     model  term     estimate std.e…¹ stati…²  p.value
    <chr>              <list>   <list> <chr>       <dbl>   <dbl>   <dbl>    <dbl>
- 1 ENSMUSG00000020680 <tibble> <lm>   (Interc… -7.37e-1 0.543    -1.36  1.75e- 1
- 2 ENSMUSG00000020680 <tibble> <lm>   sexM      3.87e-1 0.0884    4.38  1.55e- 5
- 3 ENSMUSG00000020680 <tibble> <lm>   DOwave   -3.88e-1 0.0398   -9.76  3.49e-20
- 4 ENSMUSG00000020680 <tibble> <lm>   diet_da…  1.19e-2 0.00415   2.87  4.33e- 3
- 5 ENSMUSG00000071519 <tibble> <lm>   (Interc…  4.07e-1 0.608     0.670 5.04e- 1
- 6 ENSMUSG00000071519 <tibble> <lm>   sexM      1.78e-1 0.0991    1.80  7.27e- 2
- 7 ENSMUSG00000071519 <tibble> <lm>   DOwave   -1.76e-1 0.0446   -3.95  9.44e- 5
- 8 ENSMUSG00000071519 <tibble> <lm>   diet_da… -5.16e-4 0.00464  -0.111 9.12e- 1
- 9 ENSMUSG00000022479 <tibble> <lm>   (Interc… -1.72e+0 0.599    -2.87  4.32e- 3
-10 ENSMUSG00000022479 <tibble> <lm>   sexM      5.04e-1 0.0977    5.16  4.01e- 7
+ 1 ENSMUSG00000020680 <tibble> <lm>   (Interc… -0.737   0.543    -1.36  1.75e- 1
+ 2 ENSMUSG00000020680 <tibble> <lm>   sexM      0.387   0.0884    4.38  1.55e- 5
+ 3 ENSMUSG00000020680 <tibble> <lm>   DOwave   -0.388   0.0398   -9.76  3.49e-20
+ 4 ENSMUSG00000020680 <tibble> <lm>   diet_da…  0.0119  0.00415   2.87  4.33e- 3
+ 5 ENSMUSG00000030660 <tibble> <lm>   (Interc…  0.866   0.538     1.61  1.08e- 1
+ 6 ENSMUSG00000030660 <tibble> <lm>   sexM      0.0240  0.0877    0.274 7.84e- 1
+ 7 ENSMUSG00000030660 <tibble> <lm>   DOwave   -0.464   0.0394  -11.8   1.88e-27
+ 8 ENSMUSG00000030660 <tibble> <lm>   diet_da…  0.00230 0.00411   0.559 5.76e- 1
+ 9 ENSMUSG00000097098 <tibble> <lm>   (Interc… -0.769   0.616    -1.25  2.13e- 1
+10 ENSMUSG00000097098 <tibble> <lm>   sexM     -0.0486  0.100    -0.484 6.29e- 1
 # … with 194 more rows, and abbreviated variable names ¹​std.error, ²​statistic
 ~~~
 {: .output}
@@ -228,7 +228,7 @@ Error in gzfile(file, "wb"): cannot open the connection
 
 
 ~~~
-par(mfrow=c(2,3))
+par(mfrow=c(2,5))
 for(i in 1:ncol(qtl)) {
   plot_scan1(x = qtl, 
              map = map, 
@@ -239,7 +239,7 @@ for(i in 1:ncol(qtl)) {
 ~~~
 {: .language-r}
 
-<img src="../fig/rmd-06-qtl_plots-1.png" alt="plot of chunk qtl_plots" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-qtl_plots-2.png" alt="plot of chunk qtl_plots" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-qtl_plots-3.png" alt="plot of chunk qtl_plots" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-qtl_plots-4.png" alt="plot of chunk qtl_plots" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-qtl_plots-5.png" alt="plot of chunk qtl_plots" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-qtl_plots-6.png" alt="plot of chunk qtl_plots" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-qtl_plots-7.png" alt="plot of chunk qtl_plots" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-qtl_plots-8.png" alt="plot of chunk qtl_plots" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-qtl_plots-9.png" alt="plot of chunk qtl_plots" width="612" style="display: block; margin: auto;" />
+<img src="../fig/rmd-06-qtl_plots-1.png" alt="plot of chunk qtl_plots" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-qtl_plots-2.png" alt="plot of chunk qtl_plots" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-qtl_plots-3.png" alt="plot of chunk qtl_plots" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-qtl_plots-4.png" alt="plot of chunk qtl_plots" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-qtl_plots-5.png" alt="plot of chunk qtl_plots" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-qtl_plots-6.png" alt="plot of chunk qtl_plots" width="612" style="display: block; margin: auto;" />
 
 ### QTL Peaks
 
@@ -272,14 +272,14 @@ write_csv(peaks, "../results/gene.norm_qtl_peaks_random.csv")
  [2] ""                                                                          
  [3] "|lodcolumn          |chr |        pos|        lod|      ci_lo|      ci_hi|"
  [4] "|:------------------|:---|----------:|----------:|----------:|----------:|"
- [5] "|ENSMUSG00000045662 |1   |  36.886790|   6.076633|  36.365564|  39.599051|"
- [6] "|ENSMUSG00000026097 |1   |  53.271592|  10.844273|  52.656002|  54.184341|"
- [7] "|ENSMUSG00000026027 |1   |  58.277394|  14.766109|  58.277394|  59.151364|"
- [8] "|ENSMUSG00000026188 |1   |  72.287906|  43.457946|  72.271463|  72.691471|"
- [9] "|ENSMUSG00000025173 |1   | 128.840159|   6.095980| 127.049003| 194.454550|"
-[10] "|ENSMUSG00000097073 |1   | 160.162252|   6.420904| 155.678496| 182.378662|"
-[11] "|ENSMUSG00000022894 |1   | 168.528854|   6.051415|   3.000000| 173.374205|"
-[12] "|ENSMUSG00000032452 |2   |   4.337139|   6.358386|   3.510793|  28.239687|"
+ [5] "|ENSMUSG00000032549 |1   | 130.711212|   8.223569| 129.753531| 134.211141|"
+ [6] "|ENSMUSG00000024712 |1   | 188.705836|   6.065488|  74.189728| 193.645480|"
+ [7] "|ENSMUSG00000085012 |1   | 189.257133|   6.435918|  36.365564| 190.138440|"
+ [8] "|ENSMUSG00000097857 |2   |  52.778906|   9.251783|  52.653945|  56.621450|"
+ [9] "|ENSMUSG00000042064 |2   |  70.020081|  13.031306|  69.451695|  70.126091|"
+[10] "|ENSMUSG00000038903 |2   | 163.582672|   6.274302|  11.692833| 165.479592|"
+[11] "|ENSMUSG00000022824 |2   | 164.022416|  18.911033| 164.022416| 164.076561|"
+[12] "|ENSMUSG00000016252 |2   | 174.476126|  20.820158| 174.165673| 174.666194|"
 ~~~
 {: .output}
 

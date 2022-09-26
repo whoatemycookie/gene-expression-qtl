@@ -75,7 +75,7 @@ genes <- genes[sams]
 Lets check the distributin of these 50 gene expression phenotypes
 
 ```{r hist_untransformed}
-par(mfrow=c(2,3))
+par(mfrow=c(2,5))
 for(gene in genes){
   hist(norm[,gene], main = names(norm[gene]))
   }
@@ -186,7 +186,7 @@ par(mfrow=c(17, 3))
 ```
 
 ```{r qtl_plots}
-par(mfrow=c(2,3))
+par(mfrow=c(2,5))
 for(i in 1:ncol(qtl)) {
   plot_scan1(x = qtl, 
              map = map, 
