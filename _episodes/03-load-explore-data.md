@@ -20,13 +20,7 @@ Load the libraries.
 ~~~
 library(tidyverse)
 library(knitr)
-library(GGally)
 library(corrplot)
-library(broom)
-library(qtl2)
-library(qtl2convert)
-library(qtl2ggplot)
-library(RColorBrewer)
 # the following analysis is from File S1 Attie_eQTL_paper_physiology.Rmd 
 # compliments of Daniel Gatti. See Data Dryad entry for more information.
 ~~~
@@ -47,70 +41,53 @@ load("../data/attie_DO500_clinical.phenotypes.RData")
 {: .language-r}
 
 See the [data dictionary](../data/Attie-232_Attie_DO_Islets-dictionary.csv) to 
-see a description of each of these phenotypes.  
-
-#### Phenotype Ranges
+see a description of each of these phenotypes. You can also view a table of
+the data dictionary.
 
 
 ~~~
-tmp = pheno_clin %>%
-  select(num_islets:weight_10wk) %>%
-  summarize_all(funs(min, max), na.rm = TRUE) %>%
-  gather(phenotype, value) %>%
-  mutate(phenotype = str_replace(phenotype, "_min", ".min")) %>%
-  mutate(phenotype = str_replace(phenotype, "_max", ".max")) %>%
-  separate(phenotype, c("phenotype", "stat"), sep = "\\.") %>%
-  mutate(stat = factor(stat, levels = c("min", "max"))) %>%
-  spread(key = stat, value = value)
-kable(tmp, caption = "Phenotype Ranges")
+pheno_clin_dict %>% 
+  select(description, formula) %>% 
+  kable()
 ~~~
 {: .language-r}
 
 
 
-Table: Phenotype Ranges
-
-|phenotype     |          min|          max|
-|:-------------|------------:|------------:|
-|food_ave      | 1.882500e+00| 5.536790e+00|
-|Glu_10wk      | 5.394220e+01| 5.903783e+02|
-|Glu_14wk      | 1.005210e+01| 5.616875e+02|
-|Glu_6wk       | 5.049661e+01| 2.112279e+02|
-|Glu_tAUC      | 1.585963e+04| 1.000717e+05|
-|HOMA_B_0min   | 1.076550e-02| 9.856865e+00|
-|HOMA_IR_0min  | 7.430000e-04| 1.244811e+00|
-|Ins_10wk      | 3.236660e-02| 1.394590e+01|
-|Ins_14wk      | 2.648000e-02| 3.309000e+01|
-|Ins_6wk       | 6.055000e-02| 1.504120e+01|
-|Ins_per_islet | 8.706667e+00| 2.902618e+02|
-|Ins_tAUC      | 4.800000e+00| 1.292177e+03|
-|num_islets    | 4.200000e+01| 1.096000e+03|
-|TG_10wk       | 5.373719e+01| 5.330684e+02|
-|TG_14wk       | 4.923035e+01| 3.508755e+02|
-|TG_6wk        | 4.731155e+01| 7.811902e+02|
-|weight_10wk   | 1.430000e+01| 5.140000e+01|
-|weight_2wk    | 1.250000e+01| 3.350000e+01|
-|weight_6wk    | 1.340000e+01| 4.450000e+01|
-|WPIC          | 3.658200e+02| 2.314127e+05|
-
-#### Univariate Boxplot
-
-
-~~~
-pheno_clin %>%
-  select(num_islets:weight_10wk) %>%
-  gather(phenotype, value) %>%
-  ggplot(aes(x = phenotype, y = value)) +
-    geom_boxplot() +
-    scale_y_log10() +
-    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) +
-    labs(title = "Distribution of Log Transformed Phenotypes")
-~~~
-{: .language-r}
-
-<img src="../fig/rmd-03-pheno_boxplot-1.png" alt="plot of chunk pheno_boxplot" width="612" style="display: block; margin: auto;" />
-
-Subset the phenotypes to include only those analyzed in the paper.
+|                   |description                                                                                                                                                                                                                                             |formula                          |
+|:------------------|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:--------------------------------|
+|mouse              |Animal identifier.                                                                                                                                                                                                                                      |NA                               |
+|sex                |Male (M) or female (F).                                                                                                                                                                                                                                 |NA                               |
+|sac_date           |Date when mouse was sacrificed; used to compute days on diet, using birth dates.                                                                                                                                                                        |NA                               |
+|partial_inflation  |Some mice showed a partial pancreatic inflation which would negatively effect the total number of islets collected from these mice.                                                                                                                     |NA                               |
+|coat_color         |Visual inspection by Kathy Schuler on coat color.                                                                                                                                                                                                       |NA                               |
+|oGTT_date          |Date the oGTT was performed.                                                                                                                                                                                                                            |NA                               |
+|FAD_NAD_paired     |A change in the method that was used to make this measurement by Matt Merrins' lab. Paired was the same islet for the value at 3.3mM vs. 8.3mM glucose; unpaired was where averages were used for each glucose concentration and used to compute ratio. |NA                               |
+|FAD_NAD_filter_set |A different filter set was used on the microscope to make the fluorescent measurement; may have influenced the values.                                                                                                                                  |NA                               |
+|crumblers          |Some mice store food in their bedding (hoarders) which would be incorrectly interpreted as consumed.                                                                                                                                                    |NA                               |
+|birthdate          |Birth date                                                                                                                                                                                                                                              |NA                               |
+|diet_days          |Number of days.                                                                                                                                                                                                                                         |NA                               |
+|num_islets         |Total number of islets harvested per mouse; negatively impacted by those with partial inflation.                                                                                                                                                        |NA                               |
+|Ins_per_islet      |Amount of insulin per islet in units of ng/ml/islet.                                                                                                                                                                                                    |NA                               |
+|WPIC               |Derived number; equal to total number of islets times insulin content per islet.                                                                                                                                                                        |Ins_per_islet * num_islets       |
+|HOMA_IR_0min       |glucose*insulin/405 at time t=0 for the oGTT                                                                                                                                                                                                            |Glu_0min * Ins_0min / 405        |
+|HOMA_B_0min        |360 * Insulin / (Glucose - 63) at time t=0 for the oGTT                                                                                                                                                                                                 |360 * Ins_0min / (Glu_0min - 63) |
+|Glu_tAUC           |Area under the curve (AUC) calculation without any correction for baseline differences.                                                                                                                                                                 |complicated                      |
+|Ins_tAUC           |Area under the curve (AUC) calculation without any correction for baseline differences.                                                                                                                                                                 |complicated                      |
+|Glu_6wk            |Plasma glucose with units of mg/dl; fasting.                                                                                                                                                                                                            |NA                               |
+|Ins_6wk            |Plasma insulin with units of ng/ml; fasting.                                                                                                                                                                                                            |NA                               |
+|TG_6wk             |Plasma triglyceride (TG) with units of mg/dl; fasting.                                                                                                                                                                                                  |NA                               |
+|Glu_10wk           |Plasma glucose with units of mg/dl; fasting.                                                                                                                                                                                                            |NA                               |
+|Ins_10wk           |Plasma insulin with units of ng/ml; fasting.                                                                                                                                                                                                            |NA                               |
+|TG_10wk            |Plasma triglyceride (TG) with units of mg/dl; fasting.                                                                                                                                                                                                  |NA                               |
+|Glu_14wk           |Plasma glucose with units of mg/dl; fasting.                                                                                                                                                                                                            |NA                               |
+|Ins_14wk           |Plasma insulin with units of ng/ml; fasting.                                                                                                                                                                                                            |NA                               |
+|TG_14wk            |Plasma triglyceride (TG) with units of mg/dl; fasting.                                                                                                                                                                                                  |NA                               |
+|food_ave           |Average food consumption over the measurements made for each mouse.                                                                                                                                                                                     |complicated                      |
+|weight_2wk         |Body weight at indicated date; units are gm.                                                                                                                                                                                                            |NA                               |
+|weight_6wk         |Body weight at indicated date; units are gm.                                                                                                                                                                                                            |NA                               |
+|weight_10wk        |Body weight at indicated date; units are gm.                                                                                                                                                                                                            |NA                               |
+|DOwave             |Wave (i.e., batch) of DO mice                                                                                                                                                                                                                           |NA                               |
 
 
 ~~~
@@ -205,61 +182,6 @@ pheno_clin %>%
 
 ### QA/QC
 
-#### Proportion Missing Data
-
-
-~~~
-tmp = pheno_clin %>% 
-  mutate_all(is.na) %>% 
-  summarize_all(mean) %>%
-  gather(phenotype, value)
-kable(tmp, caption = "Proportion of Missing Data")
-~~~
-{: .language-r}
-
-
-
-Table: Proportion of Missing Data
-
-|phenotype          | value|
-|:------------------|-----:|
-|mouse              | 0.000|
-|sex                | 0.000|
-|sac_date           | 0.222|
-|partial_inflation  | 0.994|
-|coat_color         | 0.000|
-|oGTT_date          | 0.010|
-|FAD_NAD_paired     | 0.814|
-|FAD_NAD_filter_set | 0.814|
-|crumblers          | 0.962|
-|birthdate          | 0.034|
-|diet_days          | 0.034|
-|num_islets         | 0.034|
-|Ins_per_islet      | 0.036|
-|WPIC               | 0.036|
-|HOMA_IR_0min       | 0.010|
-|HOMA_B_0min        | 0.016|
-|Glu_tAUC           | 0.010|
-|Ins_tAUC           | 0.010|
-|Glu_6wk            | 0.000|
-|Ins_6wk            | 0.000|
-|TG_6wk             | 0.000|
-|Glu_10wk           | 0.002|
-|Ins_10wk           | 0.002|
-|TG_10wk            | 0.002|
-|Glu_14wk           | 0.002|
-|Ins_14wk           | 0.002|
-|TG_14wk            | 0.002|
-|food_ave           | 0.000|
-|weight_2wk         | 0.000|
-|weight_6wk         | 0.002|
-|weight_10wk        | 0.002|
-|DOwave             | 0.000|
-
-The phenotypes that we're mapping (on the right) are mostly free of missing 
-values. The highest are `Ins_per_islet` and WPIC at 3.6%.
-
-
 Log transform and standardize each phenotype. Consider setting points that are 
 more than 5 std. dev. from the mean to NA. Only do this if the final 
 distribution doesn't look skewed.
@@ -283,64 +205,6 @@ pheno_clin_std %>%
 
 <img src="../fig/rmd-03-pheno_std-1.png" alt="plot of chunk pheno_std" width="612" style="display: block; margin: auto;" />
 
-
-~~~
-outliers = pheno_clin_std %>% 
-              gather(pheno, value, -mouse) %>%
-              filter(abs(value) > 5)
-kable(outliers, caption = "Potential Outliers")
-~~~
-{: .language-r}
-
-
-
-Table: Potential Outliers
-
-|mouse |pheno      |     value|
-|:-----|:----------|---------:|
-|DO093 |num_islets | -6.767430|
-|DO372 |num_islets | -6.217230|
-|DO093 |WPIC       | -6.161516|
-|DO372 |WPIC       | -5.068911|
-|DO372 |Glu_10wk   |  5.854390|
-|DO213 |Glu_14wk   | -9.031752|
-|DO372 |Glu_14wk   |  5.802727|
-
-### All Pairs
-
-
-~~~
-knitr::include_graphics("../fig/rmd-02-pheno_all_pairs-1.png")
-~~~
-{: .language-r}
-
-<img src="../fig/rmd-02-pheno_all_pairs-1.png" alt="plot of chunk pheno_all_pairs_include" width="100%" style="display: block; margin: auto;" />
-
-~~~
-ggpairs(select(pheno_clin_log, num_islets:weight_10wk)) +
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
-~~~
-{: .language-r}
-
-<img src="../fig/rmd-03-pheno_all_pairs-1.png" alt="plot of chunk pheno_all_pairs" width="1080" style="display: block; margin: auto;" />
-
-The HOMA phenotypes have odd distributions.
-
-
-~~~
-saveRDS(pheno_clin_log, 
-        file = "../data/pheno_clin_log_outliers_removed.rds")
-ggplot(pheno_clin_log, aes(HOMA_IR_0min, HOMA_B_0min, color = DOwave, shape = sex)) +
-  geom_point()
-~~~
-{: .language-r}
-
-<img src="../fig/rmd-03-homair_vs_homab-1.png" alt="plot of chunk homair_vs_homab" width="612" style="display: block; margin: auto;" />
-
-There doesn't appear to be a batch effect, but there are a large number of low 
-values. Is there some lower bound to the HOMA measurements?
-
-
 ### Tests for sex, wave and diet_days.
 
 
@@ -357,6 +221,23 @@ tmp = tmp %>%
   mutate(model = map(data, mod_fxn)) %>%
   mutate(summ = map(model, tidy)) %>%
   unnest(summ)
+~~~
+{: .language-r}
+
+
+
+~~~
+Error in `mutate()`:
+! Problem while computing `summ = map(model, tidy)`.
+ℹ The error occurred in group 1: phenotype = "food_ave".
+Caused by error in `as_mapper()`:
+! object 'tidy' not found
+~~~
+{: .error}
+
+
+
+~~~
 # kable(tmp, caption = "Effects of Sex, Wave & Diet Days on Phenotypes")
 ~~~
 {: .language-r}
@@ -375,7 +256,16 @@ rm(tmp)
 ~~~
 {: .language-r}
 
-<img src="../fig/rmd-03-sex_diet_wave_effects-1.png" alt="plot of chunk sex_diet_wave_effects" width="612" style="display: block; margin: auto;" />
+
+
+~~~
+Error in `filter()`:
+! Problem while computing `..1 = term != "(Intercept)"`.
+ℹ The error occurred in group 1: phenotype = "food_ave".
+Caused by error in `mask$eval_all_filter()`:
+! object 'term' not found
+~~~
+{: .error}
 
 ### Weight vs. Food Intake
 
@@ -394,13 +284,6 @@ pheno_clin_log %>%
 ~~~
 {: .language-r}
 
-
-
-~~~
-`geom_smooth()` using formula 'y ~ x'
-~~~
-{: .output}
-
 <img src="../fig/rmd-03-bw_vs_food-1.png" alt="plot of chunk bw_vs_food" width="612" style="display: block; margin: auto;" />
 
 
@@ -418,6 +301,23 @@ tmp = pheno_clin_log %>%
   unnest(summ) %>%
   filter(term != "(Intercept)") %>%
   mutate(p.adj = p.adjust(p.value))
+~~~
+{: .language-r}
+
+
+
+~~~
+Error in `mutate()`:
+! Problem while computing `summ = map(model, tidy)`.
+ℹ The error occurred in group 1: week = 2wk.
+Caused by error in `as_mapper()`:
+! object 'tidy' not found
+~~~
+{: .error}
+
+
+
+~~~
 # kable(tmp, caption = "Effects of Sex and Food Intake on Body Weight")
 ~~~
 {: .language-r}
@@ -430,7 +330,7 @@ Females
 ~~~
 tmp = pheno_clin_log %>% 
         filter(sex == "F") %>%
-        select(num_islets:weight_10wk)
+        select(starts_with(c("Ins", "Glu", "TG")))
 tmp = cor(tmp, use = "pairwise")
 corrplot.mixed(tmp, upper = "ellipse", lower = "number", 
                main = "Female Clinical Phenotype Correlation")
@@ -447,7 +347,7 @@ Males
 ~~~
 tmp = pheno_clin_log %>% 
         filter(sex == "M") %>%
-        select(num_islets:weight_10wk)
+        select(starts_with(c("Ins", "Glu", "TG")))
 tmp = cor(tmp, use = "pairwise")
 corrplot.mixed(tmp, upper = "ellipse", lower = "number", 
                main = "Male Clinical Phenotype Correlation")
@@ -457,219 +357,24 @@ corrplot.mixed(tmp, upper = "ellipse", lower = "number",
 {: .language-r}
 
 <img src="../fig/rmd-03-male_corr_plot-1.png" alt="plot of chunk male_corr_plot" width="1080" style="display: block; margin: auto;" />
-![phenotype correlations for females](../fig/rmd-03-female_corr_plot-1.png)
-![phenotype correlations for males](../fig/rmd-03-male_corr_plot-1.png)
-
-### Founder Allele Frequency
-
-Load in the genoprobs and markers.
-
-
-~~~
-genoprobs = readRDS("../data/genotypes/attie_DO500_genoprobs_v5.rds")
-markers = readRDS("../data/marker_grid_0.02cM_plus.rds")
-K = calc_kinship(probs = genoprobs, type = "loco", cores = 4)
-saveRDS(K, file = "../data/kinship")
-map = map_df_to_list(map = markers, pos_column = "pos")
-~~~
-{: .language-r}
-
-
-~~~
-map_fxn = function(g, m) {
-  retval = apply(g, 2:3, mean) %>%
-             t() %>%
-             data.frame() %>%
-             mutate(pos = m) %>%
-             gather(founder, prop, -pos)
-  return(retval)
-}
-allele.freq = map2(genoprobs, map, map_fxn)
-allele.freq = map2(allele.freq, 1:length(allele.freq), function(af, chr) { mutate(af, chr = chr) })
-tmp = allele.freq[[1]]
-for(i in 2:length(allele.freq)) {
-  tmp = rbind(tmp, allele.freq[[i]])
-}
-allele.freq = data.frame(tmp)
-rm(tmp)
-
-cc = CCcolors
-names(cc) = LETTERS[1:8]
-ggplot(allele.freq, aes(pos, prop, color = founder)) +
-  geom_line() +
-  scale_color_manual(values = cc) +
-  facet_grid(founder~chr, scales = "free") +
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1),
-        panel.spacing = unit(0.1, "lines")) +
-  labs(title = "Attie Founder Allele Proportions")
-~~~
-{: .language-r}
-
-<img src="../fig/rmd-03-founder_allele_freq-1.png" alt="plot of chunk founder_allele_freq" width="864" style="display: block; margin: auto;" />
-
-
-### QTL Scans
-
-
-
-
-~~~
-rownames(pheno_clin_log) = pheno_clin_log$mouse
-covar = model.matrix(~sex + DOwave, data = pheno_clin_log)
-
-qtl = scan1(genoprobs = genoprobs, 
-            pheno = pheno_clin_log[,12:31, drop = FALSE], 
-            kinship = K, 
-            addcovar = covar, 
-            cores = 2)
-~~~
-{: .language-r}
-
-### QTL plots
-
-
-~~~
-par(mfrow=c(2,10))
-for(i in 1:ncol(qtl)) {
-  plot_scan1(x = qtl, map = map, lodcolumn = i, main = colnames(qtl)[i])
-  abline(h = 6, col = 2, lwd = 2)
-}
-~~~
-{: .language-r}
-
-<img src="../fig/rmd-03-qtl_plots-1.png" alt="plot of chunk qtl_plots" width="612" style="display: block; margin: auto;" />
-
-### QTL Peaks
-
-
-~~~
-lod_threshold = 6
-peaks = find_peaks(scan1_output = qtl, map = map, threshold = lod_threshold, peakdrop = 4, prob = 0.95)
-kable(peaks %>% dplyr::select (-lodindex) %>% arrange(chr, pos), caption = "Phenotype QTL Peaks with LOD >= 6")
-~~~
-{: .language-r}
-
-
-
-Table: Phenotype QTL Peaks with LOD >= 6
-
-|lodcolumn     |chr |        pos|       lod|     ci_lo|      ci_hi|
-|:-------------|:---|----------:|---------:|---------:|----------:|
-|Ins_14wk      |1   | 135.481336|  6.411892|   3.00000| 136.156743|
-|TG_14wk       |2   |  59.584104|  6.941041|  57.06789|  60.941372|
-|weight_2wk    |2   | 102.703260|  6.850378|  27.19212| 105.158368|
-|TG_10wk       |2   | 107.367424|  6.335945|  98.11262| 109.629183|
-|Glu_6wk       |3   |   5.843185|  7.390397|   3.00000|   9.907714|
-|WPIC          |4   |  59.732535|  6.010250|  59.16445|  87.661023|
-|Ins_per_islet |4   |  59.736655|  6.599126|  59.46325|  63.541039|
-|TG_10wk       |5   |  31.962653|  6.358020|  28.82120| 141.946043|
-|Ins_14wk      |5   | 151.520204|  6.746210| 149.08909| 151.833620|
-|Glu_10wk      |8   |  48.435138|  6.040469|  24.25070| 120.579268|
-|Ins_10wk      |10  | 115.899454|  6.049395|  78.43255| 117.979203|
-|weight_10wk   |11  |  11.726117|  6.595914|  10.41106|  16.881123|
-|weight_6wk    |11  |  11.826027|  6.321523|  10.41106|  16.881123|
-|Glu_tAUC      |11  |  71.782692|  6.185468|  61.06009|  94.220647|
-|Ins_tAUC      |11  |  83.594665| 11.258841|  83.58553|  84.954440|
-|HOMA_B_0min   |11  |  84.954440| 10.246737|  80.76487|  84.954440|
-|HOMA_B_0min   |11  |  94.142728|  8.401139|  91.74957|  94.478235|
-|HOMA_IR_0min  |12  |  75.147681|  6.636235|  72.84618|  79.844595|
-|HOMA_B_0min   |12  |  75.168727|  6.538015|  73.60843|  77.028816|
-|Ins_10wk      |12  |  79.450744|  6.310718|  77.15929|  97.135996|
-|Ins_14wk      |13  |  38.450528|  6.174213|  34.80443| 109.389360|
-|HOMA_IR_0min  |13  |  97.462245|  6.783359|  96.43627|  98.394465|
-|TG_10wk       |14  |  55.802312|  6.120587|  46.98388|  86.148708|
-|HOMA_IR_0min  |15  |  72.661699|  6.423236|  72.23535|  77.426124|
-|Ins_14wk      |17  |  31.648772|  7.570437|  31.34581|  34.961498|
-|weight_6wk    |17  |  34.565685|  6.831975|  31.46779|  44.523656|
-|weight_10wk   |17  |  34.660915|  6.942955|  31.34289|  44.044398|
-|HOMA_IR_0min  |17  |  72.177507|  6.587342|  71.48575|  87.735040|
-|HOMA_B_0min   |18  |  47.130148|  6.099928|  15.39198|  47.422415|
-|num_islets    |18  |  76.826830|  6.561935|  74.47827|  78.195167|
-|food_ave      |19  |  22.638956|  6.266982|  21.84092|  60.056498|
-|weight_2wk    |X   |  45.989364|  7.315103|  39.46486|  47.608349|
-|weight_6wk    |X   |  45.989364|  6.373361|  39.23834|  49.934828|
-|TG_6wk        |X   | 135.388462|  6.441733|  37.92750| 139.946194|
-
-
-
-~~~
-write_csv(peaks, file = "../data/pheno_clin_QTL_peaks.csv")
-~~~
-{: .language-r}
-
-### QTL Peaks Figure
-
-
-~~~
-peaks = peaks %>%
-          arrange(lodcolumn)
-plot_peaks(peaks, map, col = c("blue","red"), lwd = 3, tick.height = 0.8, gap = 0, main = "LOD > 6")
-box()
-~~~
-{: .language-r}
-
-<img src="../fig/rmd-03-qtl_peaks_figure-1.png" alt="plot of chunk qtl_peaks_figure" width="612" style="display: block; margin: auto;" />
-
-~~~
-plot_peaks(peaks, map, col = c("blue","red"), lwd = 3, tick_height = 0.8, gap = 0, main = "LOD > 6")
-box()
-~~~
-{: .language-r}
-
-<img src="../fig/rmd-03-qtl_peaks_figure-2.png" alt="plot of chunk qtl_peaks_figure" width="612" style="display: block; margin: auto;" />
-
-~~~
-ggplot_peaks(peaks, map, col = c("blue","red"), legend.title = "LOD > 6")
-~~~
-{: .language-r}
-
-<img src="../fig/rmd-03-qtl_peaks_figure-3.png" alt="plot of chunk qtl_peaks_figure" width="612" style="display: block; margin: auto;" />
-
-
-~~~
-source("../code/qtl_heatmap.R")
-qtl_heatmap(qtl = qtl, map = map, low.thr = 3.5)
-~~~
-{: .language-r}
-
-<img src="../fig/rmd-03-qtl_heatmap-1.png" alt="plot of chunk qtl_heatmap" width="864" style="display: block; margin: auto;" />
-
 
 ## Gene Expression Phenotypes
-
-### summarized data, matrices w/sample annotation, exp data, gene annotation, 
-### like bioconductor summarized experiment etc = whole set of rectangles
-
 
 ~~~
 # load the expression data along with annotations and metadata
 load("../data/dataset.islet.rnaseq.RData")
-
-# look at raw counts
-dataset.islet.rnaseq$raw[1:6,1:6]
+names(dataset.islet.rnaseq)
 ~~~
 {: .language-r}
 
 
 
 ~~~
-      ENSMUSG00000000001 ENSMUSG00000000028 ENSMUSG00000000037
-DO021              10247                108                 29
-DO022              11838                187                 35
-DO023              12591                160                 19
-DO024              12424                216                 30
-DO025              10906                 76                 21
-DO026              12248                110                 34
-      ENSMUSG00000000049 ENSMUSG00000000056 ENSMUSG00000000058
-DO021                 15                120                703
-DO022                 18                136                747
-DO023                 18                275               1081
-DO024                 81                160                761
-DO025                  7                163                770
-DO026                 18                204                644
+[1] "annots"        "covar"         "covar.factors" "datatype"     
+[5] "display.name"  "expr"          "lod.peaks"     "raw"          
+[9] "samples"      
 ~~~
 {: .output}
-
 
 
 ~~~
@@ -708,8 +413,36 @@ ENSMUSG00000000058    <NA>
 
 
 ~~~
+# look at raw counts
+dataset.islet.rnaseq$raw[1:6,1:6]
+~~~
+{: .language-r}
+
+
+
+~~~
+      ENSMUSG00000000001 ENSMUSG00000000028 ENSMUSG00000000037
+DO021              10247                108                 29
+DO022              11838                187                 35
+DO023              12591                160                 19
+DO024              12424                216                 30
+DO025              10906                 76                 21
+DO026              12248                110                 34
+      ENSMUSG00000000049 ENSMUSG00000000056 ENSMUSG00000000058
+DO021                 15                120                703
+DO022                 18                136                747
+DO023                 18                275               1081
+DO024                 81                160                761
+DO025                  7                163                770
+DO026                 18                204                644
+~~~
+{: .output}
+
+
+
+~~~
 # look at sample metadata
-# mouse sex, birth dates and DO waves
+# summarize mouse sex, birth dates and DO waves
 table(dataset.islet.rnaseq$samples[, c("sex", "birthdate")])
 ~~~
 {: .language-r}
@@ -741,34 +474,80 @@ sex  1  2  3  4  5
 ~~~
 {: .output}
 
+In order to make reasonable gene comparisons between samples, the count data 
+need to be normalized. In the quantile-quantile (Q-Q) plot below, count data for 
+the first gene are plotted over a diagonal line tracing a normal distribution 
+for those counts. Notice that most of the count data values lie off of this 
+line, indicating that these gene counts are not normally distributed. 
+
+<img src="../fig/rmd-03-view_manual_qqplot_raw-1.png" alt="plot of chunk view_manual_qqplot_raw" width="612" style="display: block; margin: auto;" />
+
+The same plot can be drawn as shown below. The diagonal line represents a 
+standard normal distribution with mean 0 and standard deviation 1. Count data
+values are plotted against this standard normal distribution.
 
 
 ~~~
-# look at raw counts
-dataset.islet.rnaseq$raw[1:6,1:6]
+qqnorm(dataset.islet.rnaseq$raw[,1], 
+     xlab="Theoretical normal percentiles", 
+     ylab="Count percentiles",
+     main="Count distribution for gene ENSMUSG00000000001")
+qqline(dataset.islet.rnaseq$raw[,1]) 
 ~~~
 {: .language-r}
 
+<img src="../fig/rmd-03-view_qqplot_raw-1.png" alt="plot of chunk view_qqplot_raw" width="612" style="display: block; margin: auto;" />
+
+Q-Q plots for the first six genes show that count data for these genes are not
+normally distributed. They are also not on the same scale. The y-axis values for
+each subplot range to 20,000 counts in the first subplot, 250 in the second, 80
+in the third, and so on. 
 
 
 ~~~
-      ENSMUSG00000000001 ENSMUSG00000000028 ENSMUSG00000000037
-DO021              10247                108                 29
-DO022              11838                187                 35
-DO023              12591                160                 19
-DO024              12424                216                 30
-DO025              10906                 76                 21
-DO026              12248                110                 34
-      ENSMUSG00000000049 ENSMUSG00000000056 ENSMUSG00000000058
-DO021                 15                120                703
-DO022                 18                136                747
-DO023                 18                275               1081
-DO024                 81                160                761
-DO025                  7                163                770
-DO026                 18                204                644
+par(mfrow=c(2,3))
+for (i in 1:6) {
+  qqnorm(dataset.islet.rnaseq$raw[,i])
+  qqline(dataset.islet.rnaseq$raw[,i])
+  }
 ~~~
-{: .output}
+{: .language-r}
 
+<img src="../fig/rmd-03-view_qqplots_raw-1.png" alt="plot of chunk view_qqplots_raw" width="612" style="display: block; margin: auto;" />
+
+Q-Q plots of the normalized expression data for the first six genes show that 
+the data values match the diagonal line well, meaning that they are now normally
+distributed. They are also all on the same scale now as well.
+
+
+~~~
+par(mfrow=c(2,3))
+for (i in 1:6) {
+  qqnorm(dataset.islet.rnaseq$expr[,i])
+  qqline(dataset.islet.rnaseq$expr[,i])
+  }
+~~~
+{: .language-r}
+
+<img src="../fig/rmd-03-view_qqplots_normalized-1.png" alt="plot of chunk view_qqplots_normalized" width="612" style="display: block; margin: auto;" />
+
+Boxplots of raw counts for 5 example genes are shown at left below. Notice that 
+the median count values (horizontal black bar in each boxplot) are not 
+comparable between the genes because the counts are not on the same scale. At
+right, boxplots for the same 5 genes show normalized count data on the same 
+scale.
+
+
+~~~
+par(las=2, mfrow=c(1,2))
+boxplot(dataset.islet.rnaseq$raw[,c(5:9)], 
+        main="Raw count distributions for 5 example genes")
+boxplot(dataset.islet.rnaseq$expr[,c(5:9)], 
+        main="Normalized count distributions for the same 5 example genes")
+~~~
+{: .language-r}
+
+<img src="../fig/rmd-03-view_example_boxplots-1.png" alt="plot of chunk view_example_boxplots" width="612" style="display: block; margin: auto;" />
 
 
 ~~~
@@ -797,6 +576,9 @@ DO026         0.86427916         -0.3973634          0.2791826
 ~~~
 {: .output}
 
+The expression data loaded provides LOD peaks for the eQTL analyses performed in
+this study. As a preview of what you will be doing next, extract the LOD peaks
+for chromosome 11.
 
 
 ~~~
@@ -821,7 +603,7 @@ dataset.islet.rnaseq$lod.peaks[1:6,]
 
 
 ~~~
-# look at a region of interest
+# look at chromosome 11 LOD peaks
 chr11_peaks <- dataset.islet.rnaseq$annots %>% 
    select(gene_id, chr) %>% 
    filter(chr=="11") %>%
@@ -925,3 +707,21 @@ range(chr11_peaks$pos, na.rm = TRUE)
 [1]   3.126009 122.078650
 ~~~
 {: .output}
+
+
+
+~~~
+# view LOD scores by position
+chr11_peaks %>% arrange(desc(lod)) %>% 
+  ggplot(aes(pos, lod)) + geom_point()
+~~~
+{: .language-r}
+
+
+
+~~~
+Warning: Removed 602 rows containing missing values (geom_point).
+~~~
+{: .warning}
+
+<img src="../fig/rmd-03-lod_peaks-1.png" alt="plot of chunk lod_peaks" width="612" style="display: block; margin: auto;" />

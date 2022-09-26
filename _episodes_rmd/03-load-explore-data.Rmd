@@ -20,13 +20,7 @@ Load the libraries.
 ```{r, load_tidyverse, message=FALSE}
 library(tidyverse)
 library(knitr)
-library(GGally)
 library(corrplot)
-library(broom)
-library(qtl2)
-library(qtl2convert)
-library(qtl2ggplot)
-library(RColorBrewer)
 # the following analysis is from File S1 Attie_eQTL_paper_physiology.Rmd 
 # compliments of Daniel Gatti. See Data Dryad entry for more information.
 ```
@@ -44,37 +38,14 @@ load("../data/attie_DO500_clinical.phenotypes.RData")
 ```
 
 See the [data dictionary](../data/Attie-232_Attie_DO_Islets-dictionary.csv) to 
-see a description of each of these phenotypes.  
+see a description of each of these phenotypes. You can also view a table of
+the data dictionary.
 
-#### Phenotype Ranges
-
-```{r pheno_ranges, warning=FALSE}
-tmp = pheno_clin %>%
-  select(num_islets:weight_10wk) %>%
-  summarize_all(funs(min, max), na.rm = TRUE) %>%
-  gather(phenotype, value) %>%
-  mutate(phenotype = str_replace(phenotype, "_min", ".min")) %>%
-  mutate(phenotype = str_replace(phenotype, "_max", ".max")) %>%
-  separate(phenotype, c("phenotype", "stat"), sep = "\\.") %>%
-  mutate(stat = factor(stat, levels = c("min", "max"))) %>%
-  spread(key = stat, value = value)
-kable(tmp, caption = "Phenotype Ranges")
+```{r dict_phenos}
+pheno_clin_dict %>% 
+  select(description, formula) %>% 
+  kable()
 ```
-
-#### Univariate Boxplot
-
-```{r pheno_boxplot, warning=FALSE}
-pheno_clin %>%
-  select(num_islets:weight_10wk) %>%
-  gather(phenotype, value) %>%
-  ggplot(aes(x = phenotype, y = value)) +
-    geom_boxplot() +
-    scale_y_log10() +
-    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) +
-    labs(title = "Distribution of Log Transformed Phenotypes")
-```
-
-Subset the phenotypes to include only those analyzed in the paper.
 
 ```{r convert_factors}
 # convert sex and DO wave (batch) to factors
@@ -147,20 +118,6 @@ pheno_clin %>%
 
 ### QA/QC
 
-#### Proportion Missing Data
-
-```{r pheno_missing_data, warning=FALSE}
-tmp = pheno_clin %>% 
-  mutate_all(is.na) %>% 
-  summarize_all(mean) %>%
-  gather(phenotype, value)
-kable(tmp, caption = "Proportion of Missing Data")
-```
-
-The phenotypes that we're mapping (on the right) are mostly free of missing 
-values. The highest are `Ins_per_islet` and WPIC at 3.6%.
-
-
 Log transform and standardize each phenotype. Consider setting points that are 
 more than 5 std. dev. from the mean to NA. Only do this if the final 
 distribution doesn't look skewed.
@@ -179,36 +136,6 @@ pheno_clin_std %>%
     theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) +
     labs(title = "Distribution of Standardized Phenotypes")
 ```
-
-```{r outliers, warning=FALSE}
-outliers = pheno_clin_std %>% 
-              gather(pheno, value, -mouse) %>%
-              filter(abs(value) > 5)
-kable(outliers, caption = "Potential Outliers")
-```
-
-### All Pairs
-
-```{r pheno_all_pairs_include, warning=FALSE, out.width= "100%"}
-knitr::include_graphics("../fig/rmd-02-pheno_all_pairs-1.png")
-```
-```{r pheno_all_pairs, warning=FALSE, fig.width=15, fig.height=15}
-ggpairs(select(pheno_clin_log, num_islets:weight_10wk)) +
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
-```
-
-The HOMA phenotypes have odd distributions.
-
-```{r homair_vs_homab, warning=FALSE}
-saveRDS(pheno_clin_log, 
-        file = "../data/pheno_clin_log_outliers_removed.rds")
-ggplot(pheno_clin_log, aes(HOMA_IR_0min, HOMA_B_0min, color = DOwave, shape = sex)) +
-  geom_point()
-```
-
-There doesn't appear to be a batch effect, but there are a large number of low 
-values. Is there some lower bound to the HOMA measurements?
-
 
 ### Tests for sex, wave and diet_days.
 
@@ -242,7 +169,7 @@ rm(tmp)
 
 ### Weight vs. Food Intake
 
-```{r bw_vs_food, warning=FALSE}
+```{r bw_vs_food, warning=FALSE, message=FALSE}
 pheno_clin_log %>%
   select(mouse, sex, food_ave:weight_10wk) %>%
   gather(phenotype, value, -mouse, -sex, -food_ave) %>%
@@ -279,7 +206,7 @@ Females
 ```{r female_corr_plot, fig.width=15, fig.height=15, message=FALSE, warning=FALSE}
 tmp = pheno_clin_log %>% 
         filter(sex == "F") %>%
-        select(num_islets:weight_10wk)
+        select(starts_with(c("Ins", "Glu", "TG")))
 tmp = cor(tmp, use = "pairwise")
 corrplot.mixed(tmp, upper = "ellipse", lower = "number", 
                main = "Female Clinical Phenotype Correlation")
@@ -292,154 +219,118 @@ Males
 ```{r male_corr_plot, fig.width=15, fig.height=15, warning=FALSE, message=FALSE}
 tmp = pheno_clin_log %>% 
         filter(sex == "M") %>%
-        select(num_islets:weight_10wk)
+        select(starts_with(c("Ins", "Glu", "TG")))
 tmp = cor(tmp, use = "pairwise")
 corrplot.mixed(tmp, upper = "ellipse", lower = "number", 
                main = "Male Clinical Phenotype Correlation")
 corrplot.mixed(tmp, upper = "ellipse", lower = "number", 
                main = "Male Clinical Phenotype Correlation")
 ```
-![phenotype correlations for females](../fig/rmd-03-female_corr_plot-1.png)
-![phenotype correlations for males](../fig/rmd-03-male_corr_plot-1.png)
-
-### Founder Allele Frequency
-
-Load in the genoprobs and markers.
-
-```{r load_genoprobs}
-genoprobs = readRDS("../data/genotypes/attie_DO500_genoprobs_v5.rds")
-markers = readRDS("../data/marker_grid_0.02cM_plus.rds")
-K = calc_kinship(probs = genoprobs, type = "loco", cores = 4)
-saveRDS(K, file = "../data/kinship")
-map = map_df_to_list(map = markers, pos_column = "pos")
-```
-
-```{r founder_allele_freq,fig.height=10,fig.width=12}
-map_fxn = function(g, m) {
-  retval = apply(g, 2:3, mean) %>%
-             t() %>%
-             data.frame() %>%
-             mutate(pos = m) %>%
-             gather(founder, prop, -pos)
-  return(retval)
-}
-allele.freq = map2(genoprobs, map, map_fxn)
-allele.freq = map2(allele.freq, 1:length(allele.freq), function(af, chr) { mutate(af, chr = chr) })
-tmp = allele.freq[[1]]
-for(i in 2:length(allele.freq)) {
-  tmp = rbind(tmp, allele.freq[[i]])
-}
-allele.freq = data.frame(tmp)
-rm(tmp)
-
-cc = CCcolors
-names(cc) = LETTERS[1:8]
-ggplot(allele.freq, aes(pos, prop, color = founder)) +
-  geom_line() +
-  scale_color_manual(values = cc) +
-  facet_grid(founder~chr, scales = "free") +
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1),
-        panel.spacing = unit(0.1, "lines")) +
-  labs(title = "Attie Founder Allele Proportions")
-```
-
-
-### QTL Scans
-
-```{r qtl_scans_saved, echo=FALSE}
-rownames(pheno_clin_log) = pheno_clin_log$mouse
-covar = model.matrix(~sex + DOwave, data = pheno_clin_log)
-
-# uncomment and run scan1 if you don't have the qtl object in 
-# your environment
-# qtl = scan1(genoprobs = genoprobs, 
-#             pheno = pheno_clin_log[,12:31, drop = FALSE], 
-#             kinship = K, 
-#             addcovar = covar, 
-#             cores = 2)
-# 
-# save(qtl, file = "../data/qtl-scan.Rdata")
-load(file = "../data/qtl-scan.Rdata")
-```
-
-```{r qtl_scans, eval=FALSE}
-rownames(pheno_clin_log) = pheno_clin_log$mouse
-covar = model.matrix(~sex + DOwave, data = pheno_clin_log)
-
-qtl = scan1(genoprobs = genoprobs, 
-            pheno = pheno_clin_log[,12:31, drop = FALSE], 
-            kinship = K, 
-            addcovar = covar, 
-            cores = 2)
-```
-
-### QTL plots
-
-```{r qtl_plots}
-par(mfrow=c(2,10))
-for(i in 1:ncol(qtl)) {
-  plot_scan1(x = qtl, map = map, lodcolumn = i, main = colnames(qtl)[i])
-  abline(h = 6, col = 2, lwd = 2)
-}
-```
-
-### QTL Peaks
-
-```{r qtl_peaks}
-lod_threshold = 6
-peaks = find_peaks(scan1_output = qtl, map = map, threshold = lod_threshold, peakdrop = 4, prob = 0.95)
-kable(peaks %>% dplyr::select (-lodindex) %>% arrange(chr, pos), caption = "Phenotype QTL Peaks with LOD >= 6")
-write_csv(peaks, file = "../data/pheno_clin_QTL_peaks.csv")
-```
-
-### QTL Peaks Figure
-
-```{r qtl_peaks_figure,warning=FALSE,message=FALSE}
-peaks = peaks %>%
-          arrange(lodcolumn)
-plot_peaks(peaks, map, col = c("blue","red"), lwd = 3, tick.height = 0.8, gap = 0, main = "LOD > 6")
-box()
-plot_peaks(peaks, map, col = c("blue","red"), lwd = 3, tick_height = 0.8, gap = 0, main = "LOD > 6")
-box()
-ggplot_peaks(peaks, map, col = c("blue","red"), legend.title = "LOD > 6")
-```
-
-```{r qtl_heatmap, warning=FALSE,message=FALSE,fig.height=8,fig.width=12}
-source("../code/qtl_heatmap.R")
-qtl_heatmap(qtl = qtl, map = map, low.thr = 3.5)
-```
-
 
 ## Gene Expression Phenotypes
-
-### summarized data, matrices w/sample annotation, exp data, gene annotation, 
-### like bioconductor summarized experiment etc = whole set of rectangles
-
 ```{r load_expression_data}
 # load the expression data along with annotations and metadata
 load("../data/dataset.islet.rnaseq.RData")
+names(dataset.islet.rnaseq)
+```
 
-# look at raw counts
-dataset.islet.rnaseq$raw[1:6,1:6]
-
+```{r view_annot_rawCounts_metadata}
 # look at gene annotations
 dataset.islet.rnaseq$annots[1:6,]
 
-# look at sample metadata
-# mouse sex, birth dates and DO waves
-table(dataset.islet.rnaseq$samples[, c("sex", "birthdate")])
-table(dataset.islet.rnaseq$samples[, c("sex", "DOwave")])
-
 # look at raw counts
 dataset.islet.rnaseq$raw[1:6,1:6]
 
+# look at sample metadata
+# summarize mouse sex, birth dates and DO waves
+table(dataset.islet.rnaseq$samples[, c("sex", "birthdate")])
+table(dataset.islet.rnaseq$samples[, c("sex", "DOwave")])
+```
+
+In order to make reasonable gene comparisons between samples, the count data 
+need to be normalized. In the quantile-quantile (Q-Q) plot below, count data for 
+the first gene are plotted over a diagonal line tracing a normal distribution 
+for those counts. Notice that most of the count data values lie off of this 
+line, indicating that these gene counts are not normally distributed. 
+
+```{r view_manual_qqplot_raw, echo=FALSE}
+library(rafalib)
+ps <- ( seq(0,99) + 0.5 )/100
+qs <- quantile(dataset.islet.rnaseq$raw[,1], ps)
+normalqs <- qnorm(ps, 
+                  mean(dataset.islet.rnaseq$raw[,1]),
+                  popsd(dataset.islet.rnaseq$raw[,1]))
+plot(normalqs, qs, 
+     xlab="Normal percentiles", ylab="Count percentiles",
+     main="Count distribution for gene ENSMUSG00000000001")
+abline(0,1) # identity line
+```
+
+The same plot can be drawn as shown below. The diagonal line represents a 
+standard normal distribution with mean 0 and standard deviation 1. Count data
+values are plotted against this standard normal distribution.
+
+```{r view_qqplot_raw}
+qqnorm(dataset.islet.rnaseq$raw[,1], 
+     xlab="Theoretical normal percentiles", 
+     ylab="Count percentiles",
+     main="Count distribution for gene ENSMUSG00000000001")
+qqline(dataset.islet.rnaseq$raw[,1]) 
+```
+
+Q-Q plots for the first six genes show that count data for these genes are not
+normally distributed. They are also not on the same scale. The y-axis values for
+each subplot range to 20,000 counts in the first subplot, 250 in the second, 80
+in the third, and so on. 
+
+```{r view_qqplots_raw}
+par(mfrow=c(2,3))
+for (i in 1:6) {
+  qqnorm(dataset.islet.rnaseq$raw[,i])
+  qqline(dataset.islet.rnaseq$raw[,i])
+  }
+```
+
+Q-Q plots of the normalized expression data for the first six genes show that 
+the data values match the diagonal line well, meaning that they are now normally
+distributed. They are also all on the same scale now as well.
+
+```{r view_qqplots_normalized}
+par(mfrow=c(2,3))
+for (i in 1:6) {
+  qqnorm(dataset.islet.rnaseq$expr[,i])
+  qqline(dataset.islet.rnaseq$expr[,i])
+  }
+```
+
+Boxplots of raw counts for 5 example genes are shown at left below. Notice that 
+the median count values (horizontal black bar in each boxplot) are not 
+comparable between the genes because the counts are not on the same scale. At
+right, boxplots for the same 5 genes show normalized count data on the same 
+scale.
+
+```{r view_example_boxplots}
+par(las=2, mfrow=c(1,2))
+boxplot(dataset.islet.rnaseq$raw[,c(5:9)], 
+        main="Raw count distributions for 5 example genes")
+boxplot(dataset.islet.rnaseq$expr[,c(5:9)], 
+        main="Normalized count distributions for the same 5 example genes")
+```
+
+```{r normalized_counts}
 # look at normalized counts
 dataset.islet.rnaseq$expr[1:6,1:6]
+```
 
+The expression data loaded provides LOD peaks for the eQTL analyses performed in
+this study. As a preview of what you will be doing next, extract the LOD peaks
+for chromosome 11.
+
+```{r lod_peaks}
 # look at LOD peaks
 dataset.islet.rnaseq$lod.peaks[1:6,]
 
-# look at a region of interest
+# look at chromosome 11 LOD peaks
 chr11_peaks <- dataset.islet.rnaseq$annots %>% 
    select(gene_id, chr) %>% 
    filter(chr=="11") %>%
@@ -461,4 +352,8 @@ chr11_peaks %>% arrange(desc(lod)) %>% head()
 # range of LOD scores and positions
 range(chr11_peaks$lod, na.rm = TRUE)
 range(chr11_peaks$pos, na.rm = TRUE)
+
+# view LOD scores by position
+chr11_peaks %>% arrange(desc(lod)) %>% 
+  ggplot(aes(pos, lod)) + geom_point()
 ```
