@@ -288,32 +288,11 @@ for(i in 1:nrow(hotspots)) {
 ~~~
 {: .language-r}
 
-
-
-~~~
-Error: Cannot open file for writing:
-* '../results/chr2_hotspot_genes.csv'
-~~~
-{: .error}
-
 Number of genes in each hotspot.
 
 
 ~~~
 hotspots = data.frame(hotspots, count = sapply(hotspot.genes, nrow))
-~~~
-{: .language-r}
-
-
-
-~~~
-Error in (function (..., row.names = NULL, check.rows = FALSE, check.names = TRUE, : arguments imply differing number of rows: 1, 0
-~~~
-{: .error}
-
-
-
-~~~
 kable(hotspots, caption = "Number of genes per hotspot")
 ~~~
 {: .language-r}
@@ -322,13 +301,13 @@ kable(hotspots, caption = "Number of genes per hotspot")
 
 Table: Number of genes per hotspot
 
-|qtl_chr | center| proximal| distal|
-|:-------|------:|--------:|------:|
-|2       |  165.5|    163.5|  167.5|
-|5       |  146.0|    144.0|  148.0|
-|7       |   46.0|     44.0|   48.0|
-|11      |   71.0|     69.0|   73.0|
-|13      |  112.5|    110.5|  114.5|
+|   |qtl_chr | center| proximal| distal| count|
+|:--|:-------|------:|--------:|------:|-----:|
+|2  |2       |  165.5|    163.5|  167.5|   147|
+|5  |5       |  146.0|    144.0|  148.0|   182|
+|7  |7       |   46.0|     44.0|   48.0|   123|
+|11 |11      |   71.0|     69.0|   73.0|   126|
+|13 |13      |  112.5|    110.5|  114.5|   104|
 
 
 ~~~
@@ -346,32 +325,11 @@ for(i in 1:nrow(cis.hotspots)) {
 ~~~
 {: .language-r}
 
-
-
-~~~
-Error: Cannot open file for writing:
-* '../results/chr7_cis_hotspot_genes.csv'
-~~~
-{: .error}
-
 Number of genes in each cis-hotspot.
 
 
 ~~~
 cis.hotspots = data.frame(cis.hotspots, count = sapply(cis.hotspot.genes, nrow))
-~~~
-{: .language-r}
-
-
-
-~~~
-Error in (function (..., row.names = NULL, check.rows = FALSE, check.names = TRUE, : arguments imply differing number of rows: 1, 0
-~~~
-{: .error}
-
-
-
-~~~
 kable(cis.hotspots, caption = "Number of genes per cis-hotspot")
 ~~~
 {: .language-r}
@@ -380,10 +338,10 @@ kable(cis.hotspots, caption = "Number of genes per cis-hotspot")
 
 Table: Number of genes per cis-hotspot
 
-|qtl_chr | center| proximal| distal|
-|:-------|------:|--------:|------:|
-|7       |   29.0|     27.0|   31.0|
-|17      |   34.5|     32.5|   36.5|
+|   |qtl_chr | center| proximal| distal| count|
+|:--|:-------|------:|--------:|------:|-----:|
+|7  |7       |   29.0|     27.0|   31.0|   120|
+|17 |17      |   34.5|     32.5|   36.5|   188|
 
 Get the expression of genes that map to each hotspot.
 

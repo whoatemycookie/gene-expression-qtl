@@ -18,16 +18,13 @@ knitr_fig_path("06-")
 
 ### Load Libraries  
 
-```{r load libraries, message=FALSE, warning=FALSE}
+```{r load_libraries, message=FALSE, warning=FALSE}
 library(tidyverse)
-library(qtl2)
-library(qtl2convert)
-library(GGally)
-library(broom)
 library(knitr)
-library(corrplot)
-library(RColorBrewer)
+library(broom)
+library(qtl2)
 library(qtl2ggplot)
+library(RColorBrewer)
 
 source("../code/gg_transcriptome_map.R")
 source("../code/qtl_heatmap.R")
@@ -52,7 +49,7 @@ load("../data/attie_DO500_clinical.phenotypes.RData")
 
 For this lesson, lets choose a random set of 50 gene expression phenotypes.
 
-```{r choosing data hidden, echo=F}
+```{r choosing_data_hidden, echo=F}
 genes = colnames(norm)
 chr11 = which(genes=="ENSMUSG00000020679")
 genes = genes[-chr11]
@@ -62,7 +59,7 @@ genes <- genes[c(chr11, sams)]
 
 ```
 
-```{r choosing data shown, eval=F, echo=T}
+```{r choosing_data_shown, eval=F, echo=T}
 genes = colnames(norm)
 
 sams <- sample(length(genes), 50, replace = FALSE, prob = NULL)
@@ -106,7 +103,7 @@ The kinship matrix has already been calculated and loaded in above.  Again, we h
 
 Now let's add the necessary covariates. For `Hnf1b` expression data, let's see which covariates are significant.
 
-```{r covariates sig}
+```{r covariates_sig}
 
 ###merging covariate data and expression data to test for sex, wave and diet_days.
 

@@ -24,17 +24,11 @@ Let's load in the libraries. If are using the same R session as the previous les
 
 ### Load Libraries  
 
-```{r load libraries, message=FALSE}
-# SHOULD WE SHOW THIS OR WILL THESE LOADED IN ALREADY ?????
+```{r load_libraries, message=FALSE}
 library(tidyverse)
 library(knitr)
-library(GGally)
-library(corrplot)
 library(broom)
 library(qtl2)
-library(qtl2convert)
-library(qtl2ggplot)
-library(RColorBrewer)
 ```
 
 ### Load Data
@@ -45,9 +39,6 @@ Let's load the data. This time we are loading gene expression data for `21,771` 
 
 #expression data
 load("../data/attie_DO500_expr.datasets.RData")
-
-#previous data
-#load("../data/dataset.islet.rnaseq.RData")
 
 ##phenotypes
 load("../data/attie_DO500_clinical.phenotypes.RData")
@@ -102,7 +93,7 @@ The kinship matrix has already been calculated and loaded in above.  Again, we h
 
 Now let's add the necessary covariates. For `Hnf1b` expression data, let's see which covariates are significant.
 
-```{r covariates sig}
+```{r covariatesa_sig}
 
 ###merging covariate data and expression data to test for sex, wave and diet_days.
 

@@ -25,16 +25,10 @@ Let's load in the libraries. If are using the same R session as the previous les
 
 
 ~~~
-# SHOULD WE SHOW THIS OR WILL THESE LOADED IN ALREADY ?????
 library(tidyverse)
 library(knitr)
-library(GGally)
-library(corrplot)
 library(broom)
 library(qtl2)
-library(qtl2convert)
-library(qtl2ggplot)
-library(RColorBrewer)
 ~~~
 {: .language-r}
 
@@ -46,9 +40,6 @@ Let's load the data. This time we are loading gene expression data for `21,771` 
 ~~~
 #expression data
 load("../data/attie_DO500_expr.datasets.RData")
-
-#previous data
-#load("../data/dataset.islet.rnaseq.RData")
 
 ##phenotypes
 load("../data/attie_DO500_clinical.phenotypes.RData")
@@ -167,7 +158,7 @@ rm(tmp)
 ~~~
 {: .language-r}
 
-<img src="../fig/rmd-05-covariates sig-1.png" alt="plot of chunk covariates sig" width="612" style="display: block; margin: auto;" />
+<img src="../fig/rmd-05-covariatesa_sig-1.png" alt="plot of chunk covariatesa_sig" width="612" style="display: block; margin: auto;" />
 
 We can see that sex, DOwave and diet are significant.  Here DOwave is the group or batch number as not all mice were submitted for genotyping at the same time.  Because of this, we now have to correct for it.
 

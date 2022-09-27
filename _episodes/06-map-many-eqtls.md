@@ -20,14 +20,11 @@ source: Rmd
 
 ~~~
 library(tidyverse)
-library(qtl2)
-library(qtl2convert)
-library(GGally)
-library(broom)
 library(knitr)
-library(corrplot)
-library(RColorBrewer)
+library(broom)
+library(qtl2)
 library(qtl2ggplot)
+library(RColorBrewer)
 
 source("../code/gg_transcriptome_map.R")
 source("../code/qtl_heatmap.R")
@@ -136,19 +133,20 @@ tmp
 ~~~
 # A tibble: 204 × 8
 # Groups:   expression [51]
-   expression         data     model  term     estimate std.e…¹ stati…²  p.value
+   expression         data     model  term      estim…¹ std.e…² stati…³  p.value
    <chr>              <list>   <list> <chr>       <dbl>   <dbl>   <dbl>    <dbl>
- 1 ENSMUSG00000020680 <tibble> <lm>   (Interc… -0.737   0.543    -1.36  1.75e- 1
- 2 ENSMUSG00000020680 <tibble> <lm>   sexM      0.387   0.0884    4.38  1.55e- 5
- 3 ENSMUSG00000020680 <tibble> <lm>   DOwave   -0.388   0.0398   -9.76  3.49e-20
- 4 ENSMUSG00000020680 <tibble> <lm>   diet_da…  0.0119  0.00415   2.87  4.33e- 3
- 5 ENSMUSG00000030660 <tibble> <lm>   (Interc…  0.866   0.538     1.61  1.08e- 1
- 6 ENSMUSG00000030660 <tibble> <lm>   sexM      0.0240  0.0877    0.274 7.84e- 1
- 7 ENSMUSG00000030660 <tibble> <lm>   DOwave   -0.464   0.0394  -11.8   1.88e-27
- 8 ENSMUSG00000030660 <tibble> <lm>   diet_da…  0.00230 0.00411   0.559 5.76e- 1
- 9 ENSMUSG00000097098 <tibble> <lm>   (Interc… -0.769   0.616    -1.25  2.13e- 1
-10 ENSMUSG00000097098 <tibble> <lm>   sexM     -0.0486  0.100    -0.484 6.29e- 1
-# … with 194 more rows, and abbreviated variable names ¹​std.error, ²​statistic
+ 1 ENSMUSG00000020680 <tibble> <lm>   (Interce… -0.737  0.543    -1.36  1.75e- 1
+ 2 ENSMUSG00000020680 <tibble> <lm>   sexM       0.387  0.0884    4.38  1.55e- 5
+ 3 ENSMUSG00000020680 <tibble> <lm>   DOwave    -0.388  0.0398   -9.76  3.49e-20
+ 4 ENSMUSG00000020680 <tibble> <lm>   diet_days  0.0119 0.00415   2.87  4.33e- 3
+ 5 ENSMUSG00000044986 <tibble> <lm>   (Interce…  1.74   0.607     2.86  4.49e- 3
+ 6 ENSMUSG00000044986 <tibble> <lm>   sexM      -0.317  0.0989   -3.20  1.48e- 3
+ 7 ENSMUSG00000044986 <tibble> <lm>   DOwave    -0.0645 0.0445   -1.45  1.48e- 1
+ 8 ENSMUSG00000044986 <tibble> <lm>   diet_days -0.0110 0.00464  -2.38  1.79e- 2
+ 9 ENSMUSG00000017165 <tibble> <lm>   (Interce…  0.586  0.607     0.967 3.34e- 1
+10 ENSMUSG00000017165 <tibble> <lm>   sexM       0.316  0.0989    3.20  1.51e- 3
+# … with 194 more rows, and abbreviated variable names ¹​estimate, ²​std.error,
+#   ³​statistic
 ~~~
 {: .output}
 
@@ -167,7 +165,7 @@ rm(tmp)
 ~~~
 {: .language-r}
 
-<img src="../fig/rmd-06-covariates sig-1.png" alt="plot of chunk covariates sig" width="612" style="display: block; margin: auto;" />
+<img src="../fig/rmd-06-covariates_sig-1.png" alt="plot of chunk covariates_sig" width="612" style="display: block; margin: auto;" />
 
 We can see that `DOwave` is the most significant.  However, given that a few are influenced by `sex` and `diet_days`, we will have to correct for it. 
 
@@ -205,22 +203,6 @@ if(file.exists(qtl.file)) {
     }
 ~~~
 {: .language-r}
-
-
-
-~~~
-Warning in gzfile(file, "wb"): cannot open compressed file '../results/
-gene.norm_qtl_cis.trans_random.Rdata', probable reason 'No such file or
-directory'
-~~~
-{: .warning}
-
-
-
-~~~
-Error in gzfile(file, "wb"): cannot open the connection
-~~~
-{: .error}
 
 ### QTL plots
 
@@ -272,24 +254,16 @@ write_csv(peaks, "../results/gene.norm_qtl_peaks_random.csv")
  [2] ""                                                                          
  [3] "|lodcolumn          |chr |        pos|        lod|      ci_lo|      ci_hi|"
  [4] "|:------------------|:---|----------:|----------:|----------:|----------:|"
- [5] "|ENSMUSG00000032549 |1   | 130.711212|   8.223569| 129.753531| 134.211141|"
- [6] "|ENSMUSG00000024712 |1   | 188.705836|   6.065488|  74.189728| 193.645480|"
- [7] "|ENSMUSG00000085012 |1   | 189.257133|   6.435918|  36.365564| 190.138440|"
- [8] "|ENSMUSG00000097857 |2   |  52.778906|   9.251783|  52.653945|  56.621450|"
- [9] "|ENSMUSG00000042064 |2   |  70.020081|  13.031306|  69.451695|  70.126091|"
-[10] "|ENSMUSG00000038903 |2   | 163.582672|   6.274302|  11.692833| 165.479592|"
-[11] "|ENSMUSG00000022824 |2   | 164.022416|  18.911033| 164.022416| 164.076561|"
-[12] "|ENSMUSG00000016252 |2   | 174.476126|  20.820158| 174.165673| 174.666194|"
+ [5] "|ENSMUSG00000041945 |1   |  40.807398|  93.567064|  40.782439|  40.807398|"
+ [6] "|ENSMUSG00000055980 |1   |  82.689342|  18.355211|  80.160676|  83.631929|"
+ [7] "|ENSMUSG00000097045 |1   | 171.385294|  66.376621| 171.188292| 171.418895|"
+ [8] "|ENSMUSG00000044339 |2   |  26.292773|   7.262994|  26.080595|  36.635073|"
+ [9] "|ENSMUSG00000014353 |2   | 128.764197|  23.005334| 128.762770| 129.156870|"
+[10] "|ENSMUSG00000034918 |2   | 164.022416|  30.001305| 163.582672| 164.022416|"
+[11] "|ENSMUSG00000031161 |2   | 164.027702|  11.277811| 163.413317| 164.064248|"
+[12] "|ENSMUSG00000039108 |2   | 179.488565|  10.413470| 179.371694| 180.122688|"
 ~~~
 {: .output}
-
-
-
-~~~
-Error: Cannot open file for writing:
-* '../results/gene.norm_qtl_peaks_random.csv'
-~~~
-{: .error}
 
 ### QTL Peaks Figure
 

@@ -17,11 +17,7 @@ source: Rmd
 
 Before we begin to run QTL mapping on gene expression data to find eQTLs, let's review the main QTL mapping steps that we learnt in the [QTL mapping course](https://smcclatchy.github.io/mapping/).  As a reminder, we are using data from the Keller et al. [paper](https://academic.oup.com/genetics/article/209/1/335/5931013?login=false) that are freely available to [download](doi:10.5061/dryad.pj105).
 
-Make sure that you are in your main directory. If you’re not sure where you are working right now, you can check your working directory with `getwd()`. If you are not in your main directory, run `setwd("????")` in the Console or Session -> Set Working Directory -> Choose Directory in the RStudio menu to set your working directory to the main directory.
-
-Once you are in your main directory, create a new R script with File -> New File -> R script, or use the +document icon at upper left.
-
-In case you need a little help with some of these steps, a link is provided with links back to the original lesson, if available. 
+Make sure that you are in your main directory. If you’re not sure where you are working right now, you can check your working directory with `getwd()`. If you are not in your main directory, run `setwd("code")` in the Console or Session -> Set Working Directory -> Choose Directory in the RStudio menu to set your working directory to the code directory.
 
 
 ### Load Libraries  
@@ -30,16 +26,10 @@ Below are the neccessary libraries that we require for this review and the follo
 
 
 ~~~
-# SHOULD WE SHOW THIS OR WILL THESE LOADED IN ALREADY ?????
 library(tidyverse)
 library(knitr)
-library(GGally)
-library(corrplot)
 library(broom)
 library(qtl2)
-library(qtl2convert)
-library(qtl2ggplot)
-library(RColorBrewer)
 ~~~
 {: .language-r}
 
@@ -112,16 +102,6 @@ This looks much better!
 The marker map for each chromosome is stored in the `map` object. This is used to plot the LOD scores calculated at each marker during QTL mapping. Each list element is a numeric vector with each marker position in megabases (Mb). Here we are using the 69K grid marker file. Often when there are numerous genotype arrays used in a study, we interoplate all to a 69k grid file so we are able to combine all samples across different array types. 
 
 Look at the structure of `map` in the Environment tab by clicking the triangle to the left or by running `str(map)` in the Console. 
-
-> ## Challenge
-> 1). Determine the length of `map`.  
-> 2). How many markers are on chromosome 1?  
->
-> > ## Solution to Challenge 2  
-> > 1). `length(map)`  
-> > 2). `length(map[[1]])`  
-> {: .solution}
-{: .challenge} 
 
 
 ### Genotype probabilities  
@@ -207,8 +187,7 @@ Now let's apply that function to the data object `tmp` that we created above.
 tmp = tmp %>%
   mutate(model = map(data, mod_fxn)) %>%
   mutate(summ = map(model, tidy)) %>%
-  unnest(summ) 
-#  kable(tmp, caption = "Effects of Sex, Wave & Diet Days on Phenotypes")
+  unnest(summ)
 
 tmp
 ~~~
@@ -246,7 +225,7 @@ rm(tmp)
 ~~~
 {: .language-r}
 
-<img src="../fig/rmd-04-covariates sig function plots-1.png" alt="plot of chunk covariates sig function plots" width="612" style="display: block; margin: auto;" />
+<img src="../fig/rmd-04-covariates_sig_function_plots-1.png" alt="plot of chunk covariates_sig_function_plots" width="612" style="display: block; margin: auto;" />
 
 We can see that sex and DOwave (especially the third batch) are significant. Here DOwave is the group or batch number as not all mice are in the experient at the same time. Because of this, we now have to correct for it.
 
