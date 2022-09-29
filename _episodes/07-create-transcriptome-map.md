@@ -16,7 +16,6 @@ source: Rmd
 
 
 
-!!!!!! CREATE MARKER ID !!!!!!!
 
 ### Load Libraries  
 
@@ -43,9 +42,6 @@ source("../code/qtl_heatmap.R")
 #expression data
 load("../data/attie_DO500_expr.datasets.RData")
 
-##loading previous results
-##load("../data/dataset.islet.rnaseq.RData")
-
 ##mapping data
 load("../data/attie_DO500_mapping.data.RData")
 
@@ -58,10 +54,13 @@ load("../data/attie_DO500_clinical.phenotypes.RData")
 expr.mrna <- norm
 ~~~
 {: .language-r}
-##making the transciptome map for the 50 cis/trans genes in last lesson
 
+In this lesson we are going to learn how to create a transcriptome map.  At transcriptome map shows the location of the eQTL peak compared its gene location, giving information about cos and trans eQTLs. 
 
-Load in the LOD peaks over 6 from previous lesson.
+We are going to use the file that we created in the previous lesson with the lod scores greater than 6: `gene.norm_qtl_peaks_random.csv`.  
+
+You can load it in using the following code:
+
 
 
 ~~~
@@ -69,8 +68,39 @@ lod_summary = read.csv("../results/gene.norm_qtl_peaks_random.csv")
 lod_summary$marker.id <- paste0(lod_summary$chr,
                                 "_",
                                 lod_summary$pos * 1000000)
+~~~
+{: .language-r}
 
+
+~~~
 ensembl = get_ensembl_genes()
+~~~
+{: .language-r}
+
+
+
+~~~
+snapshotDate(): 2022-04-25
+~~~
+{: .output}
+
+
+
+~~~
+loading from cache
+~~~
+{: .output}
+
+
+
+~~~
+Importing File into R ..
+~~~
+{: .output}
+
+
+
+~~~
 id    = ensembl$gene_id
 chr   = seqnames(ensembl)
 start = start(ensembl) * 1e-6
@@ -106,7 +136,7 @@ table(lod_summary$cis.trans)
 ~~~
 
   cis trans 
-   35    46 
+   85   132 
 ~~~
 {: .output}
 
@@ -145,397 +175,3 @@ out.plot
 {: .language-r}
 
 <img src="../fig/rmd-07-unnamed-chunk-2-2.png" alt="plot of chunk unnamed-chunk-2" width="720" style="display: block; margin: auto;" />
-
-### QTL Density Plot
-
-
-~~~
-breaks = matrix(c(seq(0, 200, 4), seq(1, 201, 4), seq(2, 202, 4), seq(3, 203, 4)), ncol = 4)
-tmp = as.list(1:ncol(breaks)) 
-for(i in 1:ncol(breaks)) {
-tmp[[i]] = lod_summary %>%
-             filter(qtl_lod >= 7.18 & cis == FALSE) %>%
-             arrange(qtl_chr, qtl_pos) %>%
-             group_by(qtl_chr) %>%
-             mutate(win = cut(qtl_pos, breaks = breaks[,i])) %>%
-             group_by(qtl_chr, win) %>% 
-             summarize(cnt = n()) %>%
-             separate(win, into = c("other", "prox", "dist")) %>%
-             mutate(prox = as.numeric(prox), 
-                    dist = as.numeric(dist), 
-                    mid = 0.5 * (prox + dist)) %>%
-             dplyr::select(qtl_chr, mid, cnt)
-}
-
-trans = bind_rows(tmp[[1]], tmp[[1]], tmp[[3]], tmp[[4]])
-rm(tmp)
-
-out.plot = ggplot(trans, aes(mid, cnt)) +
-             geom_line() +
-             geom_hline(aes(yintercept = 100), linetype = 2, color = "grey50") +
-             facet_grid(.~qtl_chr, scales = "free") +
-             theme(panel.background = element_blank(),
-             panel.border = element_rect(fill = 0, color = "grey70"),
-             panel.spacing = unit(0, "lines"),
-             axis.text.x = element_text(angle = 90)) +
-             labs(title = "trans-eQTL Histogram", x = "Mb", y = "Number of Transcripts")
-pdf("../results/trans_eqtl_density_random.pdf", width = 10, height = 8)
-print(out.plot)
-dev.off()
-~~~
-{: .language-r}
-
-
-
-~~~
-quartz_off_screen 
-                2 
-~~~
-{: .output}
-
-
-
-~~~
-out.plot
-~~~
-{: .language-r}
-
-<img src="../fig/rmd-07-trans_eqtl_sliding_window-1.png" alt="plot of chunk trans_eqtl_sliding_window" width="612" style="display: block; margin: auto;" />
-
-
-~~~
-breaks = matrix(c(seq(0, 200, 4), seq(1, 201, 4), seq(2, 202, 4), seq(3, 203, 4)), ncol = 4)
-tmp = as.list(1:ncol(breaks)) 
-for(i in 1:ncol(breaks)) {
-tmp[[i]] = lod_summary %>%
-             filter(qtl_lod >= 7.18 & cis == TRUE) %>%
-             arrange(qtl_chr, qtl_pos) %>%
-             group_by(qtl_chr) %>%
-             mutate(win = cut(qtl_pos, breaks = breaks[,i])) %>%
-             group_by(qtl_chr, win) %>% 
-             summarize(cnt = n()) %>%
-             separate(win, into = c("other", "prox", "dist")) %>%
-             mutate(prox = as.numeric(prox), 
-                    dist = as.numeric(dist), 
-                    mid = 0.5 * (prox + dist)) %>%
-             dplyr::select(qtl_chr, mid, cnt)
-}
-
-cis = bind_rows(tmp[[1]], tmp[[2]], tmp[[3]], tmp[[4]])
-rm(tmp1, tmp2, tmp3, tmp4)
-
-out.plot = ggplot(cis, aes(mid, cnt)) +
-             geom_line(color = "#4286f4") +
-             geom_hline(aes(yintercept = 100), linetype = 2, color = "grey50") +
-             facet_grid(.~qtl_chr, scales = "free") +
-             theme(panel.background = element_blank(),
-                   panel.border = element_rect(fill = 0, color = "grey70"),
-                   panel.spacing = unit(0, "lines"),
-                   axis.text.x = element_text(angle = 90)) +
-           labs(title = "cis-eQTL Histogram", x = "Mb", y = "Number of Transcripts")
-pdf("../results/cis_eqtl_density_random.pdf", width = 10, height = 8)
-print(out.plot)
-dev.off()
-~~~
-{: .language-r}
-
-
-
-~~~
-quartz_off_screen 
-                2 
-~~~
-{: .output}
-
-
-
-~~~
-out.plot
-~~~
-{: .language-r}
-
-<img src="../fig/rmd-07-cis_eqtl_sliding_window-1.png" alt="plot of chunk cis_eqtl_sliding_window" width="612" style="display: block; margin: auto;" />
-
-
-
-~~~
-tmp = lod_summary %>%
-        filter(qtl_lod >= 7.18) %>%
-        group_by(cis) %>%
-        count()
-kable(tmp, caption = "Number of cis- and trans-eQTL")
-~~~
-{: .language-r}
-
-
-
-Table: Number of cis- and trans-eQTL
-
-|cis   |  n|
-|:-----|--:|
-|FALSE | 16|
-|TRUE  | 29|
-|NA    |  2|
-
-
-
-~~~
-rm(tmp)
-~~~
-{: .language-r}
-
-## Islet RNASeq eQTL Hotspots
-
-### Select eQTL Hotspots
-
-Select trans-eQTL hotspots at the 7.18 LOD thresholds. Retain the maximum per chromosome.
-
-
-~~~
-hotspots = trans %>%
-             group_by(qtl_chr) %>%
-             #filter(cnt >= 100) %>%
-             summarize(center = median(mid)) %>%
-             mutate(proximal = center - 2, distal = center + 2)
-kable(hotspots, caption = "Islet trans-eQTL hotspots")
-~~~
-{: .language-r}
-
-
-
-Table: Islet trans-eQTL hotspots
-
-|qtl_chr | center| proximal| distal|
-|:-------|------:|--------:|------:|
-|2       |   96.0|     94.0|   98.0|
-|5       |  144.5|    142.5|  146.5|
-|6       |   53.5|     51.5|   55.5|
-|9       |  109.5|    107.5|  111.5|
-|11      |   71.0|     69.0|   73.0|
-|12      |   99.0|     97.0|  101.0|
-|13      |   37.5|     35.5|   39.5|
-|17      |   27.0|     25.0|   29.0|
-|18      |   74.0|     72.0|   76.0|
-
-
-
-~~~
-cis.hotspots = cis %>%
-             group_by(qtl_chr) %>%
-             #filter(cnt >= 100) %>%
-             summarize(center = median(mid)) %>%
-             mutate(proximal = center - 2, distal = center + 2)
-kable(cis.hotspots, caption = "Islet cis-eQTL hotspots")
-~~~
-{: .language-r}
-
-
-
-Table: Islet cis-eQTL hotspots
-
-|qtl_chr | center| proximal| distal|
-|:-------|------:|--------:|------:|
-|1       |   61.5|     59.5|   63.5|
-|2       |  154.0|    152.0|  156.0|
-|3       |  146.5|    144.5|  148.5|
-|4       |   43.5|     41.5|   45.5|
-|5       |   93.5|     91.5|   95.5|
-|6       |  115.0|    113.0|  117.0|
-|7       |   24.5|     22.5|   26.5|
-|8       |   23.5|     21.5|   25.5|
-|9       |   59.5|     57.5|   61.5|
-|11      |   74.5|     72.5|   76.5|
-|13      |   21.5|     19.5|   23.5|
-|14      |   22.5|     20.5|   24.5|
-|15      |   96.5|     94.5|   98.5|
-|16      |   31.5|     29.5|   33.5|
-|18      |   78.5|     76.5|   80.5|
-|19      |   10.5|      8.5|   12.5|
-
-Given the hotspot locations, retain all genes with LOD > 7.18 and trans-eQTL within +/- 4Mb of the mid-point of the hotspot.
-
-
-~~~
-hotspot.genes = as.list(hotspots$qtl_chr)
-names(hotspot.genes) = hotspots$qtl_chr
-for(i in 1:nrow(hotspots)) {
-  hotspot.genes[[i]] = lod_summary %>% 
-                         filter(qtl_lod >= 7.18) %>%
-                         filter(qtl_chr == hotspots$qtl_chr[i] & 
-                           qtl_pos >= hotspots$proximal[i] & 
-                           qtl_pos <= hotspots$distal[i] &
-                           (gene_chr != hotspots$qtl_chr[i] |
-                           (gene_chr == hotspots$qtl_chr[i] &
-                            gene_start > hotspots$distal[i] + 1 &
-                            gene_end < hotspots$proximal[i] - 1)))
-  write_csv(hotspot.genes[[i]], file = paste0("../results/chr", names(hotspot.genes)[i], "_hotspot_genes_random.csv"))
-}
-~~~
-{: .language-r}
-
-Number of genes in each hotspot.
-
-
-~~~
-hotspots = data.frame(hotspots, count = sapply(hotspot.genes, nrow))
-kable(hotspots, caption = "Number of genes per hotspot")
-~~~
-{: .language-r}
-
-
-
-Table: Number of genes per hotspot
-
-|   |qtl_chr | center| proximal| distal| count|
-|:--|:-------|------:|--------:|------:|-----:|
-|2  |2       |   96.0|     94.0|   98.0|     0|
-|5  |5       |  144.5|    142.5|  146.5|     1|
-|6  |6       |   53.5|     51.5|   55.5|     1|
-|9  |9       |  109.5|    107.5|  111.5|     1|
-|11 |11      |   71.0|     69.0|   73.0|     1|
-|12 |12      |   99.0|     97.0|  101.0|     0|
-|13 |13      |   37.5|     35.5|   39.5|     0|
-|17 |17      |   27.0|     25.0|   29.0|     1|
-|18 |18      |   74.0|     72.0|   76.0|     1|
-
-
-~~~
-cis.hotspot.genes = as.list(cis.hotspots$qtl_chr)
-names(cis.hotspot.genes) = cis.hotspots$qtl_chr
-for(i in 1:nrow(cis.hotspots)) {
-  cis.hotspot.genes[[i]] = lod_summary %>% 
-                             #dplyr::select(ensembl, marker.id, qtl_chr, qtl_pos, qtl_lod) %>%
-                             dplyr::select(ensembl, qtl_chr, qtl_pos, qtl_lod) %>%
-                             filter(qtl_lod >= 7.18) %>%
-                             filter(qtl_chr == cis.hotspots$qtl_chr[i] & 
-                                    qtl_pos >= cis.hotspots$proximal[i] & 
-                                    qtl_pos <= cis.hotspots$distal[i])
-  write_csv(cis.hotspot.genes[[i]], file = paste0("../results/chr", names(cis.hotspot.genes)[i], "_cis_hotspot_genes_random.csv"))
-}
-~~~
-{: .language-r}
-
-Number of genes in each cis-hotspot.
-
-
-~~~
-cis.hotspots = data.frame(cis.hotspots, count = sapply(cis.hotspot.genes, nrow))
-kable(cis.hotspots, caption = "Number of genes per cis-hotspot")
-~~~
-{: .language-r}
-
-
-
-Table: Number of genes per cis-hotspot
-
-|   |qtl_chr | center| proximal| distal| count|
-|:--|:-------|------:|--------:|------:|-----:|
-|1  |1       |   61.5|     59.5|   63.5|     0|
-|2  |2       |  154.0|    152.0|  156.0|     0|
-|3  |3       |  146.5|    144.5|  148.5|     1|
-|4  |4       |   43.5|     41.5|   45.5|     1|
-|5  |5       |   93.5|     91.5|   95.5|     1|
-|6  |6       |  115.0|    113.0|  117.0|     2|
-|7  |7       |   24.5|     22.5|   26.5|     1|
-|8  |8       |   23.5|     21.5|   25.5|     1|
-|9  |9       |   59.5|     57.5|   61.5|     1|
-|11 |11      |   74.5|     72.5|   76.5|     1|
-|13 |13      |   21.5|     19.5|   23.5|     1|
-|14 |14      |   22.5|     20.5|   24.5|     0|
-|15 |15      |   96.5|     94.5|   98.5|     1|
-|16 |16      |   31.5|     29.5|   33.5|     0|
-|18 |18      |   78.5|     76.5|   80.5|     1|
-|19 |19      |   10.5|      8.5|   12.5|     1|
-
-Get the expression of genes that map to each hotspot.
-
-
-~~~
-for(i in 1:length(hotspot.genes)) {
-  tmp = data.frame(ensembl = hotspot.genes[[i]]$ensembl, t(expr.mrna[,hotspot.genes[[i]]$ensembl]))
-  hotspot.genes[[i]] = left_join(hotspot.genes[[i]], tmp, by = "ensembl")
-  write_csv(hotspot.genes[[i]], path = paste0("../results/chr", names(hotspot.genes)[i], "_hotspot_genes_random.csv"))
-}
-~~~
-{: .language-r}
-
-### Hotspot Gene Correlation
-
-
-~~~
-breaks = -100:100/100
-colors = colorRampPalette(rev(brewer.pal(11, "Spectral")))(length(breaks) - 1)
-for(i in 1:length(hotspot.genes)) {
-  chr = names(hotspot.genes)[i]
-  tmp = hotspot.genes[[i]] %>%
-    dplyr::select(starts_with("DO")) %>%
-    t() %>%
-    as.matrix() %>%
-    cor()
-  dimnames(tmp) = list(hotspot.genes[[i]]$ensembl, hotspot.genes[[i]]$ensembl)
-  side.colors = cut(hotspot.genes[[i]]$qtl_lod, breaks = 100)
-  side.colors = colorRampPalette(rev(brewer.pal(9, "YlOrRd")))(length(levels(side.colors)))[as.numeric(side.colors)]
-  names(side.colors) = rownames(tmp)
-  pdf(paste0("../results/hotspot_gene_cor_chr", chr, "_random.pdf"), width = 10, height = 10)
-  heatmap(tmp, symm = TRUE, scale = "none", main = paste("Chr", chr, "Gene Correlation"), breaks = breaks, col = colors, RowSideColors = side.colors, ColSideColors = side.colors)
-  dev.off()
-  heatmap(tmp, symm = TRUE, scale = "none", main = paste("Chr", chr, "Gene Correlation"), breaks = breaks, col = colors, RowSideColors = side.colors, ColSideColors = side.colors)
-}
-~~~
-{: .language-r}
-
-
-
-~~~
-Warning in min(x): no non-missing arguments to min; returning Inf
-~~~
-{: .warning}
-
-
-
-~~~
-Warning in max(x): no non-missing arguments to max; returning -Inf
-~~~
-{: .warning}
-
-
-
-~~~
-Error in seq.int(rx[1L], rx[2L], length.out = nb): 'from' must be a finite number
-~~~
-{: .error}
-
-### Hotspot Principal Components
-
-
-~~~
-hotspot.pcs = as.list(names(hotspot.genes))
-names(hotspot.pcs) = names(hotspot.genes)
-do.wave = pheno_clin[rownames(expr.mrna),"DOwave",drop=F]
-wave.col = as.numeric(as.factor(do.wave[,1]))
-for(i in 1:length(hotspot.genes)) {
-  tmp = hotspot.genes[[i]] %>%
-          dplyr::select(starts_with("DO")) %>%
-          as.matrix() %>%
-          t() %>%
-          prcomp()
-  hotspot.pcs[[i]] = tmp$x
-  tmp = gather(data.frame(mouse = rownames(hotspot.pcs[[i]]), hotspot.pcs[[i]]), pc, value, -mouse)
-  tmp = left_join(tmp, pheno_clin %>% dplyr::select(mouse, sex, DOwave, diet_days), by = "mouse")
-  print(tmp %>%
-    filter(pc %in% paste0("PC", 1:4)) %>%
-    mutate(DOwave = factor(DOwave)) %>%
-    ggplot(aes(DOwave, value, fill = sex)) +
-    geom_boxplot() +
-    facet_grid(pc~.) +
-    labs(title = paste("Chr", names(hotspot.genes)[i], "Hotspot")))
-}
-~~~
-{: .language-r}
-
-
-
-~~~
-Error in svd(x, nu = 0, nv = k): a dimension is zero
-~~~
-{: .error}

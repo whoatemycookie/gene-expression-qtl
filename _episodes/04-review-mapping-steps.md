@@ -22,7 +22,7 @@ Make sure that you are in your main directory. If you’re not sure where you ar
 
 ### Load Libraries  
 
-Below are the neccessary libraries that we require for this review and the following lessons in this course.  They are already installed on your machines so go ahead an load them using the following code:
+Below are the neccessary libraries that we require for this review.  They are already installed on your machines so go ahead an load them using the following code:
 
 
 ~~~
@@ -48,7 +48,7 @@ load("../data/attie_DO500_clinical.phenotypes.RData")
 ##mapping data
 load("../data/attie_DO500_mapping.data.RData")
 
-##genoprobs
+##genotype probabilities
 probs = readRDS("../data/attie_DO500_genoprobs_v5.rds")
 ~~~
 {: .language-r}
@@ -243,7 +243,7 @@ covar = model.matrix(~sex + DOwave, data = pheno_clin)
 
 ### [Performing a genome scan](https://smcclatchy.github.io/mapping/06-perform-genome-scan/) 
 
-Before we run the mapping function, let's look at the mapping model. At each marker on the genotyping array, we will fit a model that regresses the phenotype (insulin secretion AUC) on covariates and the founder allele proportions.  Note that this model will give us an estimate of the effect of each founder allele at each marker. There are eight founder strains that contributed to the DO, so we will get eight founder allele effects.
+At each marker on the genotyping array, we will fit a model that regresses the phenotype (insulin secretion AUC) on covariates and the founder allele proportions.  Note that this model will give us an estimate of the effect of each founder allele at each marker. There are eight founder strains that contributed to the DO, so we will get eight founder allele effects.
 
 Now let's perform the genome scan, using the [scan1](https://github.com/rqtl/qtl2/blob/master/R/plot_scan1.R) function.
 
@@ -309,22 +309,22 @@ Table: Phenotype QTL Peaks with LOD >= 6
 > 5). Find the peaks above LOD score of 6. 
 >
 > > ## Solution
-> > Here we have chosen: 
+> > Replace <pheno name> with your choice of phenotype
 > > 
 > > ~~~
 > > #1).
 > > 
-> > hist(pheno_clin$Ins_tAUC, main = "Insulin Area Under the Curve")
+> > hist(pheno_clin$<pheno name>)
 > > 
-> > pheno_clin$Ins_tAUC_log <- log(pheno_clin$Ins_tAUC)
+> > pheno_clin$<pheno name>_log <- log(pheno_clin$<pheno name>)
 > > 
-> > hist(pheno_clin$Ins_tAUC_log, main = "insulin tAUC (log-transformed)")
+> > hist(pheno_clin$<pheno name>_log)
 > > 
 > > 
 > > #2).
 > > 
 > > tmp = pheno_clin %>%
-> >         dplyr::select(mouse, sex, DOwave, diet_days, Ins_tAUC_log) %>%
+> >         dplyr::select(mouse, sex, DOwave, diet_days, <pheno name>) %>%
 > >         gather(phenotype, value, -mouse, -sex, -DOwave, -diet_days) %>%
 > >         group_by(phenotype) %>%
 > >         nest()
@@ -351,13 +351,13 @@ Table: Phenotype QTL Peaks with LOD >= 6
 > > #3).
 > > 
 > > qtl = scan1(genoprobs = probs, 
-> >            pheno = pheno_clin[,"Ins_tAUC_log", drop = FALSE], 
+> >            pheno = pheno_clin[,"<pheno name>", drop = FALSE], 
 > >         kinship = K, 
 > >         addcovar = covar)
 > > 
 > > #4).
 > > 
-> > plot_scan1(x = qtl, map = map, lodcolumn = "Ins_tAUC_log")
+> > plot_scan1(x = qtl, map = map, lodcolumn = "<pheno name>")
 > > abline(h = 6, col = 2, lwd = 2)
 > > 
 > > #5). 
