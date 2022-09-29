@@ -64,8 +64,66 @@ genes = colnames(norm)
 
 sams <- sample(length(genes), 50, replace = FALSE, prob = NULL)
 genes <- genes[sams]
+
+gene.info <- dataset.islet.rnaseq$annots[genes,]
+kable(gene.info)
 ~~~
 {: .language-r}
+
+
+
+|                   |gene_id            |symbol        |chr |      start|        end| strand|     middle|nearest.marker.id |biotype                |module         |hotspot |
+|:------------------|:------------------|:-------------|:---|----------:|----------:|------:|----------:|:-----------------|:----------------------|:--------------|:-------|
+|ENSMUSG00000017718 |ENSMUSG00000017718 |Afmid         |11  | 117.825924| 117.839908|      1| 117.832916|11_117898270      |protein_coding         |grey           |NA      |
+|ENSMUSG00000094504 |ENSMUSG00000094504 |Gm5294        |5   | 138.820080| 138.821619|      1| 138.820850|5_138814741       |protein_coding         |blue           |NA      |
+|ENSMUSG00000020812 |ENSMUSG00000020812 |1810032O08Rik |11  | 116.671660| 116.675799|      1| 116.673730|11_116674802      |protein_coding         |darkred        |NA      |
+|ENSMUSG00000034115 |ENSMUSG00000034115 |Scn11a        |9   | 119.753763| 119.825456|     -1| 119.789610|9_119738766       |protein_coding         |yellowgreen    |chr5    |
+|ENSMUSG00000022378 |ENSMUSG00000022378 |Fam49b        |15  |  63.929097|  64.060448|     -1|  63.994772|15_63966062       |protein_coding         |turquoise      |NA      |
+|ENSMUSG00000018565 |ENSMUSG00000018565 |Elp5          |11  |  69.968222|  69.982517|     -1|  69.975370|11_69978753       |protein_coding         |skyblue3       |NA      |
+|ENSMUSG00000085547 |ENSMUSG00000085547 |Gm13767       |2   |  90.358178|  90.383163|     -1|  90.370670|2_90185356        |pseudogene             |grey           |NA      |
+|ENSMUSG00000090662 |ENSMUSG00000090662 |Vmn2r45       |7   |   8.470525|   8.489075|     -1|   8.479800|7_8660580         |protein_coding         |grey           |NA      |
+|ENSMUSG00000063445 |ENSMUSG00000063445 |Nmral1        |16  |   4.710059|   4.719356|     -1|   4.714708|16_4699269        |protein_coding         |darkmagenta    |NA      |
+|ENSMUSG00000036565 |ENSMUSG00000036565 |Ttyh3         |5   | 140.620586| 140.649031|     -1| 140.634808|5_140637088       |protein_coding         |black          |NA      |
+|ENSMUSG00000050440 |ENSMUSG00000050440 |Hamp          |7   |  30.942371|  30.944017|     -1|  30.943194|7_30929661        |protein_coding         |skyblue3       |NA      |
+|ENSMUSG00000097960 |ENSMUSG00000097960 |A330074K22Rik |8   | 120.204434| 120.228230|     -1| 120.216332|8_120218062       |lincRNA                |grey           |NA      |
+|ENSMUSG00000037640 |ENSMUSG00000037640 |Zfp60         |7   |  27.731389|  27.753702|      1|  27.742546|7_27721493        |protein_coding         |green          |NA      |
+|ENSMUSG00000034616 |ENSMUSG00000034616 |Ssh3          |19  |   4.261668|   4.269172|     -1|   4.265420|19_4267368        |protein_coding         |purple         |chr13   |
+|ENSMUSG00000027374 |ENSMUSG00000027374 |Mrps5         |2   | 127.587222| 127.606829|      1| 127.597026|2_127565057       |protein_coding         |turquoise      |NA      |
+|ENSMUSG00000033707 |ENSMUSG00000033707 |Lrrc24        |15  |  76.715276|  76.722173|     -1|  76.718724|15_76785967       |protein_coding         |blue           |NA      |
+|ENSMUSG00000090235 |ENSMUSG00000090235 |Gm16244       |19  |  42.779032|  42.781454|      1|  42.780243|19_42721127       |processed_transcript   |royalblue      |NA      |
+|ENSMUSG00000066389 |ENSMUSG00000066389 |Rpl31-ps1     |12  |  91.890896|  91.891273|     -1|  91.891084|12_91918075       |pseudogene             |blue           |NA      |
+|ENSMUSG00000021534 |ENSMUSG00000021534 |1700001L19Rik |13  |  68.597439|  68.614231|      1|  68.605835|13_68633645       |protein_coding         |brown          |NA      |
+|ENSMUSG00000039428 |ENSMUSG00000039428 |Tmem135       |7   |  89.139723|  89.404222|     -1|  89.271972|7_89218481        |protein_coding         |grey           |NA      |
+|ENSMUSG00000001627 |ENSMUSG00000001627 |Ifrd1         |12  |  40.201567|  40.248504|     -1|  40.225036|12_40294989       |protein_coding         |darkolivegreen |NA      |
+|ENSMUSG00000047733 |ENSMUSG00000047733 |BC048609      |19  |   6.080033|   6.080788|      1|   6.080410|19_6205523        |protein_coding         |grey           |NA      |
+|ENSMUSG00000005378 |ENSMUSG00000005378 |Wbscr22       |5   | 135.052957| 135.064959|     -1| 135.058958|5_135055862       |protein_coding         |lightcyan      |NA      |
+|ENSMUSG00000048484 |ENSMUSG00000048484 |Gm7461        |8   |   4.677539|   4.678365|     -1|   4.677952|8_4769503         |protein_coding         |grey           |NA      |
+|ENSMUSG00000092212 |ENSMUSG00000092212 |Slc22a13b-ps  |9   | 119.220488| 119.231692|     -1| 119.226090|9_119227695       |polymorphic_pseudogene |grey           |NA      |
+|ENSMUSG00000032350 |ENSMUSG00000032350 |Gclc          |9   |  77.754535|  77.794485|      1|  77.774510|9_77797741        |protein_coding         |darkgreen      |NA      |
+|ENSMUSG00000024622 |ENSMUSG00000024622 |Hmgxb3        |18  |  61.131279|  61.177050|     -1|  61.154164|18_61173824       |protein_coding         |purple         |NA      |
+|ENSMUSG00000029878 |ENSMUSG00000029878 |Dbpht2        |12  |  74.297474|  74.300468|      1|  74.298971|12_74328374       |protein_coding         |greenyellow    |NA      |
+|ENSMUSG00000022538 |ENSMUSG00000022538 |Lsg1          |16  |  30.560494|  30.587592|     -1|  30.574043|16_30485024       |protein_coding         |turquoise      |NA      |
+|ENSMUSG00000029482 |ENSMUSG00000029482 |Aacs          |5   | 125.475814| 125.517412|      1| 125.496613|5_125525600       |protein_coding         |grey60         |NA      |
+|ENSMUSG00000031134 |ENSMUSG00000031134 |Rbmx          |X   |  57.383530|  57.393036|     -1|  57.388283|X_57389329        |protein_coding         |white          |NA      |
+|ENSMUSG00000022215 |ENSMUSG00000022215 |Fitm1         |14  |  55.575617|  55.576952|      1|  55.576284|14_55574243       |protein_coding         |grey           |NA      |
+|ENSMUSG00000011751 |ENSMUSG00000011751 |Sptbn4        |7   |  27.356383|  27.447686|     -1|  27.402034|7_27350405        |protein_coding         |black          |NA      |
+|ENSMUSG00000018707 |ENSMUSG00000018707 |Dync1h1       |12  | 110.601452| 110.666945|      1| 110.634198|12_110615192      |protein_coding         |saddlebrown    |NA      |
+|ENSMUSG00000063623 |ENSMUSG00000063623 |C230062I16Rik |7   |  29.953621|  29.955992|      1|  29.954806|7_29934934        |protein_coding         |grey           |NA      |
+|ENSMUSG00000083727 |ENSMUSG00000083727 |Gm11887       |4   |  23.440018|  23.440247|      1|  23.440132|4_23472767        |pseudogene             |grey           |NA      |
+|ENSMUSG00000028294 |ENSMUSG00000028294 |1700003M02Rik |4   |  34.688559|  34.730206|     -1|  34.709382|4_34715713        |protein_coding         |grey           |NA      |
+|ENSMUSG00000041028 |ENSMUSG00000041028 |Ghitm         |14  |  37.120444|  37.135322|     -1|  37.127883|14_37137008       |protein_coding         |salmon         |NA      |
+|ENSMUSG00000083055 |ENSMUSG00000083055 |Gm14140       |2   | 150.110582| 150.111576|     -1| 150.111079|2_150133825       |pseudogene             |grey           |NA      |
+|ENSMUSG00000068245 |ENSMUSG00000068245 |Phf11d        |14  |  59.347407|  59.365470|     -1|  59.356438|14_59350137       |protein_coding         |magenta        |chr7    |
+|ENSMUSG00000021208 |ENSMUSG00000021208 |Ifi27l2b      |12  | 103.450898| 103.457223|     -1| 103.454060|12_103467293      |protein_coding         |grey           |NA      |
+|ENSMUSG00000078480 |ENSMUSG00000078480 |Mrpl48-ps     |4   |  88.599175|  88.599810|     -1|  88.599492|4_88594292        |pseudogene             |grey           |NA      |
+|ENSMUSG00000024247 |ENSMUSG00000024247 |Pkdcc         |17  |  83.215292|  83.225070|      1|  83.220181|17_83222737       |protein_coding         |grey60         |NA      |
+|ENSMUSG00000029431 |ENSMUSG00000029431 |B3gnt4        |5   | 123.510460| 123.511882|      1| 123.511171|5_123394206       |protein_coding         |grey           |NA      |
+|ENSMUSG00000096006 |ENSMUSG00000096006 |Gm21596       |2   | 113.919247| 113.920562|     -1| 113.919904|2_113926451       |pseudogene             |grey           |NA      |
+|ENSMUSG00000046747 |ENSMUSG00000046747 |Gm9812        |12  |  55.820611|  55.821580|      1|  55.821096|12_55896608       |pseudogene             |grey           |NA      |
+|ENSMUSG00000095350 |ENSMUSG00000095350 |Gm23284       |8   | 123.620241| 123.620359|     -1| 123.620300|8_123594496       |rRNA                   |mediumpurple3  |NA      |
+|ENSMUSG00000035042 |ENSMUSG00000035042 |Ccl5          |11  |  83.525778|  83.530518|     -1|  83.528148|11_83554638       |protein_coding         |magenta        |chr7    |
+|ENSMUSG00000097589 |ENSMUSG00000097589 |Dleu2         |14  |  61.602839|  61.682373|     -1|  61.642606|14_61606644       |processed_transcript   |darkgreen      |NA      |
+|ENSMUSG00000094958 |ENSMUSG00000094958 |3110021N24Rik |4   | 108.719649| 108.781904|      1| 108.750776|4_108766689       |protein_coding         |grey           |NA      |
 
 ### Expression Data
 
@@ -75,7 +133,7 @@ Lets check the distribution for the first 20 gene expression phenotypes. If you 
 ~~~
 par(mfrow=c(3,4))
 for(gene in genes[1:20]){
-  hist(norm[,gene], main = paste0(dataset.islet.rnaseq$annots[dataset.islet.rnaseq$annots$gene_id == gene,]$symbol, " : ", gene))
+  hist(norm[,gene], main = gene)
   }
 ~~~
 {: .language-r}
@@ -135,16 +193,16 @@ tmp
 # Groups:   expression [50]
    expression         data     model  term     estimate std.e…¹ stati…²  p.value
    <chr>              <list>   <list> <chr>       <dbl>   <dbl>   <dbl>    <dbl>
- 1 ENSMUSG00000097406 <tibble> <lm>   (Interc… -0.168   0.491    -0.343 7.32e- 1
- 2 ENSMUSG00000097406 <tibble> <lm>   sexM      0.218   0.0801    2.72  6.90e- 3
- 3 ENSMUSG00000097406 <tibble> <lm>   DOwave    0.520   0.0360   14.4   7.67e-38
- 4 ENSMUSG00000097406 <tibble> <lm>   diet_da… -0.00970 0.00375  -2.58  1.02e- 2
- 5 ENSMUSG00000091272 <tibble> <lm>   (Interc… -0.188   0.549    -0.342 7.33e- 1
- 6 ENSMUSG00000091272 <tibble> <lm>   sexM     -0.240   0.0895   -2.68  7.64e- 3
- 7 ENSMUSG00000091272 <tibble> <lm>   DOwave    0.320   0.0402    7.95  2.20e-14
- 8 ENSMUSG00000091272 <tibble> <lm>   diet_da… -0.00369 0.00420  -0.881 3.79e- 1
- 9 ENSMUSG00000024854 <tibble> <lm>   (Interc…  0.228   0.506     0.450 6.53e- 1
-10 ENSMUSG00000024854 <tibble> <lm>   sexM      0.185   0.0824    2.24  2.57e- 2
+ 1 ENSMUSG00000017718 <tibble> <lm>   (Interc…  1.14    0.611     1.86  6.32e- 2
+ 2 ENSMUSG00000017718 <tibble> <lm>   sexM     -0.347   0.0995   -3.48  5.58e- 4
+ 3 ENSMUSG00000017718 <tibble> <lm>   DOwave   -0.0173  0.0448   -0.386 7.00e- 1
+ 4 ENSMUSG00000017718 <tibble> <lm>   diet_da… -0.00714 0.00467  -1.53  1.27e- 1
+ 5 ENSMUSG00000094504 <tibble> <lm>   (Interc…  0.208   0.457     0.455 6.50e- 1
+ 6 ENSMUSG00000094504 <tibble> <lm>   sexM      0.139   0.0744    1.86  6.34e- 2
+ 7 ENSMUSG00000094504 <tibble> <lm>   DOwave    0.454   0.0335   13.6   2.12e-34
+ 8 ENSMUSG00000094504 <tibble> <lm>   diet_da… -0.0108  0.00349  -3.09  2.15e- 3
+ 9 ENSMUSG00000020812 <tibble> <lm>   (Interc…  1.23    0.565     2.17  3.03e- 2
+10 ENSMUSG00000020812 <tibble> <lm>   sexM     -0.472   0.0920   -5.14  4.53e- 7
 # … with 190 more rows, and abbreviated variable names ¹​std.error, ²​statistic
 ~~~
 {: .output}

@@ -240,7 +240,7 @@ kable(peaks %>% dplyr::select (-lodindex) %>%
 > 5). Find the peaks above LOD score of 6. 
 >
 > > ## Solution
-> > Replace <pheno name> with your choice of phenotype
+> > Replace `<pheno name>` with your choice of phenotype
 > > ```{r, eval=F}
 > > #1).
 > > 

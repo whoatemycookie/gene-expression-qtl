@@ -68,6 +68,9 @@ genes = colnames(norm)
 sams <- sample(length(genes), 50, replace = FALSE, prob = NULL)
 genes <- genes[sams]
 
+gene.info <- dataset.islet.rnaseq$annots[genes,]
+kable(gene.info)
+
 ```
 
 ### Expression Data
@@ -77,7 +80,7 @@ Lets check the distribution for the first 20 gene expression phenotypes. If you 
 ```{r hist_untransformed}
 par(mfrow=c(3,4))
 for(gene in genes[1:20]){
-  hist(norm[,gene], main = paste0(dataset.islet.rnaseq$annots[dataset.islet.rnaseq$annots$gene_id == gene,]$symbol, " : ", gene))
+  hist(norm[,gene], main = gene)
   }
 
 ```

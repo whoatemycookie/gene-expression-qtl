@@ -267,7 +267,7 @@ Table: Phenotype QTL Peaks with LOD >= 6
 > 5). Find the peaks above LOD score of 6.   
 >
 > > ## Solution
-> > Replace <ensembl id> with your choice of gene expression trait
+> > Replace `<ensembl id>` with your choice of gene expression trait
 > > 
 > > ~~~
 > > #1).

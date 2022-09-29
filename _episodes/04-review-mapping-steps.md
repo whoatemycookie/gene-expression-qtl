@@ -309,7 +309,7 @@ Table: Phenotype QTL Peaks with LOD >= 6
 > 5). Find the peaks above LOD score of 6. 
 >
 > > ## Solution
-> > Replace <pheno name> with your choice of phenotype
+> > Replace `<pheno name>` with your choice of phenotype
 > > 
 > > ~~~
 > > #1).
