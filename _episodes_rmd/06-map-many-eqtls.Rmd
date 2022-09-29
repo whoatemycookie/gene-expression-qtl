@@ -72,12 +72,12 @@ genes <- genes[sams]
 
 ### Expression Data
 
-Lets check the distributin of these 50 gene expression phenotypes
+Lets check the distribution for the first 20 gene expression phenotypes. If you would like to check the distribution of all 50 genes, change `for(gene in genes[1:20])` in the code below to `for(gene in genes)`.
 
 ```{r hist_untransformed}
 par(mfrow=c(3,4))
 for(gene in genes[1:20]){
-  hist(norm[,gene], main = dataset.islet.rnaseq$annots[dataset.islet.rnaseq$annots$gene_id == gene,]$symbol)
+  hist(norm[,gene], main = paste0(dataset.islet.rnaseq$annots[dataset.islet.rnaseq$annots$gene_id == gene,]$symbol, " : ", gene))
   }
 
 ```
@@ -176,6 +176,8 @@ if(file.exists(qtl.file)) {
 ```
 
 ### QTL plots
+
+Let's plot the first 20 gene expression phenotypes.  If you would like to plot all 50, change `for(i in 1:20)` in the code below to `for(i in 1:ncol(qtl))`.
 
 ```{r set_plot_rows_columns, echo=FALSE}
 par(mfrow=c(17, 3))

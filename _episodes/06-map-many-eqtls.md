@@ -69,13 +69,13 @@ genes <- genes[sams]
 
 ### Expression Data
 
-Lets check the distributin of these 50 gene expression phenotypes
+Lets check the distribution for the first 20 gene expression phenotypes. If you would like to check the distribution of all 50 genes, change `for(gene in genes[1:20])` in the code below to `for(gene in genes)`.
 
 
 ~~~
 par(mfrow=c(3,4))
 for(gene in genes[1:20]){
-  hist(norm[,gene], main = dataset.islet.rnaseq$annots[dataset.islet.rnaseq$annots$gene_id == gene,]$symbol)
+  hist(norm[,gene], main = paste0(dataset.islet.rnaseq$annots[dataset.islet.rnaseq$annots$gene_id == gene,]$symbol, " : ", gene))
   }
 ~~~
 {: .language-r}
@@ -135,16 +135,16 @@ tmp
 # Groups:   expression [50]
    expression         data     model  term     estimate std.e…¹ stati…²  p.value
    <chr>              <list>   <list> <chr>       <dbl>   <dbl>   <dbl>    <dbl>
- 1 ENSMUSG00000032068 <tibble> <lm>   (Interc… -5.04e-1 0.593    -0.850 3.96e- 1
- 2 ENSMUSG00000032068 <tibble> <lm>   sexM     -8.35e-2 0.0966   -0.864 3.88e- 1
- 3 ENSMUSG00000032068 <tibble> <lm>   DOwave    2.68e-1 0.0434    6.18  1.72e- 9
- 4 ENSMUSG00000032068 <tibble> <lm>   diet_da… -9.28e-4 0.00453  -0.205 8.38e- 1
- 5 ENSMUSG00000095375 <tibble> <lm>   (Interc…  3.55e-1 0.617     0.575 5.66e- 1
- 6 ENSMUSG00000095375 <tibble> <lm>   sexM     -2.14e-1 0.101    -2.12  3.44e- 2
- 7 ENSMUSG00000095375 <tibble> <lm>   DOwave   -6.60e-2 0.0452   -1.46  1.45e- 1
- 8 ENSMUSG00000095375 <tibble> <lm>   diet_da… -5.38e-4 0.00472  -0.114 9.09e- 1
- 9 ENSMUSG00000031889 <tibble> <lm>   (Interc…  1.34e+0 0.556     2.40  1.67e- 2
-10 ENSMUSG00000031889 <tibble> <lm>   sexM     -6.42e-1 0.0907   -7.09  6.93e-12
+ 1 ENSMUSG00000097406 <tibble> <lm>   (Interc… -0.168   0.491    -0.343 7.32e- 1
+ 2 ENSMUSG00000097406 <tibble> <lm>   sexM      0.218   0.0801    2.72  6.90e- 3
+ 3 ENSMUSG00000097406 <tibble> <lm>   DOwave    0.520   0.0360   14.4   7.67e-38
+ 4 ENSMUSG00000097406 <tibble> <lm>   diet_da… -0.00970 0.00375  -2.58  1.02e- 2
+ 5 ENSMUSG00000091272 <tibble> <lm>   (Interc… -0.188   0.549    -0.342 7.33e- 1
+ 6 ENSMUSG00000091272 <tibble> <lm>   sexM     -0.240   0.0895   -2.68  7.64e- 3
+ 7 ENSMUSG00000091272 <tibble> <lm>   DOwave    0.320   0.0402    7.95  2.20e-14
+ 8 ENSMUSG00000091272 <tibble> <lm>   diet_da… -0.00369 0.00420  -0.881 3.79e- 1
+ 9 ENSMUSG00000024854 <tibble> <lm>   (Interc…  0.228   0.506     0.450 6.53e- 1
+10 ENSMUSG00000024854 <tibble> <lm>   sexM      0.185   0.0824    2.24  2.57e- 2
 # … with 190 more rows, and abbreviated variable names ¹​std.error, ²​statistic
 ~~~
 {: .output}
@@ -204,6 +204,8 @@ if(file.exists(qtl.file)) {
 {: .language-r}
 
 ### QTL plots
+
+Let's plot the first 20 gene expression phenotypes.  If you would like to plot all 50, change `for(i in 1:20)` in the code below to `for(i in 1:ncol(qtl))`.
 
 
 
