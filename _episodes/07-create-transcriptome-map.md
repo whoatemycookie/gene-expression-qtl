@@ -136,7 +136,7 @@ table(lod_summary$cis.trans)
 ~~~
 
   cis trans 
-   85   132 
+   47    65 
 ~~~
 {: .output}
 

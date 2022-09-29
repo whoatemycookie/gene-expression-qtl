@@ -5,8 +5,6 @@ exercises: 30
 questions:
 - "How do I map many genes?"
 objectives:
-- "????"
-keypoints:
 - "To map several genes at the same time"
 source: Rmd
 ---
@@ -257,7 +255,7 @@ qtl_heatmap(qtl = qtl, map = map, low.thr = 3.5)
 > >                threshold = lod_threshold, 
 > >                peakdrop = 4, 
 > >                prob = 0.95)
-> > write_csv(peaks, "../results/gene.norm_qtl_peaks.csv")
+> > write_csv(peaks, "../results/gene.norm_qtl_all.genes_peaks.csv")
 > >
 > > ## Heat Map
 > > qtl_heatmap(qtl = qtl, map = map, low.thr = 3.5)
