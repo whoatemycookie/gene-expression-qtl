@@ -75,7 +75,7 @@ genes <- genes[sams]
 Lets check the distributin of these 50 gene expression phenotypes
 
 ```{r hist_untransformed}
-par(mfrow=c(1,4))
+par(mfrow=c(3,4))
 for(gene in genes[1:20]){
   hist(norm[,gene], main = dataset.islet.rnaseq$annots[dataset.islet.rnaseq$annots$gene_id == gene,]$symbol)
   }
@@ -190,7 +190,7 @@ par(mfrow=c(17, 3))
 ```
 
 ```{r qtl_plots}
-par(mfrow=c(1,4))
+par(mfrow=c(3,4))
 for(i in 1:20) {
   plot_scan1(x = qtl, 
              map = map, 

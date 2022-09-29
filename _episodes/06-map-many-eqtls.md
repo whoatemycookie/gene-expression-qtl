@@ -73,14 +73,14 @@ Lets check the distributin of these 50 gene expression phenotypes
 
 
 ~~~
-par(mfrow=c(1,4))
+par(mfrow=c(3,4))
 for(gene in genes[1:20]){
   hist(norm[,gene], main = dataset.islet.rnaseq$annots[dataset.islet.rnaseq$annots$gene_id == gene,]$symbol)
   }
 ~~~
 {: .language-r}
 
-<img src="../fig/rmd-06-hist_untransformed-1.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-2.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-3.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-4.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-5.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" />
+<img src="../fig/rmd-06-hist_untransformed-1.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-2.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" />
 The histogram indicates that distribution of these counts are normalised (as they should be).
 
 ### The Marker Map  
@@ -133,18 +133,18 @@ tmp
 ~~~
 # A tibble: 200 × 8
 # Groups:   expression [50]
-   expression         data     model  term      estimate std.e…¹ stati…² p.value
-   <chr>              <list>   <list> <chr>        <dbl>   <dbl>   <dbl>   <dbl>
- 1 ENSMUSG00000037994 <tibble> <lm>   (Interce…  3.53e-1 0.615     0.574  0.566 
- 2 ENSMUSG00000037994 <tibble> <lm>   sexM      -2.21e-1 0.100    -2.21   0.0279
- 3 ENSMUSG00000037994 <tibble> <lm>   DOwave    -6.85e-2 0.0451   -1.52   0.130 
- 4 ENSMUSG00000037994 <tibble> <lm>   diet_days -5.18e-4 0.00470  -0.110  0.912 
- 5 ENSMUSG00000048416 <tibble> <lm>   (Interce… -4.44e-1 0.613    -0.725  0.469 
- 6 ENSMUSG00000048416 <tibble> <lm>   sexM      -9.23e-2 0.0998   -0.925  0.356 
- 7 ENSMUSG00000048416 <tibble> <lm>   DOwave     3.23e-2 0.0449    0.720  0.472 
- 8 ENSMUSG00000048416 <tibble> <lm>   diet_days  3.16e-3 0.00468   0.675  0.500 
- 9 ENSMUSG00000086341 <tibble> <lm>   (Interce…  8.13e-1 0.619     1.31   0.190 
-10 ENSMUSG00000086341 <tibble> <lm>   sexM       5.13e-2 0.101     0.508  0.612 
+   expression         data     model  term     estimate std.e…¹ stati…²  p.value
+   <chr>              <list>   <list> <chr>       <dbl>   <dbl>   <dbl>    <dbl>
+ 1 ENSMUSG00000032068 <tibble> <lm>   (Interc… -5.04e-1 0.593    -0.850 3.96e- 1
+ 2 ENSMUSG00000032068 <tibble> <lm>   sexM     -8.35e-2 0.0966   -0.864 3.88e- 1
+ 3 ENSMUSG00000032068 <tibble> <lm>   DOwave    2.68e-1 0.0434    6.18  1.72e- 9
+ 4 ENSMUSG00000032068 <tibble> <lm>   diet_da… -9.28e-4 0.00453  -0.205 8.38e- 1
+ 5 ENSMUSG00000095375 <tibble> <lm>   (Interc…  3.55e-1 0.617     0.575 5.66e- 1
+ 6 ENSMUSG00000095375 <tibble> <lm>   sexM     -2.14e-1 0.101    -2.12  3.44e- 2
+ 7 ENSMUSG00000095375 <tibble> <lm>   DOwave   -6.60e-2 0.0452   -1.46  1.45e- 1
+ 8 ENSMUSG00000095375 <tibble> <lm>   diet_da… -5.38e-4 0.00472  -0.114 9.09e- 1
+ 9 ENSMUSG00000031889 <tibble> <lm>   (Interc…  1.34e+0 0.556     2.40  1.67e- 2
+10 ENSMUSG00000031889 <tibble> <lm>   sexM     -6.42e-1 0.0907   -7.09  6.93e-12
 # … with 190 more rows, and abbreviated variable names ¹​std.error, ²​statistic
 ~~~
 {: .output}
@@ -209,7 +209,7 @@ if(file.exists(qtl.file)) {
 
 
 ~~~
-par(mfrow=c(1,4))
+par(mfrow=c(3,4))
 for(i in 1:20) {
   plot_scan1(x = qtl, 
              map = map, 
@@ -220,7 +220,7 @@ for(i in 1:20) {
 ~~~
 {: .language-r}
 
-<img src="../fig/rmd-06-qtl_plots-1.png" alt="plot of chunk qtl_plots" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-qtl_plots-2.png" alt="plot of chunk qtl_plots" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-qtl_plots-3.png" alt="plot of chunk qtl_plots" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-qtl_plots-4.png" alt="plot of chunk qtl_plots" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-qtl_plots-5.png" alt="plot of chunk qtl_plots" width="612" style="display: block; margin: auto;" />
+<img src="../fig/rmd-06-qtl_plots-1.png" alt="plot of chunk qtl_plots" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-qtl_plots-2.png" alt="plot of chunk qtl_plots" width="612" style="display: block; margin: auto;" />
 
 ### QTL Peaks
 
