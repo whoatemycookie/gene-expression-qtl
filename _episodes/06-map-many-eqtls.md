@@ -135,19 +135,20 @@ tmp
 ~~~
 # A tibble: 200 × 8
 # Groups:   expression [50]
-   expression         data     model  term     estimate std.e…¹ stati…²  p.value
-   <chr>              <list>   <list> <chr>       <dbl>   <dbl>   <dbl>    <dbl>
- 1 ENSMUSG00000042055 <tibble> <lm>   (Interc…  0.603   0.550     1.10  2.74e- 1
- 2 ENSMUSG00000042055 <tibble> <lm>   sexM      0.0830  0.0896    0.927 3.54e- 1
- 3 ENSMUSG00000042055 <tibble> <lm>   DOwave   -0.412   0.0403  -10.2   7.64e-22
- 4 ENSMUSG00000042055 <tibble> <lm>   diet_da…  0.00300 0.00420   0.716 4.75e- 1
- 5 ENSMUSG00000005881 <tibble> <lm>   (Interc…  0.167   0.572     0.292 7.71e- 1
- 6 ENSMUSG00000005881 <tibble> <lm>   sexM     -0.0119  0.0932   -0.128 8.98e- 1
- 7 ENSMUSG00000005881 <tibble> <lm>   DOwave    0.328   0.0419    7.83  5.23e-14
- 8 ENSMUSG00000005881 <tibble> <lm>   diet_da… -0.00777 0.00437  -1.78  7.62e- 2
- 9 ENSMUSG00000030499 <tibble> <lm>   (Interc… -1.50    0.530    -2.82  4.99e- 3
-10 ENSMUSG00000030499 <tibble> <lm>   sexM      0.380   0.0863    4.41  1.38e- 5
-# … with 190 more rows, and abbreviated variable names ¹​std.error, ²​statistic
+   expression         data     model  term       estim…¹ std.e…² stati…³ p.value
+   <chr>              <list>   <list> <chr>        <dbl>   <dbl>   <dbl>   <dbl>
+ 1 ENSMUSG00000033099 <tibble> <lm>   (Intercep…  1.53   0.596     2.57  0.0105 
+ 2 ENSMUSG00000033099 <tibble> <lm>   sexM       -0.249  0.0971   -2.57  0.0107 
+ 3 ENSMUSG00000033099 <tibble> <lm>   DOwave      0.131  0.0437    2.99  0.00297
+ 4 ENSMUSG00000033099 <tibble> <lm>   diet_days  -0.0136 0.00455  -2.98  0.00309
+ 5 ENSMUSG00000020553 <tibble> <lm>   (Intercep…  1.52   0.615     2.48  0.0137 
+ 6 ENSMUSG00000020553 <tibble> <lm>   sexM        0.0371 0.100     0.370 0.711  
+ 7 ENSMUSG00000020553 <tibble> <lm>   DOwave      0.0111 0.0450    0.246 0.806  
+ 8 ENSMUSG00000020553 <tibble> <lm>   diet_days  -0.0122 0.00470  -2.60  0.00974
+ 9 ENSMUSG00000024661 <tibble> <lm>   (Intercep… -0.756  0.493    -1.53  0.126  
+10 ENSMUSG00000024661 <tibble> <lm>   sexM       -0.103  0.0803   -1.28  0.201  
+# … with 190 more rows, and abbreviated variable names ¹​estimate, ²​std.error,
+#   ³​statistic
 ~~~
 {: .output}
 
@@ -190,7 +191,7 @@ Now lets perform the genome scan!  We are also going to save our qtl results in 
 
 
 ~~~
-qtl.file = "../results/gene.norm_qtl_cis.trans_random.Rdata"
+qtl.file = "../results/gene.norm_qtl_cis.trans.Rdata"
 
 if(file.exists(qtl.file)) {
   load(qtl.file)
@@ -247,7 +248,7 @@ kable(peaks %>%
         dplyr::select(-lodindex) %>% 
         arrange(chr, pos), caption = "Expression QTL (eQTL) Peaks with LOD >= 6")
 
-write_csv(peaks, "../results/gene.norm_qtl_peaks_random.csv")
+write_csv(peaks, "../results/gene.norm_qtl_peaks_cis.trans.csv")
 ~~~
 {: .language-r}
 

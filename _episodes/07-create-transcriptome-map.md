@@ -57,14 +57,14 @@ expr.mrna <- norm
 
 In this lesson we are going to learn how to create a transcriptome map.  At transcriptome map shows the location of the eQTL peak compared its gene location, giving information about cos and trans eQTLs. 
 
-We are going to use the file that we created in the previous lesson with the lod scores greater than 6: `gene.norm_qtl_peaks_random.csv`.  
+We are going to use the file that we created in the previous lesson with the lod scores greater than 6: `gene.norm_qtl_peaks_cis.trans.csv`.  
 
 You can load it in using the following code:
 
 
 
 ~~~
-lod_summary = read.csv("../results/gene.norm_qtl_peaks_random.csv")
+lod_summary = read.csv("../results/gene.norm_qtl_peaks_cis.trans.csv")
 lod_summary$marker.id <- paste0(lod_summary$chr,
                                 "_",
                                 lod_summary$pos * 1000000)
@@ -153,7 +153,7 @@ out.plot = ggtmap(data = lod_summary %>% filter(qtl_lod >= 7.18), cis.points = T
 <img src="../fig/rmd-07-unnamed-chunk-2-1.png" alt="plot of chunk unnamed-chunk-2" width="720" style="display: block; margin: auto;" />
 
 ~~~
-pdf("../results/transcriptome_map_random.pdf", width = 10, height = 10)
+pdf("../results/transcriptome_map_cis.trans.pdf", width = 10, height = 10)
 out.plot
 dev.off()
 ~~~
