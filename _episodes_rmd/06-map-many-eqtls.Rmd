@@ -69,7 +69,7 @@ sams <- sample(length(genes), 50, replace = FALSE, prob = NULL)
 genes <- genes[sams]
 
 gene.info <- dataset.islet.rnaseq$annots[genes,]
-rownames = NULL
+rownames(gene.info) = NULL
 kable(gene.info)
 
 ```
